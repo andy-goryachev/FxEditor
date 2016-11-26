@@ -49,7 +49,6 @@ public class FxEditorSelectionModel
 		caretTimeline = new Timeline();
 		caretTimeline.setCycleCount(Animation.INDEFINITE);
 		new FxInvalidationListener(ed.blinkRateProperty(), true, () -> updateBlinkRate(ed.getBlinkRate()));
-
 	}
 	
 	

@@ -1,6 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
 import goryachev.fx.CssStyle;
+import goryachev.fx.FX;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.geometry.HPos;
@@ -8,6 +9,7 @@ import javafx.geometry.VPos;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.PathElement;
 import javafx.util.Duration;
 
@@ -22,6 +24,8 @@ public class FxEditor
 	public static final CssStyle CARET = new CssStyle("FxEditor_CARET");
 	/** selection highlight */
 	public static final CssStyle HIGHLIGHT = new CssStyle("FxEditor_HIGHLIGHT");
+	/** panel style */
+	public static final CssStyle PANEL = new CssStyle("FxEditor_PANEL");
 	
 	private ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
 	private ReadOnlyObjectWrapper<Boolean> wrap = new ReadOnlyObjectWrapper<>();
@@ -49,6 +53,8 @@ public class FxEditor
 	{
 		setFocusTraversable(true);
 		setModel(m);
+		FX.style(this, PANEL);
+		setBackground(FX.background(Color.WHITE));
 	}
 	
 	

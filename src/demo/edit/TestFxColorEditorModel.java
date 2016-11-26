@@ -73,7 +73,7 @@ public class TestFxColorEditorModel
 		
 		CList<Segment> ss = new CList<>();
 		
-		ss.add(new Segment(format.format(line) + ": ", Color.BLACK));
+		ss.add(new Segment("Line " + format.format(line) + ": ", Color.BLACK));
 		
 		for(int i=0; i<sz; i++)
 		{
@@ -109,18 +109,24 @@ public class TestFxColorEditorModel
 	{
 		switch(c)
 		{
-		case '0': return Color.BLACK;
-		case '1': return Color.DARKRED;
-		case '2': return Color.DARKORANGE;
-		case '3': return Color.DARKGOLDENROD;
-		case '4': return Color.DARKGREEN;
-		case '5': return Color.DARKBLUE;
-		case '6': return Color.DARKVIOLET;
-		case '7': return Color.DARKMAGENTA;
-		case '8': return Color.CYAN;
-		case '9': return Color.DARKCYAN;
+		case '0': return c(0);
+		case '1': return c(1);
+		case '2': return c(2);
+		case '3': return c(3);
+		case '4': return c(4);
+		case '5': return c(5);
+		case '6': return c(6);
+		case '7': return c(7);
+		case '8': return c(8);
+		case '9': return c(9);
 		default: return null;
 		}
+	}
+	
+	
+	protected Color c(int angle)
+	{
+		return Color.hsb(36.0 * angle, 1.0, 0.5);
 	}
 	
 	

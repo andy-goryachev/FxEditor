@@ -61,9 +61,9 @@ public class TestFxEditorApp
 				new TestFxColorEditorModel();
 			
 			FxEditor ed = new FxEditor(m);
-			ed.setBlinkRate(Duration.millis(300));
+			ed.setBlinkRate(Duration.millis(600));
 			
-			setTitle("FxEditor Test");
+			setTitle("FxEditor Demo");
 			setCenter(ed);
 			setSize(600, 700);
 			
