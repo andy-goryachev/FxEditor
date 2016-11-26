@@ -1,8 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
-package goryachev.fx.internal;
+package research.fx.edit;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.TextFlow;
-import research.fx.edit.TextPos;
 
 
 /**
