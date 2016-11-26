@@ -5,7 +5,6 @@
 	
 	<!-- libraries -->
 	<path id="libs">
-		<pathelement location="lib/gson/gson-2.6.2.jar" />
 	</path>
 		
 
