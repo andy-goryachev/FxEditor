@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright © 2016 Andy Goryachev <andy@goryachev.com> -->
+
+<project default="build-all" basedir=".">
+	
+	<!-- libraries -->
+	<path id="libs">
+		<pathelement location="lib/gson/gson-2.6.2.jar" />
+	</path>
+		
+
+	<target name="clean">
+		<delete includeEmptyDirs="true" dir="build" failonerror="false" />
+	</target>
+
+	
+	<target name="init" depends="clean">
+		<mkdir dir="build" />
+		<mkdir dir="build/classes" />
+		<mkdir dir="build/jars" />
+	</target>
+
+			
+	<target name="compile" depends="init">
+		<javac
+			srcdir="src"
+			destdir="build/classes"
+			debug="true"
+			encoding="utf-8"
+			fork="true"
+			nowarn="true"
+			optimize="false"
+			source="1.8"
+			target="1.8"
+			includeantruntime="false"
+		>
+			<compilerarg value="-Xlint:none"/>
+		
+			<classpath refid="libs" />
+		</javac>
+	</target>
+	
+	
+	<target name="copy-resources" depends="init">
+		<copy todir="build/classes">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+	</target>
+	
+	
+	<!-- build demo jar -->
+	<target name="make-jar" depends="compile, copy-resources">
+		<delete file="build/jars/FxEditDemo.jar" />
+		<jar
+			jarfile="build/jars/FxEditDemo.jar"
+			basedir="build/classes"
+			filesonly="true"
+			manifest="config/FxEditDemo.manifest"
+			>
+		</jar>
+	</target>
+	
+	
+	<!-- build lib jar -->
+	<target name="make-lib-jar" depends="compile, copy-resources">
+		<delete file="build/jars/FxEdit.jar" />
+		<jar
+			jarfile="build/jars/FxEdit.jar"
+			basedir="build/classes"
+			filesonly="true"
+			manifest="config/FxEdit.manifest"
+			excludes="demo/**"
+		>
+		</jar>
+	</target>
+	
+	
+	<!-- generate digest -->
+	<target name="sha-jar" depends="make-jar">
+		<checksum file="build/jars/FxEditDemo.jar" algorithm="sha-256" forceoverwrite="yes" fileext=".sha256.txt" />
+		<checksum file="build/jars/FxEdit.jar" algorithm="sha-256" forceoverwrite="yes" fileext=".sha256.txt" />
+	</target>
+	
+
+	<!-- build all -->
+	<target name="build-all" depends="compile, copy-resources, make-jar, make-lib-jar, sha-jar" />
+	
+</project>
