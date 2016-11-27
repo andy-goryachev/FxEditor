@@ -242,9 +242,8 @@ public class FxEditorSelectionModel
 		CaretLocation top = editor.getCaretLocation(start);
 		CaretLocation bot = editor.getCaretLocation(end);
 		
-		if(bot == null)
+		if((top == null) || (bot == null))
 		{
-			D.print("null");
 			return rv;
 		}
 		
