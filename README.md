@@ -8,10 +8,17 @@ JavaFX Rich Text Editor That Can Handle Billions of Lines.
 ## Why ##
 
 Nearly all Java text editors, Swing and FX alike, suffer from one deficiency: inability to work with large 
-data models.
+data models, such as logs or query results.
 
-The goal of this project is to provide an FX text component that does not have such a limitation.  The main idea
-is to use a line-oriented data model and FX-style virtual flow rendering.
+The goal of this project is to provide an FX text component that not only is capable of handling billions of 
+lines, but also provide syntax highlighting, multiple carets and multiple selection, rich text capabilities,
+embedded images and other complex features.
+
+The main idea which allows for all these features is separation of the editor and underlying data model.
+The data model then can be made as simple as a contiguous in-memory byte array, or as complex as memory-mapped 
+file with a concurrent change log that enables editing of a very large files.
+
+The project is currently at an early stage, bugs abound.
 
 
 ## Similar Projects
