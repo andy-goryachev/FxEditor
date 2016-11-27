@@ -124,6 +124,8 @@ public class FxEditorSelectionModel
 		segments.add(new SelectionSegment(start, end));
 		highlight.getElements().addAll(createHighlightPath(start, end));
 		caret.getElements().addAll(createCaretPath(end));
+		
+		// TODO combine overlapping segments
 	}
 	
 	
@@ -152,6 +154,8 @@ public class FxEditorSelectionModel
 			SelectionSegment s = segments.get(ix);
 			TextPos anchor = s.getStart();
 			segments.set(ix, new SelectionSegment(anchor, pos));
+			
+			// TODO combine overlapping segments
 			reloadDecorations();
 		}
 	}
