@@ -76,7 +76,7 @@ public class FxEditorLayout
 		TextPosExt pos = getTextPos(screenx, screeny);
 		if(pos != null)
 		{
-			Region box = pos.line.box;
+			Region box = pos.lineBox.box;
 			if(box instanceof CTextFlow)
 			{
 				PathElement[] es = ((CTextFlow)box).getCaretShape(pos.getIndex(), pos.isLeading());

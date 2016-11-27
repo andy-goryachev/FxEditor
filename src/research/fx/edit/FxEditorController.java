@@ -34,7 +34,6 @@ public class FxEditorController
 		ed.addEventFilter(KeyEvent.KEY_PRESSED, (ev) -> handleKeyPressed(ev));
 		ed.addEventFilter(KeyEvent.KEY_RELEASED, (ev) -> handleKeyReleased(ev));
 		ed.addEventFilter(KeyEvent.KEY_TYPED, (ev) -> handleKeyTyped(ev));
-		
 		ed.addEventFilter(MouseEvent.MOUSE_PRESSED, (ev) -> handleMousePressed(ev));
 		ed.addEventFilter(MouseEvent.MOUSE_RELEASED, (ev) -> handleMouseReleased(ev));
 		ed.addEventFilter(MouseEvent.MOUSE_DRAGGED, (ev) -> handleMouseDragged(ev));
@@ -148,14 +147,12 @@ public class FxEditorController
 	protected void handleKeyReleased(KeyEvent ev)
 	{
 		// TODO
-		D.print(ev);
 	}
 	
 	
 	protected void handleKeyTyped(KeyEvent ev)
 	{
 		// TODO
-		D.print(ev);
 	}
 	
 	
@@ -173,10 +170,11 @@ public class FxEditorController
 		
 		if(ev.isShiftDown())
 		{
+			// FIX there might be a zero length segment (single caret)
+			
 			// expand selection from the anchor point to the current position
 			// clearing existing (possibly multiple) selection
-			selection.clear();
-			selection.addSegment(selection.getAnchor(), pos);
+			selection.clearAndExtendLastSegment(pos);
 		}
 		else if(ev.isShortcutDown())
 		{
@@ -184,27 +182,18 @@ public class FxEditorController
 			{
 				// replace selection with a single caret
 				selection.clear();
-				selection.setAnchor(pos);
+				selection.addSegment(pos, pos);
 			}
 			else
 			{
 				// FIX add a new caret
-				selection.setAnchor(pos);
+				selection.addSegment(pos, pos);
 			}
 		}
 		else
 		{
-			// FIX move shapes to selection, use only text positions
-//			double x = ev.getScreenX();
-//			double y = ev.getScreenY();
-//			PathElement[] p = editor.getCaretShape(x, y);
-//			if(p != null)
-//			{
-				selection.clear();
-				// FIX
-//				selection.setCaretElements(p);
-				selection.setAnchor(pos);
-//			}
+			selection.clear();
+			selection.addSegment(pos, pos);
 		}
 	}
 	
@@ -212,14 +201,16 @@ public class FxEditorController
 	protected void handleMouseDragged(MouseEvent ev)
 	{
 		dragging = true;
-		handleMousePressed(ev);
+		
+		// TODO create a segment or replace a segment
+		
+		
+		//handleMousePressed(ev);
 	}
 	
 	
 	protected void handleMouseReleased(MouseEvent ev)
 	{
-		// TODO
-		D.print(ev);
 		dragging = false;
 	}
 	

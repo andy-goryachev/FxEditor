@@ -24,7 +24,7 @@ public class TextPos
 	
 	public String toString()
 	{
-		return line + "/" + index + "/" + (leading ? "leading" : "trailing");
+		return line + "." + index + (leading ? ".L" : ".T");
 	}
 
 
@@ -54,7 +54,19 @@ public class TextPos
 	
 	public int compareTo(TextPos p)
 	{
-		return 0;
+		int d = line - p.line;
+		if(d == 0)
+		{
+			d = index - p.index;
+			if(d == 0)
+			{
+				if(leading != p.leading)
+				{
+					return leading ? -1 : 1;
+				}
+			}
+		}
+		return d;
 	}
 	
 	

@@ -27,8 +27,8 @@ public class FxEditorSelectionModel
 	protected final Timeline caretTimeline;
 	protected final Path caret;
 	protected final Path highlight;
+	/** multiple selection segments: the end position corresponds to the caret */ 
 	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
-	private TextPos anchor;
 	
 	
 	public FxEditorSelectionModel(FxEditor ed)
@@ -49,12 +49,6 @@ public class FxEditorSelectionModel
 		caretTimeline = new Timeline();
 		caretTimeline.setCycleCount(Animation.INDEFINITE);
 		new FxInvalidationListener(ed.blinkRateProperty(), true, () -> updateBlinkRate(ed.getBlinkRate()));
-	}
-	
-	
-	protected void setCaretVisible(boolean on)
-	{
-		caret.setVisible(on);
 	}
 	
 	
@@ -80,8 +74,30 @@ public class FxEditorSelectionModel
 		segments.clear();
 	}
 
+	
+	protected void setCaretVisible(boolean on)
+	{
+		caret.setVisible(on);
+	}
+	
+	
+	protected void setCaret2(TextPos p)
+	{
+		CaretLocation c = editor.getCaretLocation(p);
+		if(c == null)
+		{
+			return;
+		}
+		
+		// TODO square caret on insert
+		PathElement[] es = new PathElement[2];
+		es[0] = new MoveTo(c.x0, c.y0);
+		es[1] = new LineTo(c.x1, c.y1);
+		setCaretElements(es);
+	}
+	
 
-	public void setCaretElements(PathElement[] es)
+	protected void setCaretElements(PathElement[] es)
 	{
 		// reset caret so it's always on when moving, unlike MS Word
 		caretTimeline.stop();
@@ -89,22 +105,6 @@ public class FxEditorSelectionModel
 		caretTimeline.play();
 	}
 
-
-	public void setAnchor(TextPos pos)
-	{
-		anchor = pos;
-	}
-
-	
-	public TextPos getAnchor()
-	{
-		if(anchor == null)
-		{
-			anchor = new TextPos(0, 0, true);
-		}
-		return anchor;
-	}
-	
 	
 	public boolean isInsideSelection(TextPos pos)
 	{
@@ -122,10 +122,55 @@ public class FxEditorSelectionModel
 	/** adds a new segment from start to end */
 	public void addSegment(TextPos start, TextPos end)
 	{
-		SelectionSegment s = new SelectionSegment(start, end);
-		segments.add(s);
-		highlight.getElements().addAll(createHighlightPath(s));
-		caret.getElements().addAll(createCaretPath(s.getEnd()));
+		D.print(start, end); // FIX
+		
+		segments.add(new SelectionSegment(start, end));
+		highlight.getElements().addAll(createHighlightPath(start, end));
+		caret.getElements().addAll(createCaretPath(end));
+	}
+	
+	
+	public void clearAndExtendLastSegment(TextPos pos)
+	{
+		TextPos anchor = lastAnchor();
+		if(anchor == null)
+		{
+			anchor = pos;
+		}
+		
+		clear();
+		addSegment(anchor, pos);
+	}
+	
+	
+	protected TextPos lastAnchor()
+	{
+		int ix = segments.size() - 1;
+		if(ix >= 0)
+		{
+			SelectionSegment s = segments.get(ix);
+			return s.getStart();
+		}
+		return null;
+	}
+	
+	
+	protected void reloadDecorations()
+	{
+		CList<PathElement> hs = new CList<>();
+		CList<PathElement> cs = new CList<>();
+		
+		for(SelectionSegment s: segments)
+		{
+			TextPos start = s.getStart();
+			TextPos end = s.getEnd();
+			
+			hs.addAll(createHighlightPath(start, end));
+			cs.addAll(createCaretPath(end));
+		}
+		
+		highlight.getElements().setAll(hs);
+		caret.getElements().setAll(cs);
 	}
 	
 	
@@ -164,15 +209,13 @@ public class FxEditorSelectionModel
 	}
 	
 	
-	protected CList<PathElement> createHighlightPath(SelectionSegment s)
+	protected CList<PathElement> createHighlightPath(TextPos start, TextPos end)
 	{
-		TextPos start = s.getStart();
-		TextPos end = s.getEnd();
-		
 		if(start.compareTo(end) > 0)
 		{
-			start = end;
-			end = s.getStart();
+			TextPos tp = start;
+			end = start;
+			start = tp;
 		}
 		
 		CList<PathElement> rv = new CList<>();
@@ -192,7 +235,8 @@ public class FxEditorSelectionModel
 			rv.add(new LineTo(bot.x0, top.y0));
 			rv.add(new LineTo(bot.x0, bot.y1));
 			rv.add(new LineTo(top.x0, bot.y1));
-			rv.add(new ClosePath());
+			//rv.add(new ClosePath());
+			rv.add(new LineTo(top.x0, top.y0));
 		}
 		else
 		{
@@ -203,7 +247,8 @@ public class FxEditorSelectionModel
 			rv.add(new LineTo(left(), bot.y1));
 			rv.add(new LineTo(left(), top.y1));
 			rv.add(new LineTo(top.x0, top.y1));
-			rv.add(new ClosePath());
+			//rv.add(new ClosePath());
+			rv.add(new LineTo(top.x0, top.y0));
 		}
 		
 		return rv;

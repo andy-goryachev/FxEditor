@@ -10,13 +10,13 @@ import research.fx.edit.TextPos;
 public class TextPosExt
 	extends TextPos
 {
-	public final LineBox line;
+	public final LineBox lineBox;
 	
 	
 	public TextPosExt(LineBox b, TextPos p)
 	{
 		super(p.getLine(), p.getIndex(), p.isLeading());
 		
-		line = b;
+		lineBox = b;
 	}
 }
