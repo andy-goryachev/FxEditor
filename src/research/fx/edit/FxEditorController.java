@@ -166,6 +166,7 @@ public class FxEditorController
 	
 	protected void handleMousePressed(MouseEvent ev)
 	{
+		// TODO property: multiple selection
 		TextPos pos = getTextPos(ev);
 		
 		if(ev.isShiftDown())
@@ -202,10 +203,8 @@ public class FxEditorController
 	{
 		dragging = true;
 		
-		// TODO create a segment or replace a segment
-		
-		
-		//handleMousePressed(ev);
+		TextPos pos = getTextPos(ev);
+		selection.extendLastSegment(pos);
 	}
 	
 	

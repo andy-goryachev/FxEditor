@@ -143,6 +143,23 @@ public class FxEditorSelectionModel
 	}
 	
 	
+	public void extendLastSegment(TextPos pos)
+	{
+		int ix = segments.size() - 1;
+		if(ix < 0)
+		{
+			 addSegment(pos, pos);
+		}
+		else
+		{
+			SelectionSegment s = segments.get(ix);
+			TextPos anchor = s.getStart();
+			segments.set(ix, new SelectionSegment(anchor, pos));
+			reloadDecorations();
+		}
+	}
+	
+	
 	protected TextPos lastAnchor()
 	{
 		int ix = segments.size() - 1;
@@ -210,15 +227,20 @@ public class FxEditorSelectionModel
 	
 	
 	protected CList<PathElement> createHighlightPath(TextPos start, TextPos end)
-	{
+	{		
+		CList<PathElement> rv = new CList<>();
+		
+		if((start == null) || (end == null))
+		{
+			return rv;
+		}
+		
 		if(start.compareTo(end) > 0)
 		{
 			TextPos tp = start;
 			end = start;
 			start = tp;
 		}
-		
-		CList<PathElement> rv = new CList<>();
 
 		CaretLocation top = editor.getCaretLocation(start);
 		CaretLocation bot = editor.getCaretLocation(end);
