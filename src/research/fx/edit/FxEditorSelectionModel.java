@@ -234,9 +234,9 @@ public class FxEditorSelectionModel
 		
 		if(start.compareTo(end) > 0)
 		{
-			TextPos tp = start;
-			end = start;
-			start = tp;
+			TextPos tmp = start;
+			start = end;
+			end = tmp;
 		}
 
 		CaretLocation top = editor.getCaretLocation(start);
