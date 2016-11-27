@@ -18,6 +18,12 @@ public class SelectionSegment
 	}
 	
 	
+	public String toString()
+	{
+		return "[" + start + "-" + end + "]";
+	}
+	
+	
 	public TextPos getStart()
 	{
 		return start;
@@ -34,12 +40,16 @@ public class SelectionSegment
 	{
 		if(p != null)
 		{
-			if(start.compareTo(p) >= 0)
+			int st = start.compareTo(p);
+			int en = end.compareTo(p);
+			
+			if((st >= 0) && (en <= 0))
 			{
-				if(end.compareTo(p) <= 0)
-				{
-					return true;
-				}
+				return true;
+			}
+			else if((st <= 0) && (en >= 0))
+			{
+				return true;
 			}
 		}
 		return false;

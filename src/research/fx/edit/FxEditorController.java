@@ -211,6 +211,8 @@ public class FxEditorController
 	protected void handleMouseReleased(MouseEvent ev)
 	{
 		dragging = false;
+		
+		D.print(selection); // FIX
 	}
 	
 	

@@ -10,7 +10,6 @@ import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -122,8 +121,6 @@ public class FxEditorSelectionModel
 	/** adds a new segment from start to end */
 	public void addSegment(TextPos start, TextPos end)
 	{
-		D.print(start, end); // FIX
-		
 		segments.add(new SelectionSegment(start, end));
 		highlight.getElements().addAll(createHighlightPath(start, end));
 		caret.getElements().addAll(createCaretPath(end));
@@ -274,5 +271,11 @@ public class FxEditorSelectionModel
 		}
 		
 		return rv;
+	}
+	
+	
+	public String toString()
+	{
+		return "Selection:" + segments.toString();
 	}
 }
