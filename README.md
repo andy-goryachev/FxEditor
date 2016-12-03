@@ -43,7 +43,6 @@ public class TestFxEditorWindow extends FxWindow
 		FxEditorModel m = new TestFxColorEditorModel();
 		// editor component is a Pane
 		FxEditor ed = new FxEditor(m);
-		ed.setBlinkRate(Duration.millis(600));
 		// add to layout		
 		setCenter(ed);
 	}
