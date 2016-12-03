@@ -23,7 +23,7 @@ file with a concurrent change log that enables editing of a very large files.
 
 The project is at a very early stage: less than 16% of all 
 [identified features](https://github.com/andy-goryachev/FxEditor/blob/master/Feature%20Matrix.xlsx)
-(132) is currently implemented. 
+is currently implemented. 
 
 To see how little is implemented, run 
 [TestFxEditorApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/TestFxEditorApp.java).
