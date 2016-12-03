@@ -6,4 +6,6 @@
 | :--- | --- | ---: |
 | one | Cells separated by a **pipe** (\|) character |
 | two | Headers separated by at least three hyphens |
+| three |
 
+Paragraph text.
