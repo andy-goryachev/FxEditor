@@ -18,7 +18,11 @@ The main idea which allows for all these features is separation of the editor an
 The data model then can be made as simple as a contiguous in-memory byte array, or as complex as memory-mapped 
 file with a concurrent change log that enables editing of a very large files.
 
-The project is currently at an early stage, bugs abound.
+
+## Try It Out ##
+
+The project is at a very early stage.  To see how little is implemented, run 
+[TestFxEditorApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/TestFxEditorApp.java).
 
 
 ## Similar Projects
