@@ -21,7 +21,9 @@ file with a concurrent change log that enables editing of a very large files.
 
 ## Try It Out ##
 
-The project is at a very early stage.  To see how little is implemented, run 
+The project is at a very early stage.  
+
+To see how little is implemented, run 
 [TestFxEditorApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/TestFxEditorApp.java).
 
 
@@ -31,8 +33,25 @@ Tomas Mikula's [RichTextFX](https://github.com/TomasMikula/RichTextFX)
 
 
 ## Example
-
-		TBD
+```java
+public class TestFxEditorWindow extends FxWindow
+{
+	public TestFxEditorWindow()
+	{
+		super("TestFxEditorWindow");
+		setTitle("FxEditor Demo");
+		setSize(600, 700);
+		
+		// data model
+		FxEditorModel m = new TestFxColorEditorModel();
+		// editor component is a Pane
+		FxEditor ed = new FxEditor(m);
+		ed.setBlinkRate(Duration.millis(600));
+		// add to layout		
+		setCenter(ed);
+	}
+}
+```
 
 
 ## License
