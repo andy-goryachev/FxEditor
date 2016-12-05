@@ -10,7 +10,6 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.PathElement;
 import javafx.util.Duration;
 
 
@@ -157,14 +156,6 @@ public class FxEditor
 	public TextPos getTextPos(double screenx, double screeny)
 	{
 		return layout.getTextPos(screenx, screeny);
-	}
-	
-	
-	/** returns caret shape at the specified screen coordinates */
-	@Deprecated
-	public PathElement[] getCaretShape(double screenx, double screeny)
-	{
-		return layout.getCaretShape(this, screenx, screeny);
 	}
 	
 	

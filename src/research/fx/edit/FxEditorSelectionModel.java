@@ -173,6 +173,8 @@ public class FxEditorSelectionModel
 	}
 	
 	
+	// this method can possibly be optimized to modify decorations when possible
+	// instead of re-creating them, to minimize flicker
 	protected void reloadDecorations()
 	{
 		CList<PathElement> hs = new CList<>();
