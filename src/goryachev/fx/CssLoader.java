@@ -1,5 +1,8 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.Base64;
+import goryachev.common.util.CKit;
+import goryachev.common.util.Log;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,9 +11,6 @@ import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import com.sun.javafx.css.StyleManager;
-import goryachev.common.util.Base64;
-import goryachev.common.util.CKit;
-import goryachev.common.util.Log;
 import javafx.application.Platform;
 
 
@@ -29,7 +29,7 @@ public class CssLoader
 	public static final String PREFIX = "embeddedcss";
 	private static CssLoader instance;
 	private String url;
-	private CssGenerator generator;
+	private FxStyleSheet generator;
 	
 	
 	protected CssLoader()
@@ -90,7 +90,7 @@ public class CssLoader
 	}
 	
 	
-	public static void setStyles(CssGenerator g)
+	public static void setStyles(FxStyleSheet g)
 	{
 		instance().setGenerator(g);
 	}
@@ -106,7 +106,7 @@ public class CssLoader
 	}
 	
 	
-	public void setGenerator(CssGenerator g)
+	public void setGenerator(FxStyleSheet g)
 	{
 		generator = g;
 		updateStyles();
