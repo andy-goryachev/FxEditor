@@ -4,6 +4,7 @@ import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.ScrollBar;
@@ -26,14 +27,13 @@ public class FxEditor
 	/** panel style */
 	public static final CssStyle PANEL = new CssStyle("FxEditor_PANEL");
 	
-	private ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
-	private ReadOnlyObjectWrapper<Boolean> wrap = new ReadOnlyObjectWrapper<>();
-	private ReadOnlyObjectWrapper<Boolean> singleSelection = new ReadOnlyObjectWrapper<>();
-	private ReadOnlyObjectWrapper<Duration> blinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
-	// TODO editable
+	private final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
+	private final ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
+	private final ReadOnlyObjectWrapper<Boolean> wrap = new ReadOnlyObjectWrapper<>();
+	private final ReadOnlyObjectWrapper<Boolean> singleSelection = new ReadOnlyObjectWrapper<>();
+	private final ReadOnlyObjectWrapper<Duration> blinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	// TODO multiple selection
 	// TODO caret visible
-	// TODO caret blink rate
 	// TODO line decorations/line numbers
 	private FxEditorController control = new FxEditorController(this);
 	private FxEditorLayout layout;
@@ -198,5 +198,18 @@ public class FxEditor
 	public void setBlinkRate(Duration d)
 	{
 		blinkRate.set(d);
+	}
+	
+	
+	public boolean isEditable()
+	{
+		return editable.get();
+	}
+	
+	
+	/** enables editing.  FIX not yet editable */
+	public void setEditable(boolean on)
+	{
+		editable.set(on);
 	}
 }
