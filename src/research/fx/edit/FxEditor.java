@@ -212,4 +212,10 @@ public class FxEditor
 	{
 		editable.set(on);
 	}
+
+
+	public LayoutOp newLayoutOp()
+	{
+		return new LayoutOp(layout);
+	}
 }

@@ -100,6 +100,8 @@ public class FxEditorController
 			int ix = editor.getViewStartLine();
 			int offsety = editor.getOffsetY();
 			
+			LayoutOp op = editor.newLayoutOp();
+			
 			// TODO
 			// using the current layout, add lines until scrolled up to the necessary number of pixels
 			// or the first/last line

@@ -1,0 +1,17 @@
+// Copyright © 2016 Andy Goryachev <andy@goryachev.com>
+package research.fx.edit;
+
+
+/**
+ * Layout Operation caches the existing layout and newly created row Nodes.
+ */
+public class LayoutOp
+{
+	protected final FxEditorLayout layout;
+	
+	
+	public LayoutOp(FxEditorLayout layout)
+	{
+		this.layout = layout;
+	}
+}
