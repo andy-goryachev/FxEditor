@@ -144,6 +144,11 @@ public class FxEditorSelectionModel
 	
 	public void extendLastSegment(TextPos pos)
 	{
+		if(pos == null)
+		{
+			return;
+		}
+		
 		int ix = segments.size() - 1;
 		if(ix < 0)
 		{
