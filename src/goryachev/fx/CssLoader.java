@@ -3,13 +3,13 @@ package goryachev.fx;
 import goryachev.common.util.Base64;
 import goryachev.common.util.CKit;
 import goryachev.common.util.Log;
+import goryachev.common.util.UrlStreamFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
 import com.sun.javafx.css.StyleManager;
 import javafx.application.Platform;
 
@@ -26,7 +26,7 @@ public class CssLoader
 	/** -Dcss.dump=true results in CSS being dumped to stderr */
 	public static final String DUMP_CSS_PROPERTY = "css.dump";
 	
-	public static final String PREFIX = "embeddedcss";
+	public static final String PREFIX = "embeddedCSS";
 	private static CssLoader instance;
 	private String url;
 	private FxStyleSheet generator;
@@ -36,32 +36,22 @@ public class CssLoader
 	{
 		try
 		{
-			URL.setURLStreamHandlerFactory(new URLStreamHandlerFactory()
+			UrlStreamFactory.registerHandler(PREFIX, new URLStreamHandler()
 			{
-				public URLStreamHandler createURLStreamHandler(String protocol)
+				protected URLConnection openConnection(URL url) throws IOException
 				{
-					if(PREFIX.equals(protocol))
+					return new URLConnection(url)
 					{
-						return new URLStreamHandler()
+						public void connect() throws IOException
 						{
-							protected URLConnection openConnection(URL url) throws IOException
-							{
-								return new URLConnection(url)
-								{
-									public void connect() throws IOException
-									{
-									}
-									
-									public InputStream getInputStream() throws IOException
-									{
-										byte[] b = decode(url.toString());
-										return new ByteArrayInputStream(b);
-									}
-								};
-							}
-						};
-					}
-					return null;
+						}
+						
+						public InputStream getInputStream() throws IOException
+						{
+							byte[] b = decode(url.toString());
+							return new ByteArrayInputStream(b);
+						}
+					};
 				}
 			});
 			
