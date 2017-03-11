@@ -1,4 +1,4 @@
-// Copyright © 2012-2016 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2012-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.io.InputStream;
 import javax.sound.sampled.AudioFormat;

@@ -1,4 +1,4 @@
-// Copyright © 2009-2016 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2009-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.util.Arrays;
 import java.util.Map;
@@ -8,6 +8,12 @@ import java.util.Set;
 
 public class CSystem
 {
+	public static String getUserHome()
+	{
+		return System.getProperty("user.home");
+	}
+	
+	
 	public static String getUserName()
 	{
 		return System.getProperty("user.name");

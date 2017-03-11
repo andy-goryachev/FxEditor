@@ -1,4 +1,4 @@
-// Copyright © 2016 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.beans.property.BooleanPropertyBase;
 import javafx.util.StringConverter;
@@ -20,6 +20,12 @@ public class GlobalBooleanProperty
 		this.key = key;
 		
 		GlobalProperties.add(this);
+	}
+	
+	
+	public GlobalBooleanProperty(String key)
+	{
+		this(key, false);
 	}
 
 

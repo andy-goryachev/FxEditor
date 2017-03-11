@@ -1,4 +1,4 @@
-// Copyright © 2016 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
 import goryachev.common.util.CList;
 import goryachev.common.util.D;
@@ -144,11 +144,6 @@ public class FxEditorSelectionModel
 	
 	public void extendLastSegment(TextPos pos)
 	{
-		if(pos == null)
-		{
-			return;
-		}
-		
 		int ix = segments.size() - 1;
 		if(ix < 0)
 		{

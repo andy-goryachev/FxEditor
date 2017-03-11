@@ -1,4 +1,4 @@
-// Copyright © 2011-2016 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.io;
 import java.io.Closeable;
 import java.io.IOException;
