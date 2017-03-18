@@ -196,7 +196,10 @@ public class FxEditorController
 		else
 		{
 			selection.clear();
-			selection.addSegment(pos, pos);
+			if(pos != null)
+			{
+				selection.addSegment(pos, pos);
+			}
 		}
 	}
 	
