@@ -57,6 +57,4 @@ Tomas Mikula's [RichTextFX](https://github.com/TomasMikula/RichTextFX)
 
 ## License
 
-This project and its source code is licensed under the [GNU General Public License version 3](https://www.gnu.org/licenses/gpl-3.0.en.html) and you should feel free to make adaptations of this work. Please see the included LICENSE file for further details.
-
-Please [contact me](http://goryachev.com/contact.html) if you want to acquire this library under a business-friendly license.
+This project and its source code is licensed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0) and you should feel free to make adaptations of this work. Please see the included LICENSE file for further details.
