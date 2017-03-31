@@ -6,6 +6,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
@@ -29,7 +30,13 @@ public class FxEditor
 	
 	private final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
 	private final ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
-	private final ReadOnlyObjectWrapper<Boolean> wrap = new ReadOnlyObjectWrapper<>();
+	private final ReadOnlyObjectWrapper<Boolean> wrap = new ReadOnlyObjectWrapper<Boolean>(true)
+	{
+		protected void invalidated()
+		{
+			requestLayout();
+		}
+	};
 	private final ReadOnlyObjectWrapper<Boolean> singleSelection = new ReadOnlyObjectWrapper<>();
 	private final ReadOnlyObjectWrapper<Duration> blinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	// TODO multiple selection
@@ -82,6 +89,18 @@ public class FxEditor
 	}
 	
 	
+	public boolean isWrapText()
+	{
+		return wrap.get();
+	}
+	
+	
+	public void setWrapText(boolean on)
+	{
+		wrap.set(on);
+	}
+	
+	
 	public ReadOnlyObjectProperty<FxEditorModel> modelProperty()
 	{
 		return model.getReadOnlyProperty();
@@ -98,6 +117,7 @@ public class FxEditor
 	{
 		startIndex = x;
 		requestLayout();
+		// FIX update selection
 	}
 	
 	
@@ -110,7 +130,7 @@ public class FxEditor
 		
 		double width = getWidth();
 		double height = getHeight();
-
+		
 		// position the scrollbar(s)
 		ScrollBar vscroll = control.vscroll();
 		if(vscroll.isVisible())
@@ -124,23 +144,30 @@ public class FxEditor
 		int lines = m.getLineCount();
 		FxEditorLayout la = new FxEditorLayout(startIndex, offsety);
 		
-		double y = 0;
+		Insets pad = getInsets();
+		double maxy = height - pad.getBottom();
+		double y = pad.getTop();
+		double x0 = pad.getLeft();
+		double wid = width - x0 - pad.getRight() - vscroll.getWidth(); // TODO leading, trailing components
+		boolean wrap = isWrapText();
 		
 		for(int ix=startIndex; ix<lines; ix++)
 		{
 			Region n = m.getDecoratedLine(ix);
 			n.setManaged(true);
 			
-			double w = n.prefWidth(-1);
+			// TODO wrapping
+			double w = wrap ? wid : n.prefWidth(-1);
+			n.setMaxWidth(wrap ? wid : Double.MAX_VALUE); 
 			double h = n.prefHeight(w);
 			
 			LineBox b = new LineBox(ix, n);
 			la.add(b);
 			
-			layoutInArea(n, 0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			layoutInArea(n, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			
 			y += h;
-			if(y > height)
+			if(y > maxy)
 			{
 				break;
 			}
@@ -217,5 +244,11 @@ public class FxEditor
 	public LayoutOp newLayoutOp()
 	{
 		return new LayoutOp(layout);
+	}
+
+
+	public void setCaretVisible(boolean on)
+	{
+		// TODO
 	}
 }

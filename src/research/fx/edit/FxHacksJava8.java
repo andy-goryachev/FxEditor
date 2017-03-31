@@ -47,4 +47,11 @@ public class FxHacksJava8
 		int ix = h.getCharIndex();
 		return new TextPos(line, h.getCharIndex(), h.isLeading());
 	}
+	
+	
+	public int getTextPos(TextFlow t, double x, double y)
+	{
+		HitInfo h = getTextLayout(t).getHitInfo((float)x, (float)y);
+		return h.getInsertionIndex();
+	}
 }

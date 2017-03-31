@@ -7,7 +7,6 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.shape.PathElement;
 
 
 /**
@@ -16,10 +15,12 @@ import javafx.scene.shape.PathElement;
 public class FxEditorController
 	implements FxEditorModel.Listener
 {
-	public final FxEditorSelectionModel selection;
-	protected final FxEditor editor;
+	// TODO move to editor
+	public final FxEditorSelectionShapes selection;
 	protected ScrollBar vscroll;
 	protected ScrollBar hscroll;
+	
+	protected final FxEditor editor;
 	protected boolean dragging;
 
 
@@ -27,7 +28,7 @@ public class FxEditorController
 	{
 		this.editor = ed;
 		
-		selection = new FxEditorSelectionModel(ed);
+		selection = new FxEditorSelectionShapes(ed);
 		
 		ed.getChildren().addAll(selection.highlight, vscroll(), selection.caret);
 		
@@ -51,6 +52,16 @@ public class FxEditorController
 	}
 	
 	
+	protected ScrollBar hscroll()
+	{
+		if(hscroll == null)
+		{
+			hscroll = createHScrollBar();
+		}
+		return hscroll;
+	}
+	
+	
 	protected ScrollBar createVScrollBar()
 	{
 		ScrollBar s = new ScrollBar();
@@ -58,33 +69,69 @@ public class FxEditorController
 		s.setManaged(true);
 		s.setMin(0.0);
 		s.setMax(1.0);
-		s.valueProperty().addListener((src,old,val) -> setAbsolutePosition(val.doubleValue()));
+		s.valueProperty().addListener((src,old,val) -> setVerticalAbsolutePosition(val.doubleValue()));
 		return s;
 	}
 	
 	
-	public FxEditorSelectionModel selection()
+	// TODO
+	protected ScrollBar createHScrollBar()
+	{
+		ScrollBar s = new ScrollBar();
+		s.setOrientation(Orientation.HORIZONTAL);
+		s.setManaged(true);
+		s.setMin(0.0);
+		s.setMax(1.0);
+		//s.valueProperty().addListener((src,old,val) -> setHAbsolutePosition(val.doubleValue()));
+		return s;
+	}
+	
+	
+	public FxEditorSelectionShapes selection()
 	{
 		return selection;
+	}
+	
+	
+	public void eventAllChanged()
+	{
+		selection.clear();
+		editor.requestLayout();
+		
+		if(vscroll != null)
+		{
+			vscroll.setValue(0);
+		}
+		
+		if(hscroll != null)
+		{
+			hscroll.setValue(0);
+		}
 	}
 
 
 	public void eventLinesDeleted(int start, int count)
 	{
+		// FIX
+		D.print(start, count);
 	}
 
 
 	public void eventLinesInserted(int start, int count)
 	{
+		// FIX
+		D.print(start, count);
 	}
 
 
 	public void eventLinesModified(int start, int count)
 	{
+		// FIX
+		D.print(start, count);
 	}
 	
 	
-	public void setAbsolutePosition(double pos)
+	public void setVerticalAbsolutePosition(double pos)
 	{
 		// TODO account for visible line count
 		int start = FX.round(editor.getModel().getLineCount() * pos);
@@ -168,6 +215,12 @@ public class FxEditorController
 	
 	protected void handleMousePressed(MouseEvent ev)
 	{
+		// on scrollbar
+		if(ev.getX() >= vscroll().getLayoutX())
+		{
+			return;
+		}
+			
 		// TODO property: multiple selection
 		TextPos pos = getTextPos(ev);
 		
@@ -206,6 +259,12 @@ public class FxEditorController
 	
 	protected void handleMouseDragged(MouseEvent ev)
 	{
+		// on scrollbar
+		if(ev.getX() >= vscroll().getLayoutX())
+		{
+			return;
+		}
+		
 		dragging = true;
 		
 		TextPos pos = getTextPos(ev);
@@ -215,6 +274,12 @@ public class FxEditorController
 	
 	protected void handleMouseReleased(MouseEvent ev)
 	{
+		// on scrollbar
+		if(ev.getX() >= vscroll().getLayoutX())
+		{
+			return;
+		}
+		
 		dragging = false;
 		
 		D.print(selection); // FIX

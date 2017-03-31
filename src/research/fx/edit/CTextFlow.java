@@ -1,7 +1,9 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
+import goryachev.common.util.SB;
 import javafx.scene.Node;
 import javafx.scene.shape.PathElement;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 
@@ -38,5 +40,19 @@ public class CTextFlow
 	public TextPos getTextPos(int line, double x, double y)
 	{
 		return FxHacks.get().getTextPos(this, line, x, y);
+	}
+	
+	
+	public String getText()
+	{
+		SB sb = new SB();
+		for(Node n: getChildrenUnmodifiable())
+		{
+			if(n instanceof Text)
+			{
+				sb.append(((Text)n).getText());
+			}
+		}
+		return sb.toString();
 	}
 }

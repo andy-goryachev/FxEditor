@@ -20,7 +20,7 @@ import javafx.util.Duration;
 /**
  * FxEditor Selection and Caret Model.
  */
-public class FxEditorSelectionModel
+public class FxEditorSelectionShapes
 {
 	protected final FxEditor editor;
 	protected final Timeline caretTimeline;
@@ -30,7 +30,7 @@ public class FxEditorSelectionModel
 	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
 	
 	
-	public FxEditorSelectionModel(FxEditor ed)
+	public FxEditorSelectionShapes(FxEditor ed)
 	{
 		this.editor = ed;
 		

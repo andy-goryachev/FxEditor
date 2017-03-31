@@ -1,16 +1,19 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
 import goryachev.common.util.CList;
+import java.util.function.Consumer;
 import javafx.scene.layout.Region;
 
 
 /**
- * FxEditor Model.
+ * FxEditor Model Base Class.
  */
 public abstract class FxEditorModel
 {
 	public interface Listener
 	{
+		public void eventAllChanged();
+		
 		public void eventLinesDeleted(int start, int count);
 		
 		public void eventLinesInserted(int start, int count);
@@ -98,5 +101,20 @@ public abstract class FxEditorModel
 			};
 		}
 		return empty;
+	}
+	
+	
+	public void fireAllChanged()
+	{
+		fireEvent((li) -> li.eventAllChanged());
+	}
+	
+	
+	protected void fireEvent(Consumer<Listener> f)
+	{
+		for(Listener li: listeners)
+		{
+			f.accept(li);
+		}
 	}
 }

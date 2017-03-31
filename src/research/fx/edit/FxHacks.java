@@ -22,6 +22,9 @@ public abstract class FxHacks
 	/** returns the text position at the specified local coordinates */
 	public abstract TextPos getTextPos(TextFlow t, int line, double x, double y);
 	
+	/** returns the text position at the specified local coordinates */
+	public abstract int getTextPos(TextFlow t, double x, double y);
+	
 	//
 	
 	private static FxHacks instance;
