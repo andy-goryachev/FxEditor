@@ -98,14 +98,14 @@ public class TestTextFlowApp
 		protected void handleMouseEvent(CTextFlow t, MouseEvent ev)
 		{
 			Point2D p = t.screenToLocal(ev.getScreenX(), ev.getScreenY());
-			TextPos pos = t.getTextPos(0, p.getX(), p.getY());
+			CHitInfo h = t.getHit(p.getX(), p.getY());
 			
-			highlight.getElements().setAll(t.getRange(0, pos.getInsertionIndex()));
+			highlight.getElements().setAll(t.getRange(0, h.getInsertionIndex()));
 			
-			caret.getElements().setAll(t.getCaretShape(pos.getIndex(), pos.isLeading()));
+			caret.getElements().setAll(t.getCaretShape(h.getIndex(), h.isLeading()));
 				
 			SB sb = new SB();
-			sb.a(pos);
+			sb.a(h);
 			
 			info.setText(sb.toString());
 		}

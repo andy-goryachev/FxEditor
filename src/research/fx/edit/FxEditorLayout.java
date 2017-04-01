@@ -4,10 +4,11 @@ import goryachev.common.util.CList;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.PathElement;
 import research.fx.edit.internal.CaretLocation;
-import research.fx.edit.internal.TextPosExt;
+import research.fx.edit.internal.Markers;
 
 
 /**
@@ -15,24 +16,30 @@ import research.fx.edit.internal.TextPosExt;
  */
 public class FxEditorLayout
 {
-	private int offsety;
-	private int startLine;
-	private CList<LineBox> lines = new CList<>();
+	private final int offsety;
+	private final int topLine;
+	private final CList<LineBox> lines = new CList<>();
 	
 
-	public FxEditorLayout(int startLine, int offsety)
+	public FxEditorLayout(int topLine, int offsety)
 	{
-		this.startLine = startLine;
+		this.topLine = topLine;
 		this.offsety = offsety;
 	}
 	
 	
-	/** returns text position at the screen coordinates, or null */
-	public TextPosExt getTextPos(double screenx, double screeny)
+	public CList<LineBox> lines()
 	{
-		for(LineBox b: lines)
+		return lines;
+	}
+	
+	
+	/** returns text position at the screen coordinates, or null */
+	public Marker getTextPos(double screenx, double screeny, Markers markers)
+	{
+		for(LineBox line: lines)
 		{
-			Region box = b.box;
+			Region box = line.getBox();
 			Point2D p = box.screenToLocal(screenx, screeny);
 			double y = p.getY();
 			
@@ -42,10 +49,10 @@ public class FxEditorLayout
 				{
 					if(box instanceof CTextFlow)
 					{
-						TextPos pos = ((CTextFlow)box).getTextPos(b.line, p.getX(), y);
-						if(pos != null)
+						CHitInfo hit = ((CTextFlow)box).getHit(p.getX(), y);
+						if(hit != null)
 						{
-							return new TextPosExt(b, pos);
+							return markers.newMarker(line.getLineNumber(), hit.getIndex(), hit.isLeading());
 						}
 					}
 				}
@@ -61,7 +68,7 @@ public class FxEditorLayout
 	
 	public LineBox getLineBox(int line)
 	{
-		line -= startLine;
+		line -= topLine;
 		if((line >= 0) && (line < lines.size()))
 		{
 			return lines.get(line);
@@ -70,38 +77,17 @@ public class FxEditorLayout
 	}
 	
 	
-	/** returns caret shape at the screen coordinates, or null */
-	@Deprecated
-	public PathElement[] getCaretShape(Region parent, double screenx, double screeny)
-	{
-		TextPosExt pos = getTextPos(screenx, screeny);
-		if(pos != null)
-		{
-			Region box = pos.lineBox.box;
-			if(box instanceof CTextFlow)
-			{
-				PathElement[] es = ((CTextFlow)box).getCaretShape(pos.getIndex(), pos.isLeading());
-				if(es != null)
-				{
-					return EditorTools.translate(parent, box, es);
-				}
-			}
-		}
-		return null;
-	}
-	
-	
-	public CaretLocation getCaretLocation(Region parent, TextPos pos)
+	public CaretLocation getCaretLocation(Region parent, Marker pos)
 	{
 		if(pos != null)
 		{
 			LineBox b = getLineBox(pos.getLine());
 			if(b != null)
 			{
-				Region box = b.box;
+				Region box = b.getBox();
 				if(box instanceof CTextFlow)
 				{
-					PathElement[] es = ((CTextFlow)box).getCaretShape(pos.getIndex(), pos.isLeading());
+					PathElement[] es = ((CTextFlow)box).getCaretShape(pos.getLineOffset(), pos.isLeading());
 					if(es != null)
 					{
 						return EditorTools.translateCaretLocation(parent, box, es);
@@ -112,33 +98,25 @@ public class FxEditorLayout
 		return null;
 	}
 	
-	
-	public void addTo(ObservableList<Node> cs)
-	{
-		for(LineBox b: lines)
-		{
-			cs.add(b.box);
-		}
-	}
 
-
-	public void removeFrom(ObservableList<Node> cs)
-	{
-		for(LineBox b: lines)
-		{
-			cs.remove(b.box);
-		}
-	}
-
-
-	public void add(LineBox b)
+	protected void addLineBox(LineBox b)
 	{
 		lines.add(b);
+	}
+	
+	
+	public void removeFrom(Pane p)
+	{
+		ObservableList<Node> cs = p.getChildren();
+		for(LineBox b: lines)
+		{
+			cs.remove(b.getBox());
+		}
 	}
 
 
 	public int startLine()
 	{
-		return startLine;
+		return topLine;
 	}
 }

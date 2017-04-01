@@ -59,7 +59,7 @@ public class FxEditorController
 	}
 	
 	
-	protected TextPos getTextPos(MouseEvent ev)
+	protected Marker getTextPos(MouseEvent ev)
 	{
 		double x = ev.getScreenX();
 		double y = ev.getScreenY();
@@ -76,7 +76,8 @@ public class FxEditorController
 		}
 			
 		// TODO property: multiple selection
-		TextPos pos = getTextPos(ev);
+		Marker pos = getTextPos(ev);
+		FxEditorSelectionModel sel = editor.getSelectionModel();
 		
 		if(ev.isShiftDown())
 		{
@@ -84,20 +85,20 @@ public class FxEditorController
 			
 			// expand selection from the anchor point to the current position
 			// clearing existing (possibly multiple) selection
-			editor.clearAndExtendLastSegment(pos);
+			sel.clearAndExtendLastSegment(pos);
 		}
 		else if(ev.isShortcutDown())
 		{
-			if(editor.isInsideSelection(pos))
+			if(sel.isInsideSelection(pos))
 			{
 				// replace selection with a single caret
-				editor.clearSelection();
-				editor.addSelectionSegment(pos, pos);
+				sel.clear();
+				sel.addSelectionSegment(pos, pos);
 			}
 			else
 			{
 				// FIX add a new caret
-				editor.addSelectionSegment(pos, pos);
+				sel.addSelectionSegment(pos, pos);
 			}
 		}
 		else
@@ -105,7 +106,7 @@ public class FxEditorController
 			editor.clearSelection();
 			if(pos != null)
 			{
-				editor.addSelectionSegment(pos, pos);
+				sel.addSelectionSegment(pos, pos);
 			}
 		}
 	}
@@ -121,8 +122,8 @@ public class FxEditorController
 		
 		dragging = true;
 		
-		TextPos pos = getTextPos(ev);
-		editor.extendLastSegment(pos);
+		Marker pos = getTextPos(ev);
+		editor.getSelectionModel().extendLastSegment(pos);
 	}
 	
 	
@@ -135,6 +136,8 @@ public class FxEditorController
 		}
 		
 		dragging = false;
+		
+		// TODO optimize selection: combine overlapping segments
 	}
 	
 	

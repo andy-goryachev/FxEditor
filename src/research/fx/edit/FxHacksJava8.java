@@ -41,11 +41,11 @@ public class FxHacksJava8
 	}
 	
 	
-	public TextPos getTextPos(TextFlow t, int line, double x, double y)
+	public CHitInfo getHit(TextFlow t, double x, double y)
 	{
 		HitInfo h = getTextLayout(t).getHitInfo((float)x, (float)y);
 		int ix = h.getCharIndex();
-		return new TextPos(line, h.getCharIndex(), h.isLeading());
+		return new CHitInfo(h.getCharIndex(), h.isLeading());
 	}
 	
 	

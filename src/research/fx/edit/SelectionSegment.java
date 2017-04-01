@@ -9,11 +9,11 @@ import goryachev.common.util.FH;
  */
 public class SelectionSegment
 {
-	protected final TextPos start;
-	protected final TextPos end;
+	protected final Marker start;
+	protected final Marker end;
 	
 	
-	public SelectionSegment(TextPos start, TextPos end)
+	public SelectionSegment(Marker start, Marker end)
 	{
 		Assert.notNull(start, "start");
 		Assert.notNull(end, "end");
@@ -29,19 +29,19 @@ public class SelectionSegment
 	}
 	
 	
-	public TextPos getStart()
+	public Marker getStart()
 	{
 		return start;
 	}
 	
 	
-	public TextPos getEnd()
+	public Marker getEnd()
 	{
 		return end;
 	}
 
 
-	public boolean contains(TextPos p)
+	public boolean contains(Marker p)
 	{
 		if(p != null)
 		{

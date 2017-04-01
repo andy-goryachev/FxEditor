@@ -8,11 +8,10 @@ import goryachev.fx.FxInvalidationListener;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -62,7 +61,6 @@ public class FxEditor
 		}
 	};
 	protected final ReadOnlyObjectWrapper<Boolean> singleSelection = new ReadOnlyObjectWrapper<>();
-	protected final ReadOnlyObjectWrapper<Duration> blinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	// TODO multiple selection
 	// TODO caret visible
 	// TODO line decorations/line numbers
@@ -76,12 +74,11 @@ public class FxEditor
 	protected Markers markers = new Markers(32);
 	protected ScrollBar vscroll;
 	protected ScrollBar hscroll;
+	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	protected final Timeline caretAnimation;
 	protected final Path caretPath;
 	protected final Path selectionHighlight;
-	/** multiple selection segments: the end position corresponds to the caret */ 
-	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
-
+	protected final FxEditorSelectionModel selection;
 
 	
 	public FxEditor()
@@ -93,7 +90,7 @@ public class FxEditor
 	public FxEditor(FxEditorModel m)
 	{
 		setFocusTraversable(true);
-		setModel(m);
+		setTextModel(m);
 		FX.style(this, PANEL);
 		setBackground(FX.background(Color.WHITE));
 		
@@ -114,7 +111,17 @@ public class FxEditor
 		
 		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
 		
+		selection = createSelectionModel();
+		selection.getChildrenUnmodifiable().addListener((Observable src) -> requestLayout());
+		
 		initController();
+	}
+	
+	
+	/** override to provide your own selection model */
+	protected FxEditorSelectionModel createSelectionModel()
+	{
+		return new FxEditorSelectionModel();
 	}
 	
 	
@@ -133,9 +140,17 @@ public class FxEditor
 	}
 	
 	
-	public void setModel(FxEditorModel m)
+	public FxEditorSelectionModel getSelectionModel()
 	{
-		FxEditorModel old = getModel();
+		return selection;
+	}
+	
+	
+	public void setTextModel(FxEditorModel m)
+	{
+		markers.clear();
+		
+		FxEditorModel old = getTextModel();
 		if(old != null)
 		{
 			old.removeListener(this);
@@ -152,7 +167,7 @@ public class FxEditor
 	}
 	
 	
-	public FxEditorModel getModel()
+	public FxEditorModel getTextModel()
 	{
 		return model.get();
 	}
@@ -206,7 +221,7 @@ public class FxEditor
 	protected void setVerticalAbsolutePosition(double pos)
 	{
 		// TODO account for visible line count
-		int start = FX.round(getModel().getLineCount() * pos);
+		int start = FX.round(getTextModel().getLineCount() * pos);
 		setTopLineIndex(start);
 	}
 	
@@ -257,25 +272,25 @@ public class FxEditor
 	}
 	
 	
-	protected void layoutChildren()
-	{
-		layout = updateLayout(layout);
-	}
-	
-	
 	protected void setTopLineIndex(int x)
 	{
 		topLineIndex = x;
 		requestLayout();
-		// FIX update selection
 	}
 	
 	
-	protected FxEditorLayout updateLayout(FxEditorLayout prev)
+	protected void layoutChildren()
+	{
+		layout = createLayout(layout);
+		reloadSelectionDecorations();
+	}
+	
+	
+	protected FxEditorLayout createLayout(FxEditorLayout prev)
 	{
 		if(prev != null)
 		{
-			prev.removeFrom(getChildren());
+			prev.removeFrom(this);
 		}
 		
 		double width = getWidth();
@@ -290,7 +305,7 @@ public class FxEditor
 		}
 		
 		// TODO is loaded?
-		FxEditorModel m = getModel();
+		FxEditorModel m = getTextModel();
 		int lines = m.getLineCount();
 		FxEditorLayout la = new FxEditorLayout(topLineIndex, offsety);
 		
@@ -304,6 +319,8 @@ public class FxEditor
 		for(int ix=topLineIndex; ix<lines; ix++)
 		{
 			Region n = m.getDecoratedLine(ix);
+			getChildren().add(n);
+			n.applyCss();
 			n.setManaged(true);
 			
 			double w = wrap ? wid : n.prefWidth(-1);
@@ -311,7 +328,7 @@ public class FxEditor
 			double h = n.prefHeight(w);
 			
 			LineBox b = new LineBox(ix, n);
-			la.add(b);
+			la.addLineBox(b);
 			
 			layoutInArea(n, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			
@@ -322,20 +339,18 @@ public class FxEditor
 			}
 		}
 		
-		la.addTo(getChildren());
-		
 		return la;
 	}
 	
 	
 	/** returns text position at the specified screen coordinates */
-	public TextPos getTextPos(double screenx, double screeny)
+	public Marker getTextPos(double screenx, double screeny)
 	{
-		return layout.getTextPos(screenx, screeny);
+		return layout.getTextPos(screenx, screeny, markers);
 	}
 	
 	
-	protected CaretLocation getCaretLocation(TextPos pos)
+	protected CaretLocation getCaretLocation(Marker pos)
 	{
 		return layout.getCaretLocation(this, pos);
 	}
@@ -361,19 +376,19 @@ public class FxEditor
 	
 	public ReadOnlyObjectProperty<Duration> blinkRateProperty()
 	{
-		return blinkRate.getReadOnlyProperty();
+		return caretBlinkRate.getReadOnlyProperty();
 	}
 	
 	
 	public Duration getBlinkRate()
 	{
-		return blinkRate.get();
+		return caretBlinkRate.get();
 	}
 	
 	
 	public void setBlinkRate(Duration d)
 	{
-		blinkRate.set(d);
+		caretBlinkRate.set(d);
 	}
 	
 	
@@ -435,7 +450,7 @@ public class FxEditor
 	}
 	
 	
-	
+	// TODO stop blinking when dragging
 	protected void updateBlinkRate(Duration d)
 	{
 		Duration period = d.multiply(2);
@@ -453,13 +468,10 @@ public class FxEditor
 	
 	public void clearSelection()
 	{
-		caretPath.getElements().clear();
-		selectionHighlight.getElements().clear();
-		segments.clear();
+		selection.clear();
 	}
 
 	
-	// FIX setCaretEnabled
 	public void setCaretVisible(boolean on)
 	{
 		// FIX property
@@ -476,90 +488,15 @@ public class FxEditor
 	}
 
 	
-	protected boolean isInsideSelection(TextPos pos)
-	{
-		for(SelectionSegment s: segments)
-		{
-			if(s.contains(pos))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
-
-	/** adds a new segment from start to end */
-	protected void addSelectionSegment(TextPos start, TextPos end)
-	{
-		segments.add(new SelectionSegment(start, end));
-		selectionHighlight.getElements().addAll(createHighlightPath(start, end));
-		caretPath.getElements().addAll(createCaretPath(end));
-		
-		// TODO combine overlapping segments
-	}
-	
-	
-	protected void clearAndExtendLastSegment(TextPos pos)
-	{
-		TextPos anchor = lastAnchor();
-		if(anchor == null)
-		{
-			anchor = pos;
-		}
-		
-		clearSelection();
-		addSelectionSegment(anchor, pos);
-	}
-	
-	
-	protected void extendLastSegment(TextPos pos)
-	{
-		if(pos == null)
-		{
-			return;
-		}
-		
-		int ix = segments.size() - 1;
-		if(ix < 0)
-		{
-			 addSelectionSegment(pos, pos);
-		}
-		else
-		{
-			SelectionSegment s = segments.get(ix);
-			TextPos anchor = s.getStart();
-			segments.set(ix, new SelectionSegment(anchor, pos));
-			
-			// TODO combine overlapping segments
-			reloadDecorations();
-		}
-	}
-	
-	
-	protected TextPos lastAnchor()
-	{
-		int ix = segments.size() - 1;
-		if(ix >= 0)
-		{
-			SelectionSegment s = segments.get(ix);
-			return s.getStart();
-		}
-		return null;
-	}
-	
-	
-	// this method can possibly be optimized to modify decorations when possible
-	// instead of re-creating them, to minimize flicker
-	protected void reloadDecorations()
+	protected void reloadSelectionDecorations()
 	{
 		CList<PathElement> hs = new CList<>();
 		CList<PathElement> cs = new CList<>();
 		
-		for(SelectionSegment s: segments)
+		for(SelectionSegment s: selection.getChildrenUnmodifiable())
 		{
-			TextPos start = s.getStart();
-			TextPos end = s.getEnd();
+			Marker start = s.getStart();
+			Marker end = s.getEnd();
 			
 			hs.addAll(createHighlightPath(start, end));
 			cs.addAll(createCaretPath(end));
@@ -570,7 +507,7 @@ public class FxEditor
 	}
 	
 	
-	protected CList<PathElement> createCaretPath(TextPos p)
+	protected CList<PathElement> createCaretPath(Marker p)
 	{
 		CList<PathElement> rv = new CList<>();
 		CaretLocation c = getCaretLocation(p);
@@ -584,7 +521,7 @@ public class FxEditor
 	}
 	
 	
-	protected CList<PathElement> createHighlightPath(TextPos start, TextPos end)
+	protected CList<PathElement> createHighlightPath(Marker start, Marker end)
 	{		
 		CList<PathElement> rv = new CList<>();
 		
@@ -595,7 +532,7 @@ public class FxEditor
 		
 		if(start.compareTo(end) > 0)
 		{
-			TextPos tmp = start;
+			Marker tmp = start;
 			start = end;
 			end = tmp;
 		}

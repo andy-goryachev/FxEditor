@@ -91,4 +91,10 @@ public class WeakList<T>
 	{
 		list.remove(ix);
 	}
+	
+	
+	public void clear()
+	{
+		list.clear();
+	}
 }

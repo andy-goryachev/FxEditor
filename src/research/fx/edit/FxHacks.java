@@ -19,8 +19,8 @@ public abstract class FxHacks
 	/** returns the shape of the text selection */
 	public abstract PathElement[] getRange(TextFlow t, int start, int end);
 	
-	/** returns the text position at the specified local coordinates */
-	public abstract TextPos getTextPos(TextFlow t, int line, double x, double y);
+	/** returns the hit info at the specified local coordinates */
+	public abstract CHitInfo getHit(TextFlow t, double x, double y);
 	
 	/** returns the text position at the specified local coordinates */
 	public abstract int getTextPos(TextFlow t, double x, double y);

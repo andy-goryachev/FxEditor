@@ -4,19 +4,31 @@ import javafx.scene.layout.Region;
 
 
 /**
- * Represents a box enclosing a single line of source text.
+ * Represents a box enclosing a single line of text.
  */
 public class LineBox
 {
-	public final int line;
-	public final Region box;
-	public boolean invalid;
-	// TODO line numbers
+	private final int line;
+	private final Region box;
+	// TODO leading component
+	// TODO trailing component
 	
 	
 	public LineBox(int line, Region box)
 	{
 		this.line = line;
 		this.box = box;
+	}
+
+
+	public Region getBox()
+	{
+		return box;
+	}
+	
+	
+	public int getLineNumber()
+	{
+		return line;
 	}
 }

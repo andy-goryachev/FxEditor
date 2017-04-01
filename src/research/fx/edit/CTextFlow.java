@@ -36,10 +36,10 @@ public class CTextFlow
 	}
 
 
-	/** returns text position at the specified local coordinates */
-	public TextPos getTextPos(int line, double x, double y)
+	/** returns hit info at the specified local coordinates */
+	public CHitInfo getHit(double x, double y)
 	{
-		return FxHacks.get().getTextPos(this, line, x, y);
+		return FxHacks.get().getHit(this, x, y);
 	}
 	
 	
