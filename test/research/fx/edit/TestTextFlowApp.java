@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 
 
 /**
- * Test CTextFlow app
+ * Test app
  */
 public class TestTextFlowApp
 	extends Application
@@ -99,9 +99,9 @@ public class TestTextFlowApp
 		{
 			Point2D p = t.screenToLocal(ev.getScreenX(), ev.getScreenY());
 			CHitInfo h = t.getHit(p.getX(), p.getY());
-			
+
+			// NOTE: this test code does not handle text resizing
 			highlight.getElements().setAll(t.getRange(0, h.getInsertionIndex()));
-			
 			caret.getElements().setAll(t.getCaretShape(h.getIndex(), h.isLeading()));
 				
 			SB sb = new SB();

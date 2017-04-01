@@ -28,6 +28,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.util.Duration;
+import research.fx.Binder;
 import research.fx.edit.internal.CaretLocation;
 import research.fx.edit.internal.FxEditorTools;
 import research.fx.edit.internal.Markers;
@@ -113,6 +114,7 @@ public class FxEditor
 		
 		selection = createSelectionModel();
 		selection.getChildrenUnmodifiable().addListener((Observable src) -> requestLayout());
+		Binder.onChange(this::requestLayout, widthProperty(), heightProperty());
 		
 		initController();
 	}

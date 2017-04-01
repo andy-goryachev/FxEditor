@@ -15,7 +15,12 @@ public class CHitInfo
 	{
 		this.index = index;
 		this.leading = leading;
-
+	}
+	
+	
+	public String toString()
+	{
+		return index + (leading ? ".L" : ".T");
 	}
 
 
