@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.PathElement;
+import research.fx.edit.internal.CaretLocation;
 import research.fx.edit.internal.TextPosExt;
 
 

@@ -10,19 +10,6 @@ import javafx.scene.layout.Region;
  */
 public abstract class FxEditorModel
 {
-	public interface Listener
-	{
-		public void eventAllChanged();
-		
-		public void eventLinesDeleted(int start, int count);
-		
-		public void eventLinesInserted(int start, int count);
-		
-		public void eventLinesModified(int start, int count);
-	}
-	
-	//
-	
 	public static class LoadInfo
 	{
 		public final double progress;
@@ -63,7 +50,7 @@ public abstract class FxEditorModel
 	
 	//
 
-	private CList<Listener> listeners = new CList<>();
+	private CList<FxEditor> listeners = new CList<>();
 	private static FxEditorModel empty;
 	
 	
@@ -72,13 +59,13 @@ public abstract class FxEditorModel
 	}
 	
 	
-	public void addListener(Listener li)
+	public void addListener(FxEditor li)
 	{
 		listeners.add(li);
 	}
 	
 	
-	public void removeListener(Listener li)
+	public void removeListener(FxEditor li)
 	{
 		listeners.remove(li);
 	}
@@ -110,9 +97,9 @@ public abstract class FxEditorModel
 	}
 	
 	
-	protected void fireEvent(Consumer<Listener> f)
+	protected void fireEvent(Consumer<FxEditor> f)
 	{
-		for(Listener li: listeners)
+		for(FxEditor li: listeners)
 		{
 			f.accept(li);
 		}

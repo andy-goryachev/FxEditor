@@ -6,6 +6,7 @@ import goryachev.common.util.FH;
 /**
  * Text Position.
  */
+@Deprecated // TODO replace with Marker
 public class TextPos
 	implements Comparable<TextPos>
 {
