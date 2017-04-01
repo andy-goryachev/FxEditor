@@ -13,6 +13,7 @@ public class FxEditorController
 {
 	protected final FxEditor editor;
 	protected boolean dragging;
+	protected boolean draggingScroll;
 
 
 	public FxEditorController(FxEditor ed)
@@ -26,7 +27,14 @@ public class FxEditorController
 		// TODO
 	}
 
-
+	
+	protected void handleScroll(ScrollEvent ev)
+	{
+		// TODO mouse wheel scroll
+		D.print(ev);
+	}
+	
+	
 	protected void handleKeyPressed(KeyEvent ev)
 	{
 		switch(ev.getCode())
@@ -114,9 +122,16 @@ public class FxEditorController
 	
 	protected void handleMouseDragged(MouseEvent ev)
 	{
+		if(draggingScroll)
+		{
+			return;
+		}
+		
 		// on scrollbar
 		if(ev.getX() >= editor.vscroll().getLayoutX())
 		{
+			dragging = false;
+			draggingScroll = true;
 			return;
 		}
 		
@@ -136,14 +151,8 @@ public class FxEditorController
 		}
 		
 		dragging = false;
+		draggingScroll = false;
 		
 		// TODO optimize selection: combine overlapping segments
-	}
-	
-	
-	protected void handleScroll(ScrollEvent ev)
-	{
-		// TODO mouse wheel scroll
-		D.print(ev);
 	}
 }

@@ -1,6 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package research.fx.edit;
-import goryachev.common.util.D;
+package research.fx.edit.internal;
 import goryachev.fx.FxSize;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -12,7 +11,6 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.Text;
-import research.fx.edit.internal.CaretLocation;
 
 
 /**
@@ -22,40 +20,6 @@ public class EditorTools
 {
 	private static Text helper = new Text();
 
-	
-	@Deprecated
-	public static PathElement[] translate(Region target, Node src, PathElement[] es)
-	{
-		Point2D p = src.localToScreen(0, 0);
-		p = target.screenToLocal(p);
-		double dx = p.getX();
-		double dy = p.getY();
-		
-		int sz = es.length;
-		PathElement[] rv = new PathElement[sz];
-		
-		for(int i=0; i<sz; i++)
-		{
-			PathElement em = es[i];
-			if(em instanceof LineTo)
-			{
-				LineTo m = (LineTo)em;
-				rv[i] = new LineTo(halfPixel(m.getX() + dx), halfPixel(m.getY() + dy));
-			}
-			else if(em instanceof MoveTo)
-			{
-				MoveTo m = (MoveTo)em;
-				rv[i] = new MoveTo(halfPixel(m.getX() + dx), halfPixel(m.getY() + dy));
-			}
-			else
-			{
-				D.print(em); // FIX
-			}
-		}
-		
-		return rv;
-	}
-	
 	
 	public static CaretLocation translateCaretLocation(Region target, Node src, PathElement[] es)
 	{
@@ -84,19 +48,15 @@ public class EditorTools
 				x = halfPixel(m.getX() + dx);
 				y1 = halfPixel(m.getY() + dy);
 			}
-			else
-			{
-				D.print(em); // FIX
-			}
 		}
 		
 		if(y0 > y1)
 		{
-			return new CaretLocation(x, x, y1, y0);
+			return new CaretLocation(x, y1, y0);
 		}
 		else
 		{
-			return new CaretLocation(x, x, y0, y1);
+			return new CaretLocation(x, y0, y1);
 		}
 	}
 	
@@ -138,5 +98,12 @@ public class EditorTools
 		double h = Math.ceil(r.getHeight() + m.getTop() + m.getBottom());
 		
 		return new FxSize(w, h);
+	}
+	
+	
+	public static boolean isNearlySame(double a, double b)
+	{
+		// in case for some reason floating point computation result is slightly off
+		return Math.abs(a - b) < 0.01;
 	}
 }
