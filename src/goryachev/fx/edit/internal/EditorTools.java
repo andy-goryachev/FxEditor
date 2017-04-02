@@ -1,5 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package research.fx.edit.internal;
+package goryachev.fx.edit.internal;
 import goryachev.fx.FxSize;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;

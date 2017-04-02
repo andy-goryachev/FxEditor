@@ -1,5 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package research.fx.edit;
+package goryachev.fx.edit;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;

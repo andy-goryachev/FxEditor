@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package research.fx;
+package goryachev.fx;
 import java.lang.ref.WeakReference;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;

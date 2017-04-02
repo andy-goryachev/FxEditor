@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package research.fx.edit;
+package goryachev.fx.edit;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

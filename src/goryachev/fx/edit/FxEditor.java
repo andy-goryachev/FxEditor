@@ -1,8 +1,12 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package research.fx.edit;
+package goryachev.fx.edit;
 import goryachev.common.util.D;
+import goryachev.fx.Binder;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
+import goryachev.fx.edit.internal.CaretLocation;
+import goryachev.fx.edit.internal.EditorTools;
+import goryachev.fx.edit.internal.Markers;
 import goryachev.fx.util.CPathBuilder;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -25,10 +29,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.util.Duration;
-import research.fx.Binder;
-import research.fx.edit.internal.CaretLocation;
-import research.fx.edit.internal.EditorTools;
-import research.fx.edit.internal.Markers;
 
 
 /**

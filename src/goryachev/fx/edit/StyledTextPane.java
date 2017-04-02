@@ -1,5 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package research.fx.edit;
+package goryachev.fx.edit;
 import goryachev.common.util.CList;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;

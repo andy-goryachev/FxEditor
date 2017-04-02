@@ -1,5 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package research.fx.edit;
+package goryachev.fx.edit;
 import goryachev.common.util.CList;
 import java.util.function.Consumer;
 import javafx.scene.layout.Region;

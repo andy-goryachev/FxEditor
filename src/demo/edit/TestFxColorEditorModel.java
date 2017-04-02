@@ -2,14 +2,13 @@
 package demo.edit;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
+import goryachev.fx.edit.CTextFlow;
+import goryachev.fx.edit.FxEditorModel.LoadInfo;
+import goryachev.fx.edit.FxPlainEditorModel;
 import java.text.NumberFormat;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import research.fx.edit.CTextFlow;
-import research.fx.edit.FxEditorModel;
-import research.fx.edit.FxPlainEditorModel;
-import research.fx.edit.FxEditorModel.LoadInfo;
 
 
 /**

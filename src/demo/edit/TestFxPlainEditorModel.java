@@ -1,10 +1,11 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
 import goryachev.common.util.SB;
+import goryachev.fx.edit.CTextFlow;
+import goryachev.fx.edit.FxEditorModel.LoadInfo;
+import goryachev.fx.edit.FxPlainEditorModel;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
-import research.fx.edit.CTextFlow;
-import research.fx.edit.FxPlainEditorModel;
 
 
 /**

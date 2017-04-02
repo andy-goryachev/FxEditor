@@ -5,6 +5,8 @@ import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
 import goryachev.common.util.SB;
 import goryachev.fx.FxWindow;
+import goryachev.fx.edit.CHitInfo;
+import goryachev.fx.edit.CTextFlow;
 import java.io.File;
 import javafx.application.Application;
 import javafx.geometry.Point2D;

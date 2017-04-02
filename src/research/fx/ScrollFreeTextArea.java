@@ -1,10 +1,10 @@
 package research.fx;
 import goryachev.fx.FxSize;
+import goryachev.fx.edit.internal.EditorTools;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import research.fx.edit.internal.EditorTools;
 
 
 // http://stackoverflow.com/questions/15593287/binding-textarea-height-to-its-content/19717901#19717901

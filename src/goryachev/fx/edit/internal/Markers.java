@@ -1,7 +1,7 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package research.fx.edit.internal;
+package goryachev.fx.edit.internal;
 import goryachev.common.util.WeakList;
-import research.fx.edit.Marker;
+import goryachev.fx.edit.Marker;
 
 
 /**

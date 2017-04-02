@@ -5,12 +5,12 @@ import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
+import goryachev.fx.edit.FxEditor;
+import goryachev.fx.edit.FxEditorModel;
 import java.io.File;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import research.fx.edit.FxEditor;
-import research.fx.edit.FxEditorModel;
 
 
 /**

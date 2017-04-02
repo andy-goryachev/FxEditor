@@ -4,7 +4,7 @@ import goryachev.fx.CButton;
 
 
 /**
- * TestKeyMap.
+ * Test KeyMap.
  */
 public class TestKeyMap
 {
