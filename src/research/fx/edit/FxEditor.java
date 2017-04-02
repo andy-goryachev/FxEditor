@@ -27,6 +27,7 @@ import javafx.scene.shape.PathElement;
 import javafx.util.Duration;
 import research.fx.Binder;
 import research.fx.edit.internal.CaretLocation;
+import research.fx.edit.internal.EditorTools;
 import research.fx.edit.internal.Markers;
 
 
@@ -546,13 +547,10 @@ public class FxEditor
 		CaretLocation beg = getCaretLocation(startMarker);
 		CaretLocation end = getCaretLocation(endMarker);
 		
-//		D.print(offsety, beg, end); // FIX
-		
 		double left = 0.0;
 		double right = getWidth() - left - vscroll().getWidth();
 		double top = 0.0; 
 		double bottom = getHeight(); // TODO hscroll
-		boolean sameLine = startMarker.getLine() == endMarker.getLine();
 		
 		// there is a number of possible shapes resulting from intersection of
 		// the selection shape and the visible area.  the logic below explicitly generates 
@@ -574,8 +572,7 @@ public class FxEditor
 				return;
 			}
 			
-			// start caret is above visible area
-			
+			// start caret is above the visible area
 			boolean crossTop = end.containsY(top);
 			boolean crossBottom = end.containsY(bottom);
 			
@@ -628,7 +625,7 @@ public class FxEditor
 		}
 		else if(end == null)
 		{
-			// end caret is below visible area
+			// end caret is below the visible area
 			boolean crossTop = beg.containsY(top);
 			boolean crossBottom = beg.containsY(bottom);
 			
@@ -681,8 +678,10 @@ public class FxEditor
 		}
 		else
 		{
-			if(sameLine)
+			// both carets are in the visible area
+			if(EditorTools.isCloseEnough(beg.y0, end.y0))
 			{
+				// 10
 				p.moveto(beg.x, beg.y0);
 				p.lineto(end.x, beg.y0);
 				p.lineto(end.x, end.y1);
@@ -691,6 +690,7 @@ public class FxEditor
 			}
 			else
 			{
+				// 11
 				p.moveto(beg.x, beg.y0);
 				p.lineto(right, beg.y0);
 				p.lineto(right, end.y0);

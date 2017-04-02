@@ -144,15 +144,15 @@ public class FxEditorController
 	
 	protected void handleMouseReleased(MouseEvent ev)
 	{
+		dragging = false;
+		draggingScroll = false;
+
 		// on scrollbar
 		if(ev.getX() >= editor.vscroll().getLayoutX())
 		{
 			return;
 		}
-		
-		dragging = false;
-		draggingScroll = false;
-		
+
 		// TODO optimize selection: combine overlapping segments
 	}
 }
