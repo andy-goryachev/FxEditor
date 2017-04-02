@@ -18,7 +18,8 @@ public class FxEditorSelectionModel
 	}
 
 
-	public ObservableList<SelectionSegment> getChildrenUnmodifiable()
+	/** returns unmodifiable observable list containing selection segments */ 
+	public ObservableList<SelectionSegment> getSelection()
 	{
 		return unmodifiableSelection;
 	}
@@ -91,6 +92,17 @@ public class FxEditorSelectionModel
 		{
 			SelectionSegment s = selection.get(ix);
 			return s.getStart();
+		}
+		return null;
+	}
+	
+	
+	public SelectionSegment getLastSegment()
+	{
+		int sz = selection.size();
+		if(sz > 0)
+		{
+			return selection.get(sz - 1);
 		}
 		return null;
 	}

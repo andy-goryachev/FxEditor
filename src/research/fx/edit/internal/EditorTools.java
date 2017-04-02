@@ -99,11 +99,4 @@ public class EditorTools
 		
 		return new FxSize(w, h);
 	}
-	
-	
-	public static boolean isNearlySame(double a, double b)
-	{
-		// in case for some reason floating point computation result is slightly off
-		return Math.abs(a - b) < 0.01;
-	}
 }

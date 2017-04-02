@@ -37,7 +37,7 @@ public abstract class FxEditorModel
 	public abstract int getLineCount();
 	
 	/** returns plain text at the specified line, or null if unknown */
-	public abstract String getSearchText(int line);
+	public abstract String getPlainText(int line);
 	
 	/** 
 	 * returns a non-null Region containing Text, TextFlow, or any other Nodes representing a line.
@@ -83,7 +83,7 @@ public abstract class FxEditorModel
 					return new LoadInfo(1.0, 0, t, t); 
 				}
 				public int getLineCount() { return 0; }
-				public String getSearchText(int line) { return null; }
+				public String getPlainText(int line) { return null; }
 				public Region getDecoratedLine(int line) { return null; }
 			};
 		}

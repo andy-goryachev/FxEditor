@@ -3,7 +3,6 @@ package research.fx;
 import java.lang.ref.WeakReference;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.binding.Binding;
 
 
 /**
@@ -14,11 +13,23 @@ public class Binder
 	/** fires handler if any of the observables change */
 	public static void onChange(Runnable handler, Observable ... props)
 	{
+		onChange(handler, false, props);
+	}
+	
+	
+	/** fires handler if any of the observables change */
+	public static void onChange(Runnable handler, boolean immediately, Observable ... props)
+	{
 		Helper li = new Helper(handler);
 
 		for(Observable p: props)
 		{
 			p.addListener(li);
+		}
+		
+		if(immediately)
+		{
+			handler.run();
 		}
 	}
 
@@ -38,7 +49,6 @@ public class Binder
 		}
 
 
-		@Override
 		public void invalidated(Observable observable)
 		{
 			final Runnable h = ref.get();

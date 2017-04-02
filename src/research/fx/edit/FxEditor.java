@@ -1,10 +1,9 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
-import goryachev.common.util.CList;
 import goryachev.common.util.D;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
-import goryachev.fx.FxInvalidationListener;
+import goryachev.fx.util.CPathBuilder;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -23,14 +22,11 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.util.Duration;
 import research.fx.Binder;
 import research.fx.edit.internal.CaretLocation;
-import research.fx.edit.internal.EditorTools;
 import research.fx.edit.internal.Markers;
 
 
@@ -108,12 +104,12 @@ public class FxEditor
 		
 		caretAnimation = new Timeline();
 		caretAnimation.setCycleCount(Animation.INDEFINITE);
-		new FxInvalidationListener(blinkRateProperty(), true, () -> updateBlinkRate(getBlinkRate()));
+		Binder.onChange(this::updateBlinkRate, true, blinkRateProperty());
 		
 		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
 		
 		selection = createSelectionModel();
-		selection.getChildrenUnmodifiable().addListener((Observable src) -> requestLayout());
+		selection.getSelection().addListener((Observable src) -> requestLayout());
 		Binder.onChange(this::requestLayout, widthProperty(), heightProperty());
 		
 		initController();
@@ -453,8 +449,9 @@ public class FxEditor
 	
 	
 	// TODO stop blinking when dragging
-	protected void updateBlinkRate(Duration d)
+	protected void updateBlinkRate()
 	{
+		Duration d = getBlinkRate();
 		Duration period = d.multiply(2);
 		
 		caretAnimation.stop();
@@ -492,35 +489,35 @@ public class FxEditor
 	
 	protected void reloadSelectionDecorations()
 	{
-		CList<PathElement> hs = new CList<>();
-		CList<PathElement> cs = new CList<>();
+		CPathBuilder hb = new CPathBuilder();
+		CPathBuilder cb = new CPathBuilder();
 		
-		for(SelectionSegment s: selection.getChildrenUnmodifiable())
+		for(SelectionSegment s: selection.getSelection())
 		{
 			Marker start = s.getStart();
 			Marker end = s.getEnd();
 			
-			createSelectionHighlight(hs, start, end);
-			createCaretPath(cs, end);
+			createSelectionHighlight(hb, start, end);
+			createCaretPath(cb, end);
 		}
 		
-		selectionHighlight.getElements().setAll(hs);
-		caretPath.getElements().setAll(cs);
+		selectionHighlight.getElements().setAll(hb.getPath());
+		caretPath.getElements().setAll(cb.getPath());
 	}
 	
 	
-	protected void createCaretPath(CList<PathElement> a, Marker p)
+	protected void createCaretPath(CPathBuilder p, Marker m)
 	{
-		CaretLocation c = getCaretLocation(p);
+		CaretLocation c = getCaretLocation(m);
 		if(c != null)
 		{
-			a.add(new MoveTo(c.x, c.y0));
-			a.add(new LineTo(c.x, c.y1));
+			p.moveto(c.x, c.y0);
+			p.lineto(c.x, c.y1);
 		}
 	}
 	
 	
-	protected void createSelectionHighlight(CList<PathElement> a, Marker startMarker, Marker endMarker)
+	protected void createSelectionHighlight(CPathBuilder p, Marker startMarker, Marker endMarker)
 	{		
 		if((startMarker == null) || (endMarker == null))
 		{
@@ -540,7 +537,7 @@ public class FxEditor
 			return;
 		}
 		
-		if(startMarker.getLine() > (topLineIndex + layout.getVisibleLineCount()))
+		if(startMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount()))
 		{
 			// selection is below visible area
 			return;
@@ -549,76 +546,168 @@ public class FxEditor
 		CaretLocation beg = getCaretLocation(startMarker);
 		CaretLocation end = getCaretLocation(endMarker);
 		
-		D.print(offsety, beg, end);
+//		D.print(offsety, beg, end); // FIX
 		
-		Insets pad = getInsets();
-		double left = pad.getLeft();
-		double right = getWidth() - left - pad.getRight() - vscroll().getWidth();
-		double top = 0; // no padding 
-		double bottom = getHeight(); // no padding FIX hscroll
+		double left = 0.0;
+		double right = getWidth() - left - vscroll().getWidth();
+		double top = 0.0; 
+		double bottom = getHeight(); // TODO hscroll
+		boolean sameLine = startMarker.getLine() == endMarker.getLine();
+		
+		// there is a number of possible shapes resulting from intersection of
+		// the selection shape and the visible area.  the logic below explicitly generates 
+		// resulting paths because the selection can be quite large.
 		
 		if(beg == null)
 		{
 			if(end == null)
 			{
-				// can't happen
+				if((startMarker.getLine() < topLineIndex) && (endMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount())))
+				{
+					// 04
+					p.moveto(left, top);
+					p.lineto(right, top);
+					p.lineto(right, bottom);
+					p.lineto(left, bottom);
+					p.lineto(left, top);
+				}
 				return;
 			}
 			
-			// start with text area top left corner
-			a.add(new MoveTo(left, top));
+			// start caret is above visible area
 			
-			if(end.y0 < offsety) // FIX wrong
+			boolean crossTop = end.containsY(top);
+			boolean crossBottom = end.containsY(bottom);
+			
+			if(crossBottom)
 			{
-				// [***   ]
-				a.add(new LineTo(end.x, end.y0));
-				a.add(new LineTo(end.x, end.y1));
-				a.add(new LineTo(left, end.y1));
-				a.add(new LineTo(left, top));
+				if(crossTop)
+				{
+					// 01
+					p.moveto(left, top);
+					p.lineto(end.x, top);
+					p.lineto(end.x, bottom);
+					p.lineto(left, bottom);
+					p.lineto(left, top);
+				}
+				else
+				{
+					// 02
+					p.moveto(left, top);
+					p.lineto(right, top);
+					p.lineto(right, end.y0);
+					p.lineto(end.x, end.y0);
+					p.lineto(end.x, bottom);
+					p.lineto(left, bottom);
+					p.lineto(left, top);
+				}
 			}
 			else
 			{
-				// [******]
-				// [***   ]
-				a.add(new LineTo(right, top));
-				a.add(new LineTo(right, end.y0));
-				a.add(new LineTo(end.x, end.y0));
-				a.add(new LineTo(end.x, end.y1));
-				a.add(new LineTo(left, end.y1));
-				a.add(new LineTo(left, top));
-				
-				// FIX
-				// [  ***  ]
+				if(crossTop)
+				{
+					// 03
+					p.moveto(left, top);
+					p.lineto(end.x, top);
+					p.lineto(end.x, end.y1);
+					p.lineto(left, end.y1);
+					p.lineto(left, top);
+				}
+				else
+				{
+					// 05
+					p.moveto(left, top);
+					p.lineto(right, top);
+					p.lineto(right, end.y0);
+					p.lineto(end.x, end.y0);
+					p.lineto(end.x, end.y1);
+					p.lineto(left, end.y1);
+					p.lineto(left, top);
+				}
 			}
 		}
 		else if(end == null)
 		{
-			// FIX
-			// end with text area bottom right corner
-//			rv.add(new MoveTo(beg.x0, beg.y0));
-//			rv.add(
+			// end caret is below visible area
+			boolean crossTop = beg.containsY(top);
+			boolean crossBottom = beg.containsY(bottom);
+			
+			if(crossTop)
+			{
+				if(crossBottom)
+				{
+					// 06
+					p.moveto(beg.x, top);
+					p.lineto(right, top);
+					p.lineto(right, bottom);
+					p.lineto(beg.x, bottom);
+					p.lineto(beg.x, top);
+				}
+				else
+				{
+					// 07
+					p.moveto(beg.x, top);
+					p.lineto(right, top);
+					p.lineto(right, bottom);
+					p.lineto(left, bottom);
+					p.lineto(left, beg.y1);
+					p.lineto(beg.x, beg.y1);
+					p.lineto(beg.x, top);
+				}
+			}
+			else
+			{
+				if(crossBottom)
+				{
+					// 08
+					p.moveto(beg.x, beg.y0);
+					p.lineto(right, beg.y0);
+					p.lineto(right, bottom);
+					p.lineto(beg.x, bottom);
+					p.lineto(beg.x, beg.y0);
+				}
+				else
+				{
+					// 09
+					p.moveto(beg.x, beg.y0);
+					p.lineto(right, beg.y0);
+					p.lineto(right, bottom);
+					p.lineto(left, bottom);
+					p.lineto(left, beg.y1);
+					p.lineto(beg.x, beg.y1);
+					p.lineto(beg.x, beg.y0);
+				}
+			}
 		}
 		else
 		{
-			a.add(new MoveTo(beg.x, beg.y0));
-			if(EditorTools.isNearlySame(beg.y0, end.y0))
+			if(sameLine)
 			{
-				a.add(new LineTo(end.x, beg.y0));
-				a.add(new LineTo(end.x, end.y1));
-				a.add(new LineTo(beg.x, end.y1));
-				a.add(new LineTo(beg.x, beg.y0));
+				p.moveto(beg.x, beg.y0);
+				p.lineto(end.x, beg.y0);
+				p.lineto(end.x, end.y1);
+				p.lineto(beg.x, end.y1);
+				p.lineto(beg.x, beg.y0);
 			}
 			else
-			{				
-				a.add(new LineTo(right, beg.y0));
-				a.add(new LineTo(right, end.y0));
-				a.add(new LineTo(end.x, end.y0));
-				a.add(new LineTo(end.x, end.y1));
-				a.add(new LineTo(left, end.y1));
-				a.add(new LineTo(left, beg.y1));
-				a.add(new LineTo(beg.x, beg.y1));
-				a.add(new LineTo(beg.x, beg.y0));
+			{
+				p.moveto(beg.x, beg.y0);
+				p.lineto(right, beg.y0);
+				p.lineto(right, end.y0);
+				p.lineto(end.x, end.y0);
+				p.lineto(end.x, end.y1);
+				p.lineto(left, end.y1);
+				p.lineto(left, beg.y1);
+				p.lineto(beg.x, beg.y1);
+				p.lineto(beg.x, beg.y0);
 			}
 		}
+	}
+
+
+	/** returns plain text on the specified line */
+	public String getTextOnLine(int line)
+	{
+		return model.get().getPlainText(line);
 	}
 }

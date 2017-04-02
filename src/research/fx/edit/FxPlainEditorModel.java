@@ -19,7 +19,7 @@ public abstract class FxPlainEditorModel
 	public Region getDecoratedLine(int line)
 	{
 		TextFlow t = new TextFlow();
-		String s = getSearchText(line);
+		String s = getPlainText(line);
 		if(s != null)
 		{
 			Text tx = new Text(s);

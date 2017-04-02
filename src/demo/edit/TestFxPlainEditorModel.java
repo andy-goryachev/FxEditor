@@ -4,9 +4,7 @@ import goryachev.common.util.SB;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import research.fx.edit.CTextFlow;
-import research.fx.edit.FxEditorModel;
 import research.fx.edit.FxPlainEditorModel;
-import research.fx.edit.FxEditorModel.LoadInfo;
 
 
 /**
@@ -23,7 +21,7 @@ public class TestFxPlainEditorModel
 	public Region getDecoratedLine(int line)
 	{
 		CTextFlow f = new CTextFlow();
-		String s = getSearchText(line);
+		String s = getPlainText(line);
 		if(s != null)
 		{
 			Text t = new Text(s);
@@ -45,13 +43,13 @@ public class TestFxPlainEditorModel
 	}
 	
 	
-	public String getSearchText(int line)
+	public String getPlainText(int line)
 	{
-		return getSearchText0(line) + "   " + line + "   " + getSearchText0(line);
+		return getPlainText_0(line) + "   " + line + "   " + getPlainText_0(line);
 	}
 
 
-	public String getSearchText0(int line)
+	public String getPlainText_0(int line)
 	{
 		String s = String.valueOf(line);
 		int sz = s.length();

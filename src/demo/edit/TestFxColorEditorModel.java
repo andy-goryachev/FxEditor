@@ -42,7 +42,7 @@ public class TestFxColorEditorModel
 	}
 	
 	
-	public String getSearchText(int line)
+	public String getPlainText(int line)
 	{
 		CList<Segment> ss = getSegments(line, false);
 		SB sb = new SB();

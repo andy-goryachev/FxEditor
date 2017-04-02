@@ -25,4 +25,10 @@ public class CaretLocation
 	{
 		return "(" + x + "," + y0 + ".." + y1 + ")";
 	}
+
+
+	public boolean containsY(double y)
+	{
+		return (y >= y0) && (y < y1);
+	}
 }

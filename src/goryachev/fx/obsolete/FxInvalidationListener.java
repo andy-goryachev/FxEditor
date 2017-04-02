@@ -1,5 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package goryachev.fx;
+package goryachev.fx.obsolete;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 
@@ -7,6 +7,7 @@ import javafx.beans.Observable;
 /**
  * An InvalidationListener with ability to fire immediately
  */
+@Deprecated // use Binder
 public class FxInvalidationListener
 	implements InvalidationListener
 {
