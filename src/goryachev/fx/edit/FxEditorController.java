@@ -97,7 +97,7 @@ public class FxEditorController
 		}
 		else if(ev.isShortcutDown())
 		{
-			if(sel.isInsideSelection(pos))
+			if(sel.isInsideSelection(pos) || (!editor.isMultipleSelectionEnabled()))
 			{
 				// replace selection with a single caret
 				sel.clear();

@@ -20,11 +20,14 @@ public class Binder
 	/** fires handler if any of the observables change */
 	public static void onChange(Runnable handler, boolean immediately, Observable ... props)
 	{
-		Helper li = new Helper(handler);
+//		Helper li = new Helper(handler);
 
 		for(Observable p: props)
 		{
-			p.addListener(li);
+//			p.addListener(li);
+			
+			// weak listener gets collected... but why??
+			p.addListener((src) -> handler.run());
 		}
 		
 		if(immediately)
@@ -54,7 +57,7 @@ public class Binder
 			final Runnable h = ref.get();
 			if(h == null)
 			{
-				observable.removeListener(this);
+//				observable.removeListener(this);
 			}
 			else
 			{
