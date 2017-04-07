@@ -55,4 +55,10 @@ public class CTextFlow
 		}
 		return sb.toString();
 	}
+	
+	
+	public void add(Node n)
+	{
+		getChildren().add(n);
+	}
 }

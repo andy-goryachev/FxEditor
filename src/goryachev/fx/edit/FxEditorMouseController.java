@@ -9,16 +9,18 @@ import javafx.scene.input.ScrollEvent;
 /**
  * FxEditor Controller.
  */
-public class FxEditorController
+public class FxEditorMouseController
 {
 	protected final FxEditor editor;
+	protected final EditorSelectionController sel;
 	protected boolean dragging;
 	protected boolean draggingScroll;
 
 
-	public FxEditorController(FxEditor ed)
+	public FxEditorMouseController(FxEditor ed, EditorSelectionController sel)
 	{
 		this.editor = ed;
+		this.sel = sel;
 	}
 	
 	
@@ -26,15 +28,35 @@ public class FxEditorController
 	{
 		// TODO
 	}
-
+	
 	
 	protected void handleScroll(ScrollEvent ev)
 	{
-		// TODO mouse wheel scroll
-		D.print(ev);
+		// on scrollbar
+		if(ev.getX() >= editor.vscroll().getLayoutX())
+		{
+			return;
+		}
+		
+		if(ev.isShiftDown())
+		{
+			// TODO horizontal scroll
+			D.print("horizontal scroll", ev.getDeltaX());
+		}
+		else if(ev.isShortcutDown())
+		{
+			// TODO page up / page down
+			D.print("page scroll", ev.getDeltaY(), ev.getTextDeltaY(), ev.getTextDeltaYUnits());
+		}
+		else
+		{
+			// TODO vertical scroll
+			D.print("vertical scroll", ev.getDeltaY(), ev.getTextDeltaY(), ev.getTextDeltaYUnits());
+		}
 	}
 	
 	
+	/*
 	protected void handleKeyPressed(KeyEvent ev)
 	{
 		switch(ev.getCode())
@@ -65,6 +87,7 @@ public class FxEditorController
 	{
 		// TODO
 	}
+	*/
 	
 	
 	protected Marker getTextPos(MouseEvent ev)
@@ -85,7 +108,6 @@ public class FxEditorController
 			
 		// TODO property: multiple selection
 		Marker pos = getTextPos(ev);
-		FxEditorSelectionModel sel = editor.getSelectionModel();
 		
 		if(ev.isShiftDown())
 		{
@@ -138,7 +160,7 @@ public class FxEditorController
 		dragging = true;
 		
 		Marker pos = getTextPos(ev);
-		editor.getSelectionModel().extendLastSegment(pos);
+		sel.extendLastSegment(pos);
 	}
 	
 	
@@ -152,7 +174,8 @@ public class FxEditorController
 		{
 			return;
 		}
-
-		// TODO optimize selection: combine overlapping segments
+		
+		EditorSelection es = sel.commitSelection();
+		editor.setSelection(es);
 	}
 }

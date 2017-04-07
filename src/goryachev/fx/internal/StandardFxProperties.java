@@ -44,7 +44,9 @@ public class StandardFxProperties
 	// F
 	public static FxCssProp fitToHeight(boolean x) { return new FxCssProp("-fx-fit-to-height", x); }
 	public static FxCssProp fitToWidth(boolean x) { return new FxCssProp("-fx-fit-to-width", x); }
+	public static FxCssProp fontFamily(Object x) { return new FxCssProp("-fx-font-family", x); }
 	public static FxCssProp fontSize(Object x) { return new FxCssProp("-fx-font-size", x); }
+	public static FxCssProp fontStyle(Object x) { return new FxCssProp("-fx-font-style", x); }
 	/** [ normal | bold | bolder | lighter | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 ] */
 	public static FxCssProp fontWeight(Object x) { return new FxCssProp("-fx-font-weight", x); }
 	// H

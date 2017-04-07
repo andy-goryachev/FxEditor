@@ -8,6 +8,7 @@ import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
 import goryachev.fx.edit.internal.Markers;
 import goryachev.fx.util.CPathBuilder;
+import java.io.StringWriter;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -19,6 +20,8 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -63,6 +66,8 @@ public class FxEditor
 		}
 	};
 	protected final ReadOnlyBooleanWrapper multipleSelection = new ReadOnlyBooleanWrapper(false);
+	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
+	protected final ReadOnlyObjectWrapper<EditorSelection> selection = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
 	// TODO line decorations/line numbers
 	protected FxEditorLayout layout;
 	/** index of the topmost visible line */
@@ -80,7 +85,8 @@ public class FxEditor
 	protected final Timeline caretAnimation;
 	protected final Path caretPath;
 	protected final Path selectionHighlight;
-	protected final FxEditorSelectionModel selection;
+	protected final EditorSelectionController selector;
+	protected final KeyMap keymap;
 
 	
 	public FxEditor()
@@ -125,29 +131,41 @@ public class FxEditor
 		
 		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
 		
-		selection = createSelectionModel();
-		selection.getSelection().addListener((Observable src) -> requestLayout());
+		selector = createSelectionController();
+		segments.addListener((Observable src) -> reloadSelectionDecorations());
 		Binder.onChange(this::requestLayout, widthProperty(), heightProperty());
 		
-		initController();
+		keymap = createKeyMap();
+		
+		initMouseController();
+		
+		// init key handler
+		addEventFilter(KeyEvent.ANY, (ev) ->
+		{
+			if(!ev.isConsumed())
+			{
+				Runnable a = keymap.getActionForKeyEvent(ev);
+				if(a != null)
+				{
+					a.run();
+				}
+			}
+		});
 	}
 	
 	
 	/** override to provide your own selection model */
-	protected FxEditorSelectionModel createSelectionModel()
+	protected EditorSelectionController createSelectionController()
 	{
-		return new FxEditorSelectionModel();
+		return new EditorSelectionController(segments);
 	}
 	
 	
 	/** override to provide your own controller */
-	protected void initController()
+	protected void initMouseController()
 	{
-		FxEditorController h = new FxEditorController(this);
+		FxEditorMouseController h = new FxEditorMouseController(this, selector);
 		
-		addEventFilter(KeyEvent.KEY_PRESSED, (ev) -> h.handleKeyPressed(ev));
-		addEventFilter(KeyEvent.KEY_RELEASED, (ev) -> h.handleKeyReleased(ev));
-		addEventFilter(KeyEvent.KEY_TYPED, (ev) -> h.handleKeyTyped(ev));
 		addEventFilter(MouseEvent.MOUSE_PRESSED, (ev) -> h.handleMousePressed(ev));
 		addEventFilter(MouseEvent.MOUSE_RELEASED, (ev) -> h.handleMouseReleased(ev));
 		addEventFilter(MouseEvent.MOUSE_DRAGGED, (ev) -> h.handleMouseDragged(ev));
@@ -155,9 +173,42 @@ public class FxEditor
 	}
 	
 	
-	public FxEditorSelectionModel getSelectionModel()
+	/** override to provide your own controller */
+	protected KeyMap createKeyMap()
 	{
-		return selection;
+		KeyMap m = new KeyMap();
+		return m;
+	}
+	
+	
+	public ReadOnlyObjectProperty<EditorSelection> selectionProperty()
+	{
+		return selection.getReadOnlyProperty();
+	}
+	
+	
+	public EditorSelection getSelection()
+	{
+		return selection.get();
+	}
+	
+	
+	/** perhaps make this method public */
+	protected void setSelection(EditorSelection es)
+	{
+		selection.set(es);
+	}
+	
+	
+	public void clearSelection()
+	{
+		selector.clear();
+	}
+
+	
+	protected Runnable getActionForKeyEvent(KeyEvent ev)
+	{
+		return null;
 	}
 	
 	
@@ -500,12 +551,6 @@ public class FxEditor
 	}
 	
 	
-	public void clearSelection()
-	{
-		selection.clear();
-	}
-
-	
 	public void setDisplayCaret(boolean on)
 	{
 		displayCaret.set(on);
@@ -540,7 +585,7 @@ public class FxEditor
 		CPathBuilder hb = new CPathBuilder();
 		CPathBuilder cb = new CPathBuilder();
 		
-		for(SelectionSegment s: selection.getSelection())
+		for(SelectionSegment s: segments)
 		{
 			Marker start = s.getStart();
 			Marker end = s.getEnd();
@@ -756,5 +801,14 @@ public class FxEditor
 	public String getTextOnLine(int line)
 	{
 		return model.get().getPlainText(line);
+	}
+
+
+	/** returns selected plain text, concatenating multiple selection segments if necessary */
+	public String getSelectedText() throws Exception
+	{
+		StringWriter wr = new StringWriter();
+		model.get().getPlainText(getSelection(), wr);
+		return wr.toString();
 	}
 }

@@ -29,15 +29,45 @@ public class SelectionSegment
 	}
 	
 	
+	/** returns the start (anchor) position */
 	public Marker getStart()
 	{
 		return start;
 	}
 	
 	
+	/** returns the end (caret) position, may be before or after the anchor */
 	public Marker getEnd()
 	{
 		return end;
+	}
+	
+	
+	/** returns a marker which is closer to the beginning of the text */
+	public Marker getTop()
+	{
+		if(start.isBefore(end))
+		{
+			return start;
+		}
+		else
+		{
+			return end;
+		}
+	}
+	
+	
+	/** returns a marker which is further from the beginning of the text */
+	public Marker getBottom()
+	{
+		if(end.isBefore(start))
+		{
+			return start;
+		}
+		else
+		{
+			return end;
+		}
 	}
 
 
@@ -85,6 +115,80 @@ public class SelectionSegment
 		else
 		{
 			return false;
+		}
+	}
+
+
+	public boolean isEmpty()
+	{
+		if(start.getLine() == end.getLine())
+		{
+			if(start.getLineOffset() == end.getLineOffset())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/** returns overlapping segment or null if segments do not overlap.  the caret (end marker) is chosen from this segment */
+	public SelectionSegment union(SelectionSegment s)
+	{
+		Marker m0 = s.getTop();
+		Marker m1 = s.getBottom();
+		
+		if(contains(m0))
+		{
+			if(contains(m1))
+			{
+				// overlaps fully
+				return this;
+			}
+			else
+			{
+				if(getTop() == start)
+				{
+					return new SelectionSegment(start, m1);
+				}
+				else
+				{
+					return new SelectionSegment(m1, end);
+				}
+			}
+		}
+		else
+		{
+			if(contains(m1))
+			{
+				if(getTop() == start)
+				{
+					return new SelectionSegment(m0, end);
+				}
+				else
+				{
+					return new SelectionSegment(end, m0);
+				}
+			}
+			else
+			{
+				// no overlap
+				return null;
+			}
+		}
+	}
+
+
+	/** returns a segment in which the start marker always comes before the end marker */
+	public SelectionSegment getNormalizedSegment()
+	{
+		if(start.isBefore(end))
+		{
+			return this;
+		}
+		else
+		{
+			return new SelectionSegment(end, start);
 		}
 	}
 }

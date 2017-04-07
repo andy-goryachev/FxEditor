@@ -1,6 +1,8 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
+import java.io.Writer;
 import java.util.function.Consumer;
 import javafx.scene.layout.Region;
 
@@ -102,6 +104,57 @@ public abstract class FxEditorModel
 		for(FxEditor li: listeners)
 		{
 			f.accept(li);
+		}
+	}
+
+
+	/** plain text copy, expecting normalized selection ranges */
+	public void getPlainText(EditorSelection sel, Writer wr) throws Exception
+	{
+		sel = sel.getNormalizedSelection();
+		for(SelectionSegment s: sel.getSegments())
+		{
+			CKit.checkCancelled();
+			writePlainText(s, wr);
+		}
+	}
+
+
+	protected void writePlainText(SelectionSegment seg, Writer wr) throws Exception
+	{
+		Marker m0 = seg.getTop();
+		Marker m1 = seg.getBottom();
+		
+		int first = m0.getLine();
+		int last = m1.getLine();
+		
+		for(int i=first; i<=last; i++)
+		{
+			CKit.checkCancelled();
+			String s = getPlainText(i);
+			
+			if(i == first)
+			{
+				if(i == last)
+				{
+					s = s.substring(m0.getLineOffset(), m1.getLineOffset());
+				}
+				else
+				{
+					s = s.substring(m0.getLineOffset());
+				}
+			}
+			else
+			{
+				wr.write("\n");
+				
+				if(i == last)
+				{
+					s = s.substring(0, m1.getLineOffset());
+				}
+			}
+			
+			wr.write(s);
 		}
 	}
 }

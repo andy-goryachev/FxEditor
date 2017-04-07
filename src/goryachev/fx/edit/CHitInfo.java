@@ -7,26 +7,26 @@ package goryachev.fx.edit;
  */
 public class CHitInfo
 {
-	private final int index;
+	private final int charIndex;
 	private final boolean leading;
 
 
-	public CHitInfo(int index, boolean leading)
+	public CHitInfo(int charIndex, boolean leading)
 	{
-		this.index = index;
+		this.charIndex = charIndex;
 		this.leading = leading;
 	}
 	
 	
 	public String toString()
 	{
-		return index + (leading ? ".L" : ".T");
+		return charIndex + (leading ? ".L" : ".T");
 	}
 
 
-	public int getIndex()
+	public int getCharIndex()
 	{
-		return index;
+		return charIndex;
 	}
 
 
@@ -38,6 +38,6 @@ public class CHitInfo
 
 	public int getInsertionIndex()
 	{
-		return leading ? index : index + 1;
+		return leading ? charIndex : charIndex + 1;
 	}
 }

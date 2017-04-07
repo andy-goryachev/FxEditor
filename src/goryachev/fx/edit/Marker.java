@@ -11,18 +11,27 @@ public class Marker
 	implements Comparable<Marker>
 {
 	private int line;
-	private int offset;
+	private int charIndex;
 	private boolean leading;
 	
 	
-	public Marker(int line, int offset, boolean leading)
+	public Marker(int line, int charIndex, boolean leading)
 	{
 		this.line = line;
-		this.offset = offset;
+		this.charIndex = charIndex;
 		this.leading = leading;
 	}
 	
-	
+
+	public int hashCode()
+	{
+		int h = FH.hash(Marker.class);
+		h = FH.hash(h, line);
+		h = FH.hash(h, charIndex);
+		return FH.hash(h, leading);
+	}
+
+
 	/** returns the line number corresponding to this text position */
 	public int getLine()
 	{
@@ -33,7 +42,13 @@ public class Marker
 	/** returns the position within the line */
 	public int getLineOffset()
 	{
-		return offset;
+		return leading ? charIndex : charIndex + 1;
+	}
+	
+	
+	public int getCharIndex()
+	{
+		return charIndex;
 	}
 	
 	
@@ -45,7 +60,7 @@ public class Marker
 	
 	public String toString()
 	{
-		return line + "." + offset + (leading ? ".L" : "T");
+		return line + "." + charIndex + (leading ? ".L" : "T");
 	}
 
 	
@@ -54,7 +69,7 @@ public class Marker
 		int d = line - m.line;
 		if(d == 0)
 		{
-			d = offset - m.offset;
+			d = charIndex - m.charIndex;
 			if(leading != m.leading)
 			{
 				return leading ? -1 : 1;
@@ -73,7 +88,7 @@ public class Marker
 		else if(x instanceof Marker)
 		{
 			Marker m = (Marker)x;
-			return (leading == m.leading) && (line == m.line) && (offset == m.offset);
+			return (leading == m.leading) && (line == m.line) && (charIndex == m.charIndex);
 		}
 		else
 		{
@@ -82,11 +97,28 @@ public class Marker
 	}
 
 
-	public int hashCode()
+	public boolean isBefore(Marker m)
 	{
-		int h = FH.hash(Marker.class);
-		h = FH.hash(h, line);
-		h = FH.hash(h, offset);
-		return FH.hash(h, leading);
+		int d = line - m.line;
+		if(d < 0)
+		{
+			return true;
+		}
+		else if(d == 0)
+		{
+			// TODO or use insertion index?
+			if(charIndex < m.charIndex)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

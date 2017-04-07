@@ -53,7 +53,7 @@ public class FxEditorLayout
 						CHitInfo hit = ((CTextFlow)box).getHit(p.getX(), y);
 						if(hit != null)
 						{
-							return markers.newMarker(line.getLineNumber(), hit.getIndex(), hit.isLeading());
+							return markers.newMarker(line.getLineNumber(), hit.getCharIndex(), hit.isLeading());
 						}
 					}
 				}
@@ -88,7 +88,7 @@ public class FxEditorLayout
 				Region box = b.getBox();
 				if(box instanceof CTextFlow)
 				{
-					PathElement[] es = ((CTextFlow)box).getCaretShape(pos.getLineOffset(), pos.isLeading());
+					PathElement[] es = ((CTextFlow)box).getCaretShape(pos.getCharIndex(), pos.isLeading());
 					if(es != null)
 					{
 						return EditorTools.translateCaretLocation(parent, box, es);

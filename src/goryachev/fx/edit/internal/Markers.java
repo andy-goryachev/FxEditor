@@ -18,9 +18,9 @@ public class Markers
 	}
 
 
-	public Marker newMarker(int lineNumber, int pos, boolean leading)
+	public Marker newMarker(int lineNumber, int charIndex, boolean leading)
 	{
-		Marker m = new Marker(lineNumber, pos, leading);
+		Marker m = new Marker(lineNumber, charIndex, leading);
 		markers.add(m);
 		// TODO perhaps check for uncontrollable growth here
 		return m;

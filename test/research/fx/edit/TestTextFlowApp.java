@@ -104,7 +104,7 @@ public class TestTextFlowApp
 
 			// NOTE: this test code does not handle text resizing
 			highlight.getElements().setAll(t.getRange(0, h.getInsertionIndex()));
-			caret.getElements().setAll(t.getCaretShape(h.getIndex(), h.isLeading()));
+			caret.getElements().setAll(t.getCaretShape(h.getCharIndex(), h.isLeading()));
 				
 			SB sb = new SB();
 			sb.a(h);
