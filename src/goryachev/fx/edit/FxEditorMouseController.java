@@ -56,40 +56,6 @@ public class FxEditorMouseController
 	}
 	
 	
-	/*
-	protected void handleKeyPressed(KeyEvent ev)
-	{
-		switch(ev.getCode())
-		{
-		case PAGE_DOWN:
-			editor.scrollRelative(editor.getHeight());
-			break;
-		case LEFT:
-			moveCaret(false);
-			break;
-		case PAGE_UP:
-			editor.scrollRelative(-editor.getHeight());
-			break;
-		case RIGHT:
-			moveCaret(true);
-			break;
-		}
-	}
-	
-	
-	protected void handleKeyReleased(KeyEvent ev)
-	{
-		// TODO
-	}
-	
-	
-	protected void handleKeyTyped(KeyEvent ev)
-	{
-		// TODO
-	}
-	*/
-	
-	
 	protected Marker getTextPos(MouseEvent ev)
 	{
 		double x = ev.getScreenX();

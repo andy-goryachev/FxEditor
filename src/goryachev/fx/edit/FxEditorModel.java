@@ -2,8 +2,13 @@
 package goryachev.fx.edit;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
+import goryachev.common.util.CMap;
+import goryachev.common.util.Log;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.function.Consumer;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.DataFormat;
 import javafx.scene.layout.Region;
 
 
@@ -104,6 +109,39 @@ public abstract class FxEditorModel
 		for(FxEditor li: listeners)
 		{
 			f.accept(li);
+		}
+	}
+	
+	
+	/** copy every data format the model contains to the clipboard */
+	public void copy(EditorSelection sel)
+	{
+		sel = sel.getNormalizedSelection();
+		
+		CMap<DataFormat,Object> m = new CMap();
+		String s = copyPlainText(sel);
+		if(s != null)
+		{
+			m.put(DataFormat.PLAIN_TEXT, s);
+		}
+		
+		Clipboard c = Clipboard.getSystemClipboard();
+		c.setContent(m);
+	}
+	
+	
+	public String copyPlainText(EditorSelection sel)
+	{
+		try
+		{
+			StringWriter wr = new StringWriter();
+			getPlainText(sel, wr);
+			return wr.toString();
+		}
+		catch(Exception e)
+		{
+			Log.ex(e);
+			return null;
 		}
 	}
 

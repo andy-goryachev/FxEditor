@@ -21,13 +21,15 @@ public class EditorTools
 	private static Text helper = new Text();
 
 	
-	public static CaretLocation translateCaretLocation(Region target, Node src, PathElement[] es)
+	public static CaretLocation translateCaretLocation(Region target, Region src, PathElement[] es)
 	{
 		double x = 0.0;
 		double y0 = 0.0;
 		double y1 = 0.0;
 		
-		Point2D p = src.localToScreen(0, 0);
+		Insets pad = src.getPadding();
+		Point2D p = src.localToScreen(pad.getLeft(), pad.getTop());
+		
 		p = target.screenToLocal(p);
 		double dx = p.getX();
 		double dy = p.getY();

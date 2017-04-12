@@ -5,6 +5,7 @@ import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
 import goryachev.fx.edit.internal.Markers;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -42,7 +43,9 @@ public class FxEditorLayout
 		{
 			Region box = line.getBox();
 			Point2D p = box.screenToLocal(screenx, screeny);
-			double y = p.getY();
+			Insets pad = box.getPadding();
+			double x = p.getX() - pad.getLeft();
+			double y = p.getY() - pad.getTop();
 			
 			if(y > 0)
 			{
@@ -50,7 +53,7 @@ public class FxEditorLayout
 				{
 					if(box instanceof CTextFlow)
 					{
-						CHitInfo hit = ((CTextFlow)box).getHit(p.getX(), y);
+						CHitInfo hit = ((CTextFlow)box).getHit(x, y);
 						if(hit != null)
 						{
 							return markers.newMarker(line.getLineNumber(), hit.getCharIndex(), hit.isLeading());

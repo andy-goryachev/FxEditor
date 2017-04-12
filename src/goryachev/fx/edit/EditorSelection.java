@@ -43,6 +43,10 @@ public class EditorSelection
 	/** returns last or the only selection segment */
 	public SelectionSegment getSegment()
 	{
+		if(segments.length == 0)
+		{
+			return null;
+		}
 		return segments[segments.length - 1];
 	}
 	

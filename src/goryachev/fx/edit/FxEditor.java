@@ -27,6 +27,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -58,7 +59,7 @@ public class FxEditor
 	
 	protected final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
 	protected final ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
-	protected final ReadOnlyObjectWrapper<Boolean> wrapText = new ReadOnlyObjectWrapper<Boolean>(true)
+	protected final ReadOnlyBooleanWrapper wrapText = new ReadOnlyBooleanWrapper(true)
 	{
 		protected void invalidated()
 		{
@@ -177,6 +178,9 @@ public class FxEditor
 	protected KeyMap createKeyMap()
 	{
 		KeyMap m = new KeyMap();
+		m.shortcut(KeyCode.C, this::copy);
+		m.add(KeyCode.PAGE_DOWN, this::pageDown);
+		m.add(KeyCode.PAGE_UP, this::pageUp);
 		return m;
 	}
 	
@@ -810,5 +814,26 @@ public class FxEditor
 		StringWriter wr = new StringWriter();
 		model.get().getPlainText(getSelection(), wr);
 		return wr.toString();
+	}
+	
+	
+	public void pageUp()
+	{
+		// TODO
+		D.print();
+	}
+	
+	
+	public void pageDown()
+	{
+		// TODO
+		D.print();
+	}
+	
+	
+	public void copy()
+	{
+		// TODO use model to copy every data format it can
+		model.get().copy(getSelection());
 	}
 }
