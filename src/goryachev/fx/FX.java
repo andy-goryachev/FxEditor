@@ -5,9 +5,11 @@ import goryachev.fx.internal.CssTools;
 import goryachev.fx.internal.WindowsFx;
 import java.util.function.Consumer;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -142,6 +144,9 @@ public final class FX
 					break;
 				case FOCUSABLE:
 					n.setFocusTraversable(true);
+					break;
+				case FORCE_MAX_WIDTH:
+					n.setMaxWidth(Double.MAX_VALUE);
 					break;
 				case FORCE_MIN_HEIGHT:
 					n.setMinHeight(Control.USE_PREF_SIZE);
@@ -782,5 +787,55 @@ public final class FX
 	public static Insets insets(double vertical, double horizontal)
 	{
 		return new Insets(vertical, horizontal, vertical, horizontal);
+	}
+	
+	
+	/** adds an invalidation listener to an observable */
+	public static void listen(Runnable handler, Observable prop)
+	{
+		prop.addListener((src) -> handler.run());
+	}
+	
+	
+	/** adds an invalidation listener to an observable */
+	public static void listen(Runnable handler, boolean fireImmediately, Observable prop)
+	{
+		prop.addListener((src) -> handler.run());
+			
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+	
+	
+	/** adds an invalidation listener to multiple observables */
+	public static void listen(Runnable handler, Observable ... props)
+	{
+		for(Observable prop: props)
+		{
+			prop.addListener((src) -> handler.run());
+		}
+	}
+	
+	
+	/** adds an invalidation listener to multiple observables */
+	public static void listen(Runnable handler, boolean fireImmediately, Observable ... props)
+	{
+		for(Observable prop: props)
+		{
+			prop.addListener((src) -> handler.run());
+		}
+			
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+
+
+	public static <T> ObservableList<T> observableArrayList()
+	{
+		return FXCollections.observableArrayList();
 	}
 }

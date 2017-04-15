@@ -51,6 +51,14 @@ public class FxTable<T>
 	}
 	
 	
+	public FxTableColumn<T> addColumn(String name)
+	{
+		FxTableColumn<T> tc = new FxTableColumn<T>(name, name);
+		table.getColumns().add(tc);
+		return tc;
+	}
+	
+	
 	public void setColumns(Collection<FxTableColumn<T>> cs)
 	{
 		table.getColumns().setAll(cs);
@@ -105,6 +113,12 @@ public class FxTable<T>
 	public void setItems(ObservableList<T> source)
 	{
 		table.setItems(source);
+	}
+	
+	
+	public void clearItems()
+	{
+		table.getItems().clear();
 	}
 	
 	

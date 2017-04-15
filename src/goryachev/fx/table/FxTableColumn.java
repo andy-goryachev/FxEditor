@@ -37,17 +37,23 @@ public class FxTableColumn<T>
 				
 				if(empty)
 				{
-					item = null;
-				}
-				
-				if(renderer == null)
-				{
-					setText(item == null ? null : item.toString());
+					setText(null);
+					setGraphic(null);
 				}
 				else
 				{
-					Node n = (renderer == null ? null : renderer.apply(item));
-					setGraphic(n);
+					if(renderer == null)
+					{
+						// TODO value factory here
+						setText(item.toString());
+						setGraphic(null);
+					}
+					else
+					{
+						Node n = renderer.apply(item);
+						setText(null);
+						setGraphic(n);
+					}
 				}
 			}
 		};
