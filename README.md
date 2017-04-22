@@ -28,8 +28,10 @@ To see how little is implemented, run
 
 
 ## Example
+
+[DemoWindow.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/DemoWindow.java)
 ```java
-public class [DemoWindow](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/DemoWindow.java) extends FxWindow
+public class DemoWindow extends FxWindow
 {
 	public DemoWindow()
 	{
