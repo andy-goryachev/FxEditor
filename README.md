@@ -1,7 +1,5 @@
 # FxEditor
 
-JavaFX Rich Text Editor That Can Handle Billions of Lines.
-
 ![screenshot](https://github.com/andy-goryachev/FxEditor/blob/master/doc/screenshot.png)
 
 
@@ -26,14 +24,14 @@ The project is at a very early stage: less than 16% of all
 is currently implemented. 
 
 To see how little is implemented, run 
-[TestFxEditorApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/TestFxEditorApp.java).
+[FxEditorDemoApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/FxEditorDemoApp.java).
 
 
 ## Example
 ```java
-public class TestFxEditorWindow extends FxWindow
+public class [DemoWindow](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/DemoWindow.java) extends FxWindow
 {
-	public TestFxEditorWindow()
+	public DemoWindow()
 	{
 		super("TestFxEditorWindow");
 		setTitle("FxEditor Demo");
@@ -43,6 +41,7 @@ public class TestFxEditorWindow extends FxWindow
 		FxEditorModel m = new TestFxColorEditorModel();
 		// editor component is a Pane
 		FxEditor ed = new FxEditor(m);
+		ed.setMultipleSelectionEnabled(true);
 		// add to layout		
 		setCenter(ed);
 	}
