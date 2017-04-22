@@ -80,6 +80,8 @@ public class TestFxColorEditorModel
 			
 			ss.add(new Segment(w, styles ? toColor(c) : null));
 		}
+		
+		ss.add(new Segment(" The second law of thermodynamics states that the total entropy of an isolated system can only increase over time. It can remain constant in ideal cases where the system is in a steady state (equilibrium) or undergoing a reversible process. The increase in entropy accounts for the irreversibility of natural processes, and the asymmetry between future and past.  熱力学第二法則（ねつりきがくだいにほうそく、英: second law of thermodynamics）は、エネルギーの移動の方向とエネルギーの質に関する法則である。", Color.GRAY));
 		return ss;
 	}
 	
