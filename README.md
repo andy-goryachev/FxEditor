@@ -23,13 +23,12 @@ The project is at a very early stage: less than 16% of all
 [identified features](https://github.com/andy-goryachev/FxEditor/blob/master/Feature%20Matrix.xlsx)
 is currently implemented. 
 
-To see how little is implemented, run 
+To see how little is implemented, launch 
 [FxEditorDemoApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/FxEditorDemoApp.java).
 
 
 ## Example
 
-[DemoWindow.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/DemoWindow.java)
 ```java
 public class DemoWindow extends FxWindow
 {
@@ -50,10 +49,12 @@ public class DemoWindow extends FxWindow
 }
 ```
 
+See [DemoWindow.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/DemoWindow.java)
+
 
 ## Similar Projects
 
-Tomas Mikula's [RichTextFX](https://github.com/TomasMikula/RichTextFX) 
+Tomas Mikula's [RichTextFX](https://github.com/TomasMikula/RichTextFX).
 
 
 ## License
