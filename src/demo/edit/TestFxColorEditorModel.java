@@ -3,7 +3,6 @@ package demo.edit;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
 import goryachev.fx.edit.CTextFlow;
-import goryachev.fx.edit.FxEditorModel.LoadInfo;
 import goryachev.fx.edit.FxPlainEditorModel;
 import java.text.NumberFormat;
 import javafx.scene.layout.Region;
@@ -72,7 +71,7 @@ public class TestFxColorEditorModel
 		
 		CList<Segment> ss = new CList<>();
 		
-		ss.add(new Segment("Line " + format.format(line) + ": ", Color.BLACK));
+		ss.add(new Segment("Line " + format.format(line) + ": ", Color.LIGHTGRAY));
 		
 		for(int i=0; i<sz; i++)
 		{
@@ -125,7 +124,7 @@ public class TestFxColorEditorModel
 	
 	protected Color c(int angle)
 	{
-		return Color.hsb(36.0 * angle, 1.0, 0.5);
+		return Color.hsb(36.0 * angle + 1, 1.0, 0.7);
 	}
 	
 	
