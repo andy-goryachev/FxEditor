@@ -113,7 +113,7 @@ public abstract class FxEditorModel
 	}
 	
 	
-	/** copy every data format the model contains to the clipboard */
+	/** copies every data format the model contains to the clipboard */
 	public void copy(EditorSelection sel)
 	{
 		sel = sel.getNormalizedSelection();
@@ -140,6 +140,7 @@ public abstract class FxEditorModel
 		}
 		catch(Exception e)
 		{
+			// TODO communicate error to the ui
 			Log.ex(e);
 			return null;
 		}

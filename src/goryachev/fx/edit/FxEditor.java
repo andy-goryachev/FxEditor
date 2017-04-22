@@ -2,6 +2,7 @@
 package goryachev.fx.edit;
 import goryachev.common.util.D;
 import goryachev.fx.Binder;
+import goryachev.fx.CAction;
 import goryachev.fx.CBooleanProperty;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
@@ -28,7 +29,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
@@ -50,6 +50,9 @@ public class FxEditor
 	public static final CssStyle HIGHLIGHT = new CssStyle("FxEditor_HIGHLIGHT");
 	/** panel style */
 	public static final CssStyle PANEL = new CssStyle("FxEditor_PANEL");
+	
+	public final CAction copyAction = new CAction(this::copy);
+	public final CAction selectAllAction = new CAction(this::selectAll);
 	
 	protected final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
 	protected final ReadOnlyObjectWrapper<FxEditorModel> modelProperty = new ReadOnlyObjectWrapper<>();
@@ -140,7 +143,7 @@ public class FxEditor
 	/** override to provide your own selection model */
 	protected EditorSelectionController createSelectionController()
 	{
-		return new EditorSelectionController(segments);
+		return new EditorSelectionController(this, segments);
 	}
 	
 	
@@ -163,6 +166,7 @@ public class FxEditor
 		m.shortcut(KeyCode.C, this::copy);
 		m.add(KeyCode.PAGE_DOWN, this::pageDown);
 		m.add(KeyCode.PAGE_UP, this::pageUp);
+		m.shortcut(KeyCode.A, this::selectAll);
 		return m;
 	}
 	
@@ -222,6 +226,12 @@ public class FxEditor
 	public FxEditorModel getTextModel()
 	{
 		return modelProperty.get();
+	}
+	
+	
+	public int getLineCount()
+	{
+		return getTextModel().getLineCount();
 	}
 	
 	
@@ -524,13 +534,23 @@ public class FxEditor
 	
 	public void copy()
 	{
-		// TODO use model to copy every data format it can
 		modelProperty.get().copy(getSelection());
 	}
 	
 	
 	public void selectAll()
 	{
-		// TODO
+		int ix = getLineCount();
+		if(ix > 0)
+		{
+			--ix;
+			
+			String s = getTextModel().getPlainText(ix);
+			Marker beg = new Marker(0, 0, true);
+			Marker end = new Marker(ix, s.length(), false);
+			
+			selector.setSelection(beg, end);
+			selector.commitSelection();
+		}
 	}
 }

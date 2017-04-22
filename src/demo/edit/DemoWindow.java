@@ -51,6 +51,13 @@ public class DemoWindow
 		// file
 		CMenu m = b.addMenu("File");
 		m.add("Exit", FX.exitAction());
+		// edit
+		m = b.addMenu("Edit");
+		m.add("Cut");
+		m.add("Copy", editor.copyAction);
+		m.add("Paste");
+		m.separator();
+		m.add("Select All", editor.selectAllAction);
 		// view
 		m = b.addMenu("View");
 		m.add("Wrap Text", editor.wrapTextProperty());

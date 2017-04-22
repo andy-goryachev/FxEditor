@@ -99,12 +99,11 @@ public class Marker
 
 	public boolean isBefore(Marker m)
 	{
-		int d = line - m.line;
-		if(d < 0)
+		if(line < m.line)
 		{
 			return true;
 		}
-		else if(d == 0)
+		else if(line == m.line)
 		{
 			// TODO or use insertion index?
 			if(charIndex < m.charIndex)

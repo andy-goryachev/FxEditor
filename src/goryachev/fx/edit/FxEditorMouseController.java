@@ -142,7 +142,6 @@ public class FxEditorMouseController
 			return;
 		}
 		
-		EditorSelection es = sel.commitSelection();
-		editor.setSelection(es);
+		sel.commitSelection();
 	}
 }

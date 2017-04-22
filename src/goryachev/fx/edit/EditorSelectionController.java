@@ -8,11 +8,13 @@ import javafx.collections.ObservableList;
  */
 public class EditorSelectionController
 {
+	protected final FxEditor editor;
 	protected final ObservableList<SelectionSegment> segments;
 
 
-	public EditorSelectionController(ObservableList<SelectionSegment> segments)
+	public EditorSelectionController(FxEditor ed, ObservableList<SelectionSegment> segments)
 	{
+		this.editor = ed;
 		this.segments = segments;
 	}
 
@@ -37,13 +39,20 @@ public class EditorSelectionController
 	
 
 	/** adds a new segment from start to end */
-	public void addSelectionSegment(Marker start, Marker end)
+	public void addSelectionSegment(Marker beg, Marker end)
 	{
-		segments.add(new SelectionSegment(start, end));
+		segments.add(new SelectionSegment(beg, end));
 	}
 	
 	
-	protected void clearAndExtendLastSegment(Marker pos)
+	public void setSelection(Marker beg, Marker end)
+	{
+		clear();
+		addSelectionSegment(beg, end);
+	}
+	
+	
+	public void clearAndExtendLastSegment(Marker pos)
 	{
 		Marker anchor = lastAnchor();
 		if(anchor == null)
@@ -51,12 +60,11 @@ public class EditorSelectionController
 			anchor = pos;
 		}
 		
-		clear();
-		addSelectionSegment(anchor, pos);
+		setSelection(anchor, pos);
 	}
 	
 	
-	protected void extendLastSegment(Marker pos)
+	public void extendLastSegment(Marker pos)
 	{
 		if(pos == null)
 		{
@@ -101,7 +109,7 @@ public class EditorSelectionController
 
 
 	/** combines overlapping segments and sets selection property */
-	public EditorSelection commitSelection()
+	public void commitSelection()
 	{
 		int sz = segments.size();
 		if(sz >= 2)
@@ -122,6 +130,6 @@ public class EditorSelectionController
 		}
 		
 		SelectionSegment[] sel = segments.toArray(new SelectionSegment[segments.size()]);
-		return new EditorSelection(sel);
+		editor.setSelection(new EditorSelection(sel));
 	}
 }
