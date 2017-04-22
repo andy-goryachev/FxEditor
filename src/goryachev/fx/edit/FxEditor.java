@@ -368,12 +368,12 @@ public class FxEditor
 	
 	protected void layoutChildren()
 	{
-		layout = createLayout(layout);
+		layout = recreateLayout(layout);
 		reloadSelectionDecorations();
 	}
 	
 	
-	protected FxEditorLayout createLayout(FxEditorLayout prev)
+	protected FxEditorLayout recreateLayout(FxEditorLayout prev)
 	{
 		if(prev != null)
 		{
@@ -401,11 +401,23 @@ public class FxEditor
 		double y = pad.getTop();
 		double x0 = pad.getLeft();
 		boolean wrap = isWrapText();
-		double wid = width - x0 - pad.getRight() - vscroll.getWidth(); // TODO leading, trailing components
+		
+		// TODO account for leading, trailing components
+		double wid = width - x0 - pad.getRight() - vscroll.getWidth();
 		
 		for(int ix=topLineIndex; ix<lines; ix++)
 		{
-			Region nd = model.getDecoratedLine(ix);
+			LineBox b = (prev == null ? null : prev.getLineBox(ix));
+			
+			Region nd;
+			if(b == null)
+			{
+				nd = model.getDecoratedLine(ix);
+			}
+			else
+			{
+				nd = b.getBox();
+			}
 			getChildren().add(nd);
 			nd.applyCss();
 			nd.setManaged(true);
@@ -414,7 +426,10 @@ public class FxEditor
 			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE); 
 			double h = nd.prefHeight(w);
 			
-			LineBox b = new LineBox(ix, nd);
+			if(b == null)
+			{
+				b = new LineBox(ix, nd);
+			}
 			la.addLineBox(b);
 			
 			layoutInArea(nd, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
