@@ -2,6 +2,7 @@
 package goryachev.fx.edit;
 import goryachev.common.util.D;
 import goryachev.fx.Binder;
+import goryachev.fx.CBooleanProperty;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
@@ -58,13 +59,7 @@ public class FxEditor
 	
 	protected final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
 	protected final ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
-	protected final ReadOnlyBooleanWrapper wrapText = new ReadOnlyBooleanWrapper(true)
-	{
-		protected void invalidated()
-		{
-			requestLayout();
-		}
-	};
+	protected final CBooleanProperty wrapText = new CBooleanProperty(true, this::requestLayout);
 	protected final ReadOnlyBooleanWrapper multipleSelection = new ReadOnlyBooleanWrapper(false);
 	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
 	protected final ReadOnlyObjectWrapper<EditorSelection> selection = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
@@ -331,6 +326,12 @@ public class FxEditor
 	public void setWrapText(boolean on)
 	{
 		wrapText.set(on);
+	}
+	
+	
+	public BooleanProperty wrapTextProperty()
+	{
+		return wrapText;
 	}
 	
 	

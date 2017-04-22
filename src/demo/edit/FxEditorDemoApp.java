@@ -3,20 +3,15 @@ package demo.edit;
 import goryachev.common.util.FileSettingsProvider;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
-import goryachev.fx.FxDump;
-import goryachev.fx.FxWindow;
-import goryachev.fx.edit.FxEditor;
-import goryachev.fx.edit.FxEditorModel;
 import java.io.File;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 
 /**
  * Test FxEditor app.
  */
-public class TestFxEditorApp
+public class FxEditorDemoApp
 	extends Application
 {
 	public static void main(String[] args)
@@ -42,32 +37,6 @@ public class TestFxEditorApp
 
 	public void start(Stage stage) throws Exception
 	{
-		new TestFxEditorWindow().open();
-	}
-	
-	
-	//
-	
-	
-	public static class TestFxEditorWindow
-		extends FxWindow
-	{
-		public TestFxEditorWindow()
-		{
-			super("TestFxEditorWindow");
-			
-			FxEditorModel m =
-				// new TestFxPlainEditorModel();
-				new TestFxColorEditorModel();
-			
-			FxEditor ed = new FxEditor(m);
-			ed.setBlinkRate(Duration.millis(600));
-			
-			setTitle("FxEditor Demo");
-			setCenter(ed);
-			setSize(600, 700);
-			
-			FxDump.attach(this);
-		}
+		new DemoWindow().open();
 	}
 }
