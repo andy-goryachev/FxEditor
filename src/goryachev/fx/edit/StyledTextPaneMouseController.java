@@ -8,12 +8,12 @@ import javafx.scene.text.TextFlow;
 /**
  * Mouse Controller.
  */
-public class MouseController
+public class StyledTextPaneMouseController
 {
 	protected final StyledTextPane editor;
 
 
-	public MouseController(StyledTextPane p)
+	public StyledTextPaneMouseController(StyledTextPane p)
 	{
 		this.editor = p;
 		

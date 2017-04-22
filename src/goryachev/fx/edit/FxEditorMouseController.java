@@ -105,6 +105,8 @@ public class FxEditorMouseController
 				sel.addSelectionSegment(pos, pos);
 			}
 		}
+		
+		editor.requestFocus();
 	}
 	
 	

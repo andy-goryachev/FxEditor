@@ -10,12 +10,12 @@ import javafx.scene.shape.PathElement;
 /**
  * Utility to simplify code for building complex paths.
  */
-public class CPathBuilder
+public class FxPathBuilder
 {
 	private final CList<PathElement> path = new CList<>();
 	
 	
-	public CPathBuilder()
+	public FxPathBuilder()
 	{
 	}
 	

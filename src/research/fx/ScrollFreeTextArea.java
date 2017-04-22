@@ -1,6 +1,6 @@
 package research.fx;
+import goryachev.fx.FX;
 import goryachev.fx.FxSize;
-import goryachev.fx.edit.internal.EditorTools;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -66,7 +66,7 @@ public class ScrollFreeTextArea
 		
 //		return super.computePrefWidth(height);
 		
-		FxSize d = EditorTools.getTextBounds(this, -1);
+		FxSize d = FX.getTextBounds(this, -1);
 		Insets insets = getInsets();
 		double w = Math.ceil(d.getWidth() + insets.getLeft() + insets.getRight());
 		return w;
@@ -78,7 +78,7 @@ public class ScrollFreeTextArea
 	{
 //		return super.computePrefHeight(width);
 
-		FxSize d = EditorTools.getTextBounds(this, width);
+		FxSize d = FX.getTextBounds(this, width);
 		return d.getHeight();
 	}
 }

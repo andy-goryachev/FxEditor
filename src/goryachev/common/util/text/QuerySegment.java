@@ -7,6 +7,10 @@ public abstract class QuerySegment
 {
 	public abstract boolean isMatch(String s);
 	
+	public abstract int indexOf(String s, int fromIndex);
+	
+	public abstract int length();
+	
 	//
 	
 	
@@ -50,6 +54,19 @@ public abstract class QuerySegment
 		{
 			return "I." + pattern; 
 		}
+
+
+		public int indexOf(String s, int fromIndex)
+		{
+			s = normalize(s);
+			return s.indexOf(pattern, fromIndex);
+		}
+
+
+		public int length()
+		{
+			return pattern.length();
+		}
 	}
 	
 	
@@ -77,6 +94,18 @@ public abstract class QuerySegment
 		public String toString()
 		{
 			return "E." + pattern; 
+		}
+		
+		
+		public int indexOf(String s, int fromIndex)
+		{
+			return s.indexOf(pattern, fromIndex);
+		}
+		
+		
+		public int length()
+		{
+			return pattern.length();
 		}
 	}
 	
@@ -107,6 +136,19 @@ public abstract class QuerySegment
 		{
 			return "X." + pattern; 
 		}
+		
+		
+		public int indexOf(String s, int fromIndex)
+		{
+			s = normalize(s);
+			return s.indexOf(pattern, fromIndex);
+		}
+		
+		
+		public int length()
+		{
+			return pattern.length();
+		}
 	}
 	
 	
@@ -135,6 +177,18 @@ public abstract class QuerySegment
 		public String toString()
 		{
 			return "XE." + pattern; 
+		}
+		
+		
+		public int indexOf(String s, int fromIndex)
+		{
+			return s.indexOf(pattern, fromIndex);
+		}
+		
+		
+		public int length()
+		{
+			return pattern.length();
 		}
 	}
 }

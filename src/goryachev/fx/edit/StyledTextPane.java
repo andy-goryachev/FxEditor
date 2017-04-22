@@ -48,7 +48,7 @@ public class StyledTextPane
 		updateBlinkRate(Duration.millis(500));
 		
 		// FIX allow custom handlers
-		new MouseController(this);
+		new StyledTextPaneMouseController(this);
 	}
 	
 	

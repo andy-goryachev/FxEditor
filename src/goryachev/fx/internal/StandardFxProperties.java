@@ -42,6 +42,7 @@ public class StandardFxProperties
 	public static FxCssProp cellSize(Object x) { return new FxCssProp("-fx-cell-size", x); }
 	
 	// F
+	public static FxCssProp fillColor(boolean x) { return new FxCssProp("-fx-fit-to-height", x); }
 	public static FxCssProp fitToHeight(boolean x) { return new FxCssProp("-fx-fit-to-height", x); }
 	public static FxCssProp fitToWidth(boolean x) { return new FxCssProp("-fx-fit-to-width", x); }
 	public static FxCssProp fontFamily(Object x) { return new FxCssProp("-fx-font-family", x); }

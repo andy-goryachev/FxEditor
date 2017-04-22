@@ -94,21 +94,24 @@ public abstract class FxTreeTableColumn<T>
 				
 				if(empty)
 				{
-					item = null;
-				}
-				
-				if(renderer == null)
-				{
-					String text = formatter.toString(item);
-					setText(text);
+					setText(null);
 					setGraphic(null);
-					setAlignment(alignment);
 				}
 				else
 				{
-					Node n = renderer.apply(item);
-					setText(null);
-					setGraphic(n);
+					if(renderer == null)
+					{
+						String text = formatter.toString(item);
+						setText(text);
+						setGraphic(null);
+						setAlignment(alignment);
+					}
+					else
+					{
+						Node n = renderer.apply(item);
+						setText(null);
+						setGraphic(n);
+					}
 				}
 			}
 		};

@@ -21,6 +21,18 @@ public class ZQuery
 	}
 	
 	
+	public int includedSegmentCount()
+	{
+		return includes == null ? 0 : includes.size();
+	}
+	
+	
+	public QuerySegment getIncludeSegment(int ix)
+	{
+		return includes.get(ix);
+	}
+	
+	
 	public String getExpression()
 	{
 		return expression;

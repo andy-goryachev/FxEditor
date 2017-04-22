@@ -24,6 +24,12 @@ public class CommonStyles
 				fontWeight("bold")
 			),
 			
+			// hide empty table rows
+			new Selector(".table-row-cell:empty").defines
+			(
+				backgroundColor(TRANSPARENT)
+			),
+			
 			// disables horizontal scroll bar
 			new Selector(NO_HORIZONTAL_SCROLL_BAR).defines
 			(

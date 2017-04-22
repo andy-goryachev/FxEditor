@@ -7,7 +7,7 @@ import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
 import goryachev.fx.edit.internal.Markers;
-import goryachev.fx.util.CPathBuilder;
+import goryachev.fx.util.FxPathBuilder;
 import java.io.StringWriter;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -35,7 +35,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.PathElement;
 import javafx.util.Duration;
 
 
@@ -124,7 +123,6 @@ public class FxEditor
 				return caretVisible.get() && isDisplayCaret() && isFocused() && (!isDisabled());
 			}
 		});
-		
 		
 		caretAnimation = new Timeline();
 		caretAnimation.setCycleCount(Animation.INDEFINITE);
@@ -567,27 +565,27 @@ public class FxEditor
 	}
 	
 	
+	// blinking caret
 	protected void setCaretVisible(boolean on)
 	{
 		caretVisible.set(on);
-		// FIX property
-//		caretPath.setVisible(on);
 	}
 	
 
-	protected void setCaretElements(PathElement[] es)
-	{
-		// reset caret so it's always on when moving, unlike MS Word
-		caretAnimation.stop();
-		caretPath.getElements().setAll(es);
-		caretAnimation.play();
-	}
+	// TODO part of move caret
+//	protected void setCaretElements(PathElement[] es)
+//	{
+//		// reset caret so it's always on when moving, unlike MS Word
+//		caretAnimation.stop();
+//		caretPath.getElements().setAll(es);
+//		caretAnimation.play();
+//	}
 
 	
 	protected void reloadSelectionDecorations()
 	{
-		CPathBuilder hb = new CPathBuilder();
-		CPathBuilder cb = new CPathBuilder();
+		FxPathBuilder hb = new FxPathBuilder();
+		FxPathBuilder cb = new FxPathBuilder();
 		
 		for(SelectionSegment s: segments)
 		{
@@ -603,7 +601,7 @@ public class FxEditor
 	}
 	
 	
-	protected void createCaretPath(CPathBuilder p, Marker m)
+	protected void createCaretPath(FxPathBuilder p, Marker m)
 	{
 		CaretLocation c = getCaretLocation(m);
 		if(c != null)
@@ -614,7 +612,7 @@ public class FxEditor
 	}
 	
 	
-	protected void createSelectionHighlight(CPathBuilder p, Marker startMarker, Marker endMarker)
+	protected void createSelectionHighlight(FxPathBuilder p, Marker startMarker, Marker endMarker)
 	{		
 		if((startMarker == null) || (endMarker == null))
 		{
