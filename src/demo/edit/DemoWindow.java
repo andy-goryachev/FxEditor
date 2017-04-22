@@ -31,6 +31,7 @@ public class DemoWindow
 		editor = new FxEditor(m);
 		editor.setContentPadding(new CInsets(2, 4));
 		editor.setBlinkRate(Duration.millis(600));
+		editor.setMultipleSelectionEnabled(true);
 		
 		setTitle("FxEditor Demo");
 		setTop(createMenu());
