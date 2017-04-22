@@ -1417,7 +1417,10 @@ public final class CKit
 			throw new CancelledException();
 		}
 		
-		// TODO also check for low memory
+		if(isLowMemory())
+		{
+			throw new LowMemoryException();
+		}
 	}
 	
 	
@@ -1437,6 +1440,35 @@ public final class CKit
 		{
 			return t.isInterrupted();
 		}
+	}
+	
+	
+	private static final double LOW_MEMORY_CHECK_THRESHOLD = 0.9;
+	private static final double LOW_MEMORY_FAIL_AFTER_GC_THRESHOLD = 0.87;
+	
+	
+	public static boolean isLowMemory()
+	{
+		Runtime r = Runtime.getRuntime();
+		
+		long total = r.totalMemory();
+		long used = total - r.freeMemory();
+		long max = r.maxMemory();
+		
+		if(used > (long)(max * LOW_MEMORY_CHECK_THRESHOLD))
+		{
+			// let's see if gc can help
+			System.gc();
+			System.runFinalization();
+			
+			total = r.totalMemory();
+			used = total - r.freeMemory();
+			if(used > (long)(max * LOW_MEMORY_FAIL_AFTER_GC_THRESHOLD))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
