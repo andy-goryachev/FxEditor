@@ -6,13 +6,8 @@ import goryachev.fx.CBooleanProperty;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
-import goryachev.fx.edit.internal.EditorTools;
 import goryachev.fx.edit.internal.Markers;
-import goryachev.fx.util.FxPathBuilder;
 import java.io.StringWriter;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
@@ -35,7 +30,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 
@@ -59,12 +53,10 @@ public class FxEditor
 	
 	protected final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
 	protected final ReadOnlyObjectWrapper<FxEditorModel> modelProperty = new ReadOnlyObjectWrapper<>();
-	protected final CBooleanProperty wrapText = new CBooleanProperty(true, this::requestLayout);
+	protected final CBooleanProperty wrapTextProperty = new CBooleanProperty(true, this::updateLayout);
 	protected final ReadOnlyBooleanWrapper multipleSelection = new ReadOnlyBooleanWrapper(false);
 	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
 	protected final ReadOnlyObjectWrapper<EditorSelection> selection = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
-	// TODO line decorations/line numbers
-	protected FxEditorLayout layout;
 	/** index of the topmost visible line */
 	protected int topLineIndex;
 	/** horizontal shift in pixels */
@@ -72,14 +64,11 @@ public class FxEditor
 	/** vertical shift in pixels, applied to topmost line */
 	protected int offsety;
 	protected Markers markers = new Markers(32);
-	protected ScrollBar vscroll;
-	protected ScrollBar hscroll;
+	protected final VFlow vflow;
+	protected final ScrollBar vscroll;
+	protected final ScrollBar hscroll;
 	protected final BooleanProperty displayCaret = new SimpleBooleanProperty(true);
-	protected final BooleanProperty caretVisible = new SimpleBooleanProperty(true);
 	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
-	protected final Timeline caretAnimation;
-	protected final Path caretPath;
-	protected final Path selectionHighlight;
 	protected final EditorSelectionController selector;
 	protected final KeyMap keymap;
 
@@ -97,37 +86,31 @@ public class FxEditor
 		FX.style(this, PANEL);
 		setBackground(FX.background(Color.WHITE));
 		
-		selectionHighlight = new Path();
-		FX.style(selectionHighlight, FxEditor.HIGHLIGHT);
-		selectionHighlight.setManaged(false);
-		selectionHighlight.setStroke(null);
-		selectionHighlight.setFill(Color.rgb(255, 255, 0, 0.25));
-		
-		caretPath = new Path();
-		FX.style(caretPath, FxEditor.CARET);
-		caretPath.setManaged(false);
-		caretPath.setStroke(Color.BLACK);
-		caretPath.visibleProperty().bind(new BooleanBinding()
+		vflow = new VFlow(this);
+		vflow.caretPath.visibleProperty().bind(new BooleanBinding()
 		{
 			{
-				bind(focusedProperty(), disabledProperty(), displayCaret, caretVisible);
+				bind(vflow.caretVisible, displayCaret, focusedProperty(), disabledProperty());
 			}
 
 			protected boolean computeValue()
 			{
-				return caretVisible.get() && isDisplayCaret() && isFocused() && (!isDisabled());
+				return vflow.isCaretVisible() && isDisplayCaret() && isFocused() && (!isDisabled());
 			}
 		});
 		
-		caretAnimation = new Timeline();
-		caretAnimation.setCycleCount(Animation.INDEFINITE);
-		Binder.onChange(this::updateBlinkRate, true, blinkRateProperty());
+		vscroll = createVScrollBar();
 		
-		getChildren().addAll(selectionHighlight, vscroll(), caretPath);
+		hscroll = createHScrollBar();
+		hscroll.visibleProperty().bind(wrapTextProperty.not());
+		
+		getChildren().addAll(vflow, vscroll, hscroll);
 		
 		selector = createSelectionController();
-		segments.addListener((Observable src) -> reloadSelectionDecorations());
-		Binder.onChange(this::requestLayout, widthProperty(), heightProperty());
+		segments.addListener((Observable src) -> vflow.reloadSelectionDecorations());
+
+		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
+		Binder.onChange(this::updateLayout, widthProperty(), heightProperty());
 		
 		keymap = createKeyMap();
 		
@@ -145,6 +128,12 @@ public class FxEditor
 				}
 			}
 		});
+	}
+	
+	
+	public void setContentPadding(Insets m)
+	{
+		vflow.setPadding(m);
 	}
 	
 	
@@ -226,33 +215,13 @@ public class FxEditor
 			m.addListener(this);
 		}
 		
-		requestLayout();
+		updateLayout();
 	}
 	
 	
 	public FxEditorModel getTextModel()
 	{
 		return modelProperty.get();
-	}
-	
-	
-	protected ScrollBar vscroll()
-	{
-		if(vscroll == null)
-		{
-			vscroll = createVScrollBar();
-		}
-		return vscroll;
-	}
-	
-	
-	protected ScrollBar hscroll()
-	{
-		if(hscroll == null)
-		{
-			hscroll = createHScrollBar();
-		}
-		return hscroll;
 	}
 	
 	
@@ -263,12 +232,11 @@ public class FxEditor
 		s.setManaged(true);
 		s.setMin(0.0);
 		s.setMax(1.0);
-		s.valueProperty().addListener((src,old,val) -> setVerticalAbsolutePosition(val.doubleValue()));
+		s.valueProperty().addListener((src,old,val) -> setAbsolutePositionVertical(val.doubleValue()));
 		return s;
 	}
 	
 	
-	// TODO
 	protected ScrollBar createHScrollBar()
 	{
 		ScrollBar s = new ScrollBar();
@@ -276,16 +244,22 @@ public class FxEditor
 		s.setManaged(true);
 		s.setMin(0.0);
 		s.setMax(1.0);
-		//s.valueProperty().addListener((src,old,val) -> setHAbsolutePosition(val.doubleValue()));
+		s.valueProperty().addListener((src,old,val) -> setAbsolutePositionHorizontal(val.doubleValue()));
 		return s;
 	}
 	
 	
-	protected void setVerticalAbsolutePosition(double pos)
+	protected void setAbsolutePositionVertical(double pos)
 	{
 		// TODO account for visible line count
 		int start = FX.round(getTextModel().getLineCount() * pos);
 		setTopLineIndex(start);
+	}
+	
+	
+	protected void setAbsolutePositionHorizontal(double pos)
+	{
+		// TODO
 	}
 	
 	
@@ -319,19 +293,19 @@ public class FxEditor
 	
 	public boolean isWrapText()
 	{
-		return wrapText.get();
+		return wrapTextProperty.get();
 	}
 	
 	
 	public void setWrapText(boolean on)
 	{
-		wrapText.set(on);
+		wrapTextProperty.set(on);
 	}
 	
 	
 	public BooleanProperty wrapTextProperty()
 	{
-		return wrapText;
+		return wrapTextProperty;
 	}
 	
 	
@@ -362,99 +336,60 @@ public class FxEditor
 	protected void setTopLineIndex(int x)
 	{
 		topLineIndex = x;
+		updateLayout();
+	}
+	
+	
+	protected void updateLayout()
+	{
+		if(vflow != null)
+		{
+			vflow.requestLayout();
+		}
 		requestLayout();
 	}
 	
 	
 	protected void layoutChildren()
 	{
-		layout = recreateLayout(layout);
-		reloadSelectionDecorations();
-	}
-	
-	
-	protected FxEditorLayout recreateLayout(FxEditorLayout prev)
-	{
-		if(prev != null)
-		{
-			prev.removeFrom(this);
-		}
+		Insets m = getPadding();
+		double x0 = m.getLeft();
+		double y0 = m.getTop();
 		
-		double width = getWidth();
-		double height = getHeight();
+		double vscrollWidth = 0.0;
+		double hscrollHeight = 0.0;
 		
 		// position the scrollbar(s)
-		ScrollBar vscroll = vscroll();
 		if(vscroll.isVisible())
 		{
-			double w = vscroll.prefWidth(-1);
-			layoutInArea(vscroll, width - w, 0, w, height, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			vscrollWidth = vscroll.prefWidth(-1);
 		}
 		
-		// TODO is loaded?
-		FxEditorModel model = getTextModel();
-		int lines = model.getLineCount();
-		FxEditorLayout la = new FxEditorLayout(topLineIndex, offsety);
-		
-		Insets pad = getInsets();
-		double maxy = height - pad.getBottom();
-		double y = pad.getTop();
-		double x0 = pad.getLeft();
-		boolean wrap = isWrapText();
-		
-		// TODO account for leading, trailing components
-		double wid = width - x0 - pad.getRight() - vscroll.getWidth();
-		
-		for(int ix=topLineIndex; ix<lines; ix++)
+		if(hscroll.isVisible())
 		{
-			LineBox b = (prev == null ? null : prev.getLineBox(ix));
-			
-			Region nd;
-			if(b == null)
-			{
-				nd = model.getDecoratedLine(ix);
-			}
-			else
-			{
-				nd = b.getBox();
-			}
-			getChildren().add(nd);
-			nd.applyCss();
-			nd.setManaged(true);
-			
-			double w = wrap ? wid : nd.prefWidth(-1);
-			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE); 
-			double h = nd.prefHeight(w);
-			
-			if(b == null)
-			{
-				b = new LineBox(ix, nd);
-			}
-			la.addLineBox(b);
-			
-			layoutInArea(nd, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
-			
-			y += h;
-			if(y > maxy)
-			{
-				break;
-			}
+			hscrollHeight = hscroll.prefHeight(-1);
 		}
 		
-		return la;
+		double w = getWidth() - m.getLeft() - m.getRight() - vscrollWidth;
+		double h = getHeight() - m.getTop() - m.getBottom() - hscrollHeight;
+
+		// layout children
+		layoutInArea(vscroll, w, y0, vscrollWidth, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
+		layoutInArea(hscroll, x0, h, w, hscrollHeight, 0, null, true, true, HPos.LEFT, VPos.BOTTOM);
+		layoutInArea(vflow, x0, y0, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 	}
 	
 	
 	/** returns text position at the specified screen coordinates */
 	public Marker getTextPos(double screenx, double screeny)
 	{
-		return layout.getTextPos(screenx, screeny, markers);
+		return vflow.layout.getTextPos(screenx, screeny, markers);
 	}
 	
 	
 	protected CaretLocation getCaretLocation(Marker pos)
 	{
-		return layout.getCaretLocation(this, pos);
+		return vflow.layout.getCaretLocation(this, pos);
 	}
 	
 	
@@ -472,7 +407,7 @@ public class FxEditor
 	
 	protected int getViewStartLine()
 	{
-		return layout.startLine();
+		return vflow.layout.startLine();
 	}
 	
 	
@@ -509,7 +444,7 @@ public class FxEditor
 
 	protected LayoutOp newLayoutOp()
 	{
-		return new LayoutOp(layout);
+		return new LayoutOp(vflow.layout);
 	}
 
 	
@@ -517,15 +452,8 @@ public class FxEditor
 	{
 		clearSelection();
 		
-		if(vscroll != null)
-		{
-			vscroll.setValue(0);
-		}
-		
-		if(hscroll != null)
-		{
-			hscroll.setValue(0);
-		}
+		vscroll.setValue(0);
+		hscroll.setValue(0);
 		
 		requestLayout();
 	}
@@ -552,23 +480,6 @@ public class FxEditor
 	}
 	
 	
-	// TODO stop blinking when dragging
-	protected void updateBlinkRate()
-	{
-		Duration d = getBlinkRate();
-		Duration period = d.multiply(2);
-		
-		caretAnimation.stop();
-		caretAnimation.getKeyFrames().setAll
-		(
-			new KeyFrame(Duration.ZERO, (ev) -> setCaretVisible(true)),
-			new KeyFrame(d, (ev) -> setCaretVisible(false)),
-			new KeyFrame(period)
-		);
-		caretAnimation.play();
-	}
-	
-	
 	public void setDisplayCaret(boolean on)
 	{
 		displayCaret.set(on);
@@ -580,240 +491,6 @@ public class FxEditor
 		return displayCaret.get();
 	}
 	
-	
-	// blinking caret
-	protected void setCaretVisible(boolean on)
-	{
-		caretVisible.set(on);
-	}
-	
-
-	// TODO part of move caret
-//	protected void setCaretElements(PathElement[] es)
-//	{
-//		// reset caret so it's always on when moving, unlike MS Word
-//		caretAnimation.stop();
-//		caretPath.getElements().setAll(es);
-//		caretAnimation.play();
-//	}
-
-	
-	protected void reloadSelectionDecorations()
-	{
-		FxPathBuilder hb = new FxPathBuilder();
-		FxPathBuilder cb = new FxPathBuilder();
-		
-		for(SelectionSegment s: segments)
-		{
-			Marker start = s.getStart();
-			Marker end = s.getEnd();
-			
-			createSelectionHighlight(hb, start, end);
-			createCaretPath(cb, end);
-		}
-		
-		selectionHighlight.getElements().setAll(hb.getPath());
-		caretPath.getElements().setAll(cb.getPath());
-	}
-	
-	
-	protected void createCaretPath(FxPathBuilder p, Marker m)
-	{
-		CaretLocation c = getCaretLocation(m);
-		if(c != null)
-		{
-			p.moveto(c.x, c.y0);
-			p.lineto(c.x, c.y1);
-		}
-	}
-	
-	
-	protected void createSelectionHighlight(FxPathBuilder p, Marker startMarker, Marker endMarker)
-	{		
-		if((startMarker == null) || (endMarker == null))
-		{
-			return;
-		}
-		
-		if(startMarker.compareTo(endMarker) > 0)
-		{
-			Marker tmp = startMarker;
-			startMarker = endMarker;
-			endMarker = tmp;
-		}
-		
-		if(endMarker.getLine() < topLineIndex)
-		{
-			// selection is above visible area
-			return;
-		}
-		
-		if(startMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount()))
-		{
-			// selection is below visible area
-			return;
-		}
-
-		CaretLocation beg = getCaretLocation(startMarker);
-		CaretLocation end = getCaretLocation(endMarker);
-		
-		double left = 0.0;
-		double right = getWidth() - left - vscroll().getWidth();
-		double top = 0.0; 
-		double bottom = getHeight(); // TODO hscroll
-		
-		// there is a number of possible shapes resulting from intersection of
-		// the selection shape and the visible area.  the logic below explicitly generates 
-		// resulting paths because the selection can be quite large.
-		
-		if(beg == null)
-		{
-			if(end == null)
-			{
-				if((startMarker.getLine() < topLineIndex) && (endMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount())))
-				{
-					// 04
-					p.moveto(left, top);
-					p.lineto(right, top);
-					p.lineto(right, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, top);
-				}
-				return;
-			}
-			
-			// start caret is above the visible area
-			boolean crossTop = end.containsY(top);
-			boolean crossBottom = end.containsY(bottom);
-			
-			if(crossBottom)
-			{
-				if(crossTop)
-				{
-					// 01
-					p.moveto(left, top);
-					p.lineto(end.x, top);
-					p.lineto(end.x, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, top);
-				}
-				else
-				{
-					// 02
-					p.moveto(left, top);
-					p.lineto(right, top);
-					p.lineto(right, end.y0);
-					p.lineto(end.x, end.y0);
-					p.lineto(end.x, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, top);
-				}
-			}
-			else
-			{
-				if(crossTop)
-				{
-					// 03
-					p.moveto(left, top);
-					p.lineto(end.x, top);
-					p.lineto(end.x, end.y1);
-					p.lineto(left, end.y1);
-					p.lineto(left, top);
-				}
-				else
-				{
-					// 05
-					p.moveto(left, top);
-					p.lineto(right, top);
-					p.lineto(right, end.y0);
-					p.lineto(end.x, end.y0);
-					p.lineto(end.x, end.y1);
-					p.lineto(left, end.y1);
-					p.lineto(left, top);
-				}
-			}
-		}
-		else if(end == null)
-		{
-			// end caret is below the visible area
-			boolean crossTop = beg.containsY(top);
-			boolean crossBottom = beg.containsY(bottom);
-			
-			if(crossTop)
-			{
-				if(crossBottom)
-				{
-					// 06
-					p.moveto(beg.x, top);
-					p.lineto(right, top);
-					p.lineto(right, bottom);
-					p.lineto(beg.x, bottom);
-					p.lineto(beg.x, top);
-				}
-				else
-				{
-					// 07
-					p.moveto(beg.x, top);
-					p.lineto(right, top);
-					p.lineto(right, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, beg.y1);
-					p.lineto(beg.x, beg.y1);
-					p.lineto(beg.x, top);
-				}
-			}
-			else
-			{
-				if(crossBottom)
-				{
-					// 08
-					p.moveto(beg.x, beg.y0);
-					p.lineto(right, beg.y0);
-					p.lineto(right, bottom);
-					p.lineto(beg.x, bottom);
-					p.lineto(beg.x, beg.y0);
-				}
-				else
-				{
-					// 09
-					p.moveto(beg.x, beg.y0);
-					p.lineto(right, beg.y0);
-					p.lineto(right, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, beg.y1);
-					p.lineto(beg.x, beg.y1);
-					p.lineto(beg.x, beg.y0);
-				}
-			}
-		}
-		else
-		{
-			// both carets are in the visible area
-			if(EditorTools.isCloseEnough(beg.y0, end.y0))
-			{
-				// 10
-				p.moveto(beg.x, beg.y0);
-				p.lineto(end.x, beg.y0);
-				p.lineto(end.x, end.y1);
-				p.lineto(beg.x, end.y1);
-				p.lineto(beg.x, beg.y0);
-			}
-			else
-			{
-				// 11
-				p.moveto(beg.x, beg.y0);
-				p.lineto(right, beg.y0);
-				p.lineto(right, end.y0);
-				p.lineto(end.x, end.y0);
-				p.lineto(end.x, end.y1);
-				p.lineto(left, end.y1);
-				p.lineto(left, beg.y1);
-				p.lineto(beg.x, beg.y1);
-				p.lineto(beg.x, beg.y0);
-			}
-		}
-	}
-
 
 	/** returns plain text on the specified line */
 	public String getTextOnLine(int line)

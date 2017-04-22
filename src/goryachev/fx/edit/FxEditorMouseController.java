@@ -1,7 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.D;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
@@ -33,7 +32,7 @@ public class FxEditorMouseController
 	protected void handleScroll(ScrollEvent ev)
 	{
 		// on scrollbar
-		if(ev.getX() >= editor.vscroll().getLayoutX())
+		if(ev.getX() >= editor.vscroll.getLayoutX())
 		{
 			return;
 		}
@@ -67,7 +66,7 @@ public class FxEditorMouseController
 	protected void handleMousePressed(MouseEvent ev)
 	{
 		// on scrollbar
-		if(ev.getX() >= editor.vscroll().getLayoutX())
+		if(ev.getX() >= editor.vscroll.getLayoutX())
 		{
 			return;
 		}
@@ -118,7 +117,7 @@ public class FxEditorMouseController
 		}
 		
 		// on scrollbar
-		if(ev.getX() >= editor.vscroll().getLayoutX())
+		if(ev.getX() >= editor.vscroll.getLayoutX())
 		{
 			dragging = false;
 			draggingScroll = true;
@@ -138,7 +137,7 @@ public class FxEditorMouseController
 		draggingScroll = false;
 
 		// on scrollbar
-		if(ev.getX() >= editor.vscroll().getLayoutX())
+		if(ev.getX() >= editor.vscroll.getLayoutX())
 		{
 			return;
 		}

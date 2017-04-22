@@ -29,7 +29,7 @@ public class DemoWindow
 			new TestFxColorEditorModel();
 		
 		editor = new FxEditor(m);
-		editor.setPadding(new CInsets(2, 4));
+		editor.setContentPadding(new CInsets(2, 4));
 		editor.setBlinkRate(Duration.millis(600));
 		
 		setTitle("FxEditor Demo");
