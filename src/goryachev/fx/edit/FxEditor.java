@@ -58,7 +58,7 @@ public class FxEditor
 	public static final CssStyle PANEL = new CssStyle("FxEditor_PANEL");
 	
 	protected final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
-	protected final ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
+	protected final ReadOnlyObjectWrapper<FxEditorModel> modelProperty = new ReadOnlyObjectWrapper<>();
 	protected final CBooleanProperty wrapText = new CBooleanProperty(true, this::requestLayout);
 	protected final ReadOnlyBooleanWrapper multipleSelection = new ReadOnlyBooleanWrapper(false);
 	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
@@ -219,7 +219,7 @@ public class FxEditor
 			old.removeListener(this);
 		}
 		
-		model.set(m);
+		modelProperty.set(m);
 		
 		if(m != null)
 		{
@@ -232,7 +232,7 @@ public class FxEditor
 	
 	public FxEditorModel getTextModel()
 	{
-		return model.get();
+		return modelProperty.get();
 	}
 	
 	
@@ -355,7 +355,7 @@ public class FxEditor
 	
 	public ReadOnlyObjectProperty<FxEditorModel> modelProperty()
 	{
-		return model.getReadOnlyProperty();
+		return modelProperty.getReadOnlyProperty();
 	}
 	
 	
@@ -392,32 +392,32 @@ public class FxEditor
 		}
 		
 		// TODO is loaded?
-		FxEditorModel m = getTextModel();
-		int lines = m.getLineCount();
+		FxEditorModel model = getTextModel();
+		int lines = model.getLineCount();
 		FxEditorLayout la = new FxEditorLayout(topLineIndex, offsety);
 		
 		Insets pad = getInsets();
 		double maxy = height - pad.getBottom();
 		double y = pad.getTop();
 		double x0 = pad.getLeft();
-		double wid = width - x0 - pad.getRight() - vscroll.getWidth(); // TODO leading, trailing components
 		boolean wrap = isWrapText();
+		double wid = width - x0 - pad.getRight() - vscroll.getWidth(); // TODO leading, trailing components
 		
 		for(int ix=topLineIndex; ix<lines; ix++)
 		{
-			Region n = m.getDecoratedLine(ix);
-			getChildren().add(n);
-			n.applyCss();
-			n.setManaged(true);
+			Region nd = model.getDecoratedLine(ix);
+			getChildren().add(nd);
+			nd.applyCss();
+			nd.setManaged(true);
 			
-			double w = wrap ? wid : n.prefWidth(-1);
-			n.setMaxWidth(wrap ? wid : Double.MAX_VALUE); 
-			double h = n.prefHeight(w);
+			double w = wrap ? wid : nd.prefWidth(-1);
+			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE); 
+			double h = nd.prefHeight(w);
 			
-			LineBox b = new LineBox(ix, n);
+			LineBox b = new LineBox(ix, nd);
 			la.addLineBox(b);
 			
-			layoutInArea(n, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			layoutInArea(nd, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			
 			y += h;
 			if(y > maxy)
@@ -803,7 +803,7 @@ public class FxEditor
 	/** returns plain text on the specified line */
 	public String getTextOnLine(int line)
 	{
-		return model.get().getPlainText(line);
+		return modelProperty.get().getPlainText(line);
 	}
 
 
@@ -811,7 +811,7 @@ public class FxEditor
 	public String getSelectedText() throws Exception
 	{
 		StringWriter wr = new StringWriter();
-		model.get().getPlainText(getSelection(), wr);
+		modelProperty.get().getPlainText(getSelection(), wr);
 		return wr.toString();
 	}
 	
@@ -833,6 +833,12 @@ public class FxEditor
 	public void copy()
 	{
 		// TODO use model to copy every data format it can
-		model.get().copy(getSelection());
+		modelProperty.get().copy(getSelection());
+	}
+	
+	
+	public void selectAll()
+	{
+		// TODO
 	}
 }

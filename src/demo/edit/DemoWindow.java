@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
+import goryachev.fx.CInsets;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
 import goryachev.fx.FX;
@@ -28,6 +29,7 @@ public class DemoWindow
 			new TestFxColorEditorModel();
 		
 		editor = new FxEditor(m);
+		editor.setPadding(new CInsets(2, 4));
 		editor.setBlinkRate(Duration.millis(600));
 		
 		setTitle("FxEditor Demo");
