@@ -3,6 +3,7 @@ package demo.edit;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
 import goryachev.fx.edit.CTextFlow;
+import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxPlainEditorModel;
 import java.text.NumberFormat;
 import javafx.scene.layout.Region;
@@ -152,6 +153,12 @@ public class TestFxColorEditorModel
 	protected Color c(int angle)
 	{
 		return Color.hsb(36.0 * angle + 1, 1.0, 0.7);
+	}
+	
+	
+	public Edit edit(Edit ed) throws Exception
+	{
+		throw new Exception();
 	}
 	
 	

@@ -2,7 +2,7 @@
 package demo.edit;
 import goryachev.common.util.SB;
 import goryachev.fx.edit.CTextFlow;
-import goryachev.fx.edit.FxEditorModel.LoadInfo;
+import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxPlainEditorModel;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
@@ -35,6 +35,12 @@ public class TestFxPlainEditorModel
 	public LoadInfo getLoadInfo()
 	{
 		return null; 
+	}
+	
+	
+	public Edit edit(Edit ed) throws Exception
+	{
+		throw new Exception();
 	}
 
 
