@@ -243,6 +243,7 @@ public class FxEditor
 		s.setMin(0.0);
 		s.setMax(1.0);
 		s.valueProperty().addListener((src,old,val) -> setAbsolutePositionVertical(val.doubleValue()));
+		s.addEventFilter(ScrollEvent.ANY, (ev) -> ev.consume());
 		return s;
 	}
 	
@@ -255,6 +256,7 @@ public class FxEditor
 		s.setMin(0.0);
 		s.setMax(1.0);
 		s.valueProperty().addListener((src,old,val) -> setAbsolutePositionHorizontal(val.doubleValue()));
+		s.addEventFilter(ScrollEvent.ANY, (ev) -> ev.consume());
 		return s;
 	}
 	

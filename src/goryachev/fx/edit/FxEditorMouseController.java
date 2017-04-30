@@ -6,7 +6,7 @@ import javafx.scene.input.ScrollEvent;
 
 
 /**
- * FxEditor Controller.
+ * FxEditor Mouse Controller.
  */
 public class FxEditorMouseController
 {
@@ -23,16 +23,23 @@ public class FxEditorMouseController
 	}
 	
 	
-	public void moveCaret(boolean right)
+	protected boolean isOverScrollBar(double x, double y)
 	{
-		// TODO
+		if(x >= editor.vscroll.getLayoutX())
+		{
+			return true;
+		}
+		else if(y >= editor.hscroll.getLayoutY())
+		{
+			return true;
+		}
+		return false;
 	}
 	
 	
 	protected void handleScroll(ScrollEvent ev)
 	{
-		// on scrollbar
-		if(ev.getX() >= editor.vscroll.getLayoutX())
+		if(isOverScrollBar(ev.getX(), ev.getY()))
 		{
 			return;
 		}
@@ -65,13 +72,11 @@ public class FxEditorMouseController
 	
 	protected void handleMousePressed(MouseEvent ev)
 	{
-		// on scrollbar
-		if(ev.getX() >= editor.vscroll.getLayoutX())
+		if(isOverScrollBar(ev.getX(), ev.getY()))
 		{
 			return;
 		}
 			
-		// TODO property: multiple selection
 		Marker pos = getTextPos(ev);
 		
 		if(ev.isShiftDown())
@@ -116,8 +121,7 @@ public class FxEditorMouseController
 			return;
 		}
 		
-		// on scrollbar
-		if(ev.getX() >= editor.vscroll.getLayoutX())
+		if(isOverScrollBar(ev.getX(), ev.getY()))
 		{
 			dragging = false;
 			draggingScroll = true;
@@ -136,8 +140,7 @@ public class FxEditorMouseController
 		dragging = false;
 		draggingScroll = false;
 
-		// on scrollbar
-		if(ev.getX() >= editor.vscroll.getLayoutX())
+		if(isOverScrollBar(ev.getX(), ev.getY()))
 		{
 			return;
 		}
