@@ -277,6 +277,8 @@ public class FxEditor
 	
 	protected void scrollRelative(double pixels)
 	{
+		D.print(pixels); // FIX
+		
 		if(pixels < 0)
 		{
 			double toScroll = pixels;

@@ -14,6 +14,9 @@ public class FxEditorMouseController
 	protected final EditorSelectionController sel;
 	protected boolean dragging;
 	protected boolean draggingScroll;
+	// this could be a preference
+	private static final double BLOCK_SCROLL_FACTOR = 0.3;
+	private static final double BLOCK_MIN_SCROLL = 40;
 
 
 	public FxEditorMouseController(FxEditor ed, EditorSelectionController sel)
@@ -46,18 +49,39 @@ public class FxEditorMouseController
 		
 		if(ev.isShiftDown())
 		{
-			// TODO horizontal scroll
+			// TODO horizontal scroll perhaps?
 			D.print("horizontal scroll", ev.getDeltaX());
 		}
 		else if(ev.isShortcutDown())
 		{
-			// TODO page up / page down
-			D.print("page scroll", ev.getDeltaY(), ev.getTextDeltaY(), ev.getTextDeltaYUnits());
+			// page up / page down
+			if(ev.getDeltaY() >= 0)
+			{
+				editor.pageUp();
+			}
+			else
+			{
+				editor.pageDown();
+			}
 		}
 		else
 		{
-			// TODO vertical scroll
-			D.print("vertical scroll", ev.getDeltaY(), ev.getTextDeltaY(), ev.getTextDeltaYUnits());
+			// vertical block scroll
+			double h = editor.getHeight(); // padding?
+			double delta = h * BLOCK_SCROLL_FACTOR;
+			if(delta < BLOCK_MIN_SCROLL)
+			{
+				delta = h;
+			}
+			
+			if(ev.getDeltaY() >= 0)
+			{
+				editor.scrollRelative(-delta);
+			}
+			else
+			{
+				editor.scrollRelative(delta);
+			}
 		}
 	}
 	
@@ -97,7 +121,7 @@ public class FxEditorMouseController
 			}
 			else
 			{
-				// FIX add a new caret
+				// add a new caret
 				sel.addSelectionSegment(pos, pos);
 			}
 		}
