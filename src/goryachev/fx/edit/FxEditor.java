@@ -461,11 +461,12 @@ public class FxEditor
 	protected void eventAllChanged()
 	{
 		clearSelection();
+		vflow.invalidateLayout();
 		
 		vscroll.setValue(0);
 		hscroll.setValue(0);
 		
-		requestLayout();
+		updateLayout();
 	}
 
 

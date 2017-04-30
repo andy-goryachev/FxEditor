@@ -1,2 +1,6 @@
 - horizontal scrolling
 - temporarily set editable to false and do copy() in a background thread (with an error handler) if the model is large
+- horizontal panning
+- click outside of text should move caret to the last character
+- focused border
+- fix LTR+RTL selection

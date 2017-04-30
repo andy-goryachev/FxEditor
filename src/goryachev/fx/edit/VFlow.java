@@ -66,6 +66,16 @@ public class VFlow
 	}
 	
 	
+	public void invalidateLayout()
+	{
+		if(layout != null)
+		{
+			layout.removeFrom(this);
+		}
+		layout = null;
+	}
+	
+	
 	// TODO stop blinking when dragging
 	public void updateBlinkRate()
 	{
@@ -376,6 +386,4 @@ public class VFlow
 			}
 		}
 	}
-
-
 }
