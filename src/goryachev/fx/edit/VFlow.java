@@ -39,7 +39,7 @@ public class VFlow
 	protected int topLineIndex;
 	/** horizontal shift in pixels */
 	protected double offsetx;
-	/** vertical shift in pixels, applied to topmost line.  positive value moves top line upwards */
+	/** vertical offset or the viewport relative to the topmost line.  always positive */
 	protected double offsety;
 
 	
@@ -461,12 +461,12 @@ public class VFlow
 			delta = h;
 		}
 		
+		// FIX debug
+		//delta = 2;
+		
 		if(up)
 		{
-			double targetY = offsety - delta;
-			double y = -offsety;
-			
-			if(y < targetY)
+			if(delta <= offsety)
 			{
 				// no need to query the model
 				setOrigin(topLineIndex, offsety -= delta);
@@ -475,7 +475,9 @@ public class VFlow
 			else
 			{
 				int ix = topLineIndex;
-	
+				double targetY = -delta;
+				double y = -offsety;
+					
 				for(;;)
 				{
 					--ix;
@@ -487,15 +489,14 @@ public class VFlow
 					}
 					
 					double dy = getEditorLayout().getLineHeight(ix);
-					if((y - dy) < targetY)
+					y -= dy;
+					if(y < targetY)
 					{
 						break;
 					}
-					
-					y -= dy;
 				}
 				
-				setOrigin(ix, y - targetY);
+				setOrigin(ix, targetY - y);
 				return;
 			}
 		}
