@@ -68,6 +68,7 @@ public class FxEditor
 	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	protected final EditorSelectionController selector;
 	protected final KeyMap keymap;
+	protected boolean handleScrollEvents = true;
 
 	
 	public FxEditor()
@@ -257,15 +258,24 @@ public class FxEditor
 	
 	protected void setAbsolutePositionVertical(double pos)
 	{
-		// TODO account for visible line count
-		int start = FX.round(getTextModel().getLineCount() * pos);
-		setTopLineIndex(start);
+		if(handleScrollEvents)
+		{
+			// TODO account for visible line count
+			int start = FX.round(getTextModel().getLineCount() * pos);
+			setTopLineIndex(start);
+		}
 	}
 	
 	
 	protected void setAbsolutePositionHorizontal(double pos)
 	{
 		// TODO
+	}
+	
+	
+	protected void setHandleScrollEvents(boolean on)
+	{
+		handleScrollEvents = on;
 	}
 	
 	

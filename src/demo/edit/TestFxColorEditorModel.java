@@ -12,16 +12,18 @@ import javafx.scene.text.Text;
 
 
 /**
- * test plain text model with 2 billion rows
+ * test plain text model with up to 2 billion rows
  */
 public class TestFxColorEditorModel
 	extends FxPlainEditorModel
 {
 	private NumberFormat format = NumberFormat.getInstance();
+	private int lineCount;
 	
 	
-	public TestFxColorEditorModel()
+	public TestFxColorEditorModel(int lineCount)
 	{
+		this.lineCount = lineCount;
 	}
 	
 	
@@ -61,7 +63,7 @@ public class TestFxColorEditorModel
 
 	public int getLineCount()
 	{
-		return Integer.MAX_VALUE;
+		return lineCount;
 	}
 
 

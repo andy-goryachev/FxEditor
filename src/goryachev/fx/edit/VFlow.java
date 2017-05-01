@@ -422,20 +422,6 @@ public class VFlow
 	}
 	
 	
-	public void pageUp()
-	{
-		// TODO
-		D.print();
-	}
-	
-	
-	public void pageDown()
-	{
-		// TODO
-		D.print();
-	}
-	
-	
 	protected FxEditorLayout getEditorLayout()
 	{
 		if(layout == null)
@@ -446,12 +432,22 @@ public class VFlow
 	}
 	
 	
+	public void pageUp()
+	{
+		blockScroll(getHeight(), true);
+	}
+	
+	
+	public void pageDown()
+	{
+		blockScroll(getHeight(), false);
+	}
+	
+	
 	public void blockScroll(boolean up)
 	{
-		D.print(up, topLineIndex, offsety); // FIX
-		
 		// this could be a preference
-		double BLOCK_SCROLL_FACTOR = 0.3;
+		double BLOCK_SCROLL_FACTOR = 0.1;
 		double BLOCK_MIN_SCROLL = 40;
 		
 		double h = getHeight();
@@ -461,9 +457,12 @@ public class VFlow
 			delta = h;
 		}
 		
-		// FIX debug
-		//delta = 2;
-		
+		blockScroll(delta, up);
+	}
+	
+	
+	protected void blockScroll(double delta, boolean up)
+	{
 		if(up)
 		{
 			if(delta <= offsety)
@@ -502,7 +501,28 @@ public class VFlow
 		}
 		else
 		{
-			// TODO
+			int ix = topLineIndex;
+			double targetY = delta;
+			double y = -offsety;
+			
+			for(;;)
+			{
+				if(ix >= editor.getLineCount())
+				{
+					// FIX need to figure out what to do in this case
+					break;
+				}
+				
+				double dy = getEditorLayout().getLineHeight(ix);
+				if(y + dy > targetY)
+				{
+					setOrigin(ix, targetY - y);
+					return;
+				}
+				
+				y += dy;
+				ix++;
+			}
 		}
 	}
 	
@@ -513,6 +533,13 @@ public class VFlow
 		offsety = offy;
 		
 		layoutChildren();
+		
+		// update scroll
+		editor.setHandleScrollEvents(false);
+		int max = editor.getLineCount();
+		double v = (max == 0 ? 0.0 : top / (double)max); 
+		editor.vscroll.setValue(v);
+		editor.setHandleScrollEvents(true);
 	}
 
 

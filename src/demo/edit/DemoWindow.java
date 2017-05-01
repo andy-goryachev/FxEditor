@@ -23,10 +23,8 @@ public class DemoWindow
 	public DemoWindow()
 	{
 		super("TestFxEditorWindow");
-		
-		FxEditorModel m =
-			// new TestFxPlainEditorModel();
-			new TestFxColorEditorModel();
+
+		FxEditorModel m = new TestFxColorEditorModel(Conf.LINE_COUNT);
 		
 		editor = new FxEditor(m);
 		editor.setContentPadding(new CInsets(2, 4));
