@@ -14,9 +14,6 @@ public class FxEditorMouseController
 	protected final EditorSelectionController sel;
 	protected boolean dragging;
 	protected boolean draggingScroll;
-	// this could be a preference
-	private static final double BLOCK_SCROLL_FACTOR = 0.3;
-	private static final double BLOCK_MIN_SCROLL = 40;
 
 
 	public FxEditorMouseController(FxEditor ed, EditorSelectionController sel)
@@ -67,21 +64,7 @@ public class FxEditorMouseController
 		else
 		{
 			// vertical block scroll
-			double h = editor.getHeight(); // padding?
-			double delta = h * BLOCK_SCROLL_FACTOR;
-			if(delta < BLOCK_MIN_SCROLL)
-			{
-				delta = h;
-			}
-			
-			if(ev.getDeltaY() >= 0)
-			{
-				editor.scrollRelative(-delta);
-			}
-			else
-			{
-				editor.scrollRelative(delta);
-			}
+			editor.blockScroll(ev.getDeltaY() >= 0);
 		}
 	}
 	

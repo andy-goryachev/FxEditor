@@ -10,6 +10,7 @@ public class LineBox
 {
 	private final int line;
 	private final Region box;
+	private double height;
 	// TODO leading component
 	// TODO trailing component
 	
@@ -30,5 +31,17 @@ public class LineBox
 	public int getLineNumber()
 	{
 		return line;
+	}
+
+
+	public void setHeight(double h)
+	{
+		height = h;
+	}
+	
+	
+	public double getHeight()
+	{
+		return height;
 	}
 }

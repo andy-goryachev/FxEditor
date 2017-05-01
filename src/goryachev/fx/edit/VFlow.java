@@ -1,6 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.fx.Binder;
+import goryachev.common.util.D;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
@@ -8,17 +8,16 @@ import goryachev.fx.util.FxPathBuilder;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 
@@ -33,13 +32,22 @@ public class VFlow
 	public final Path caretPath;
 	public final Path selectionHighlight;
 	protected final BooleanProperty caretVisible = new SimpleBooleanProperty(true);
+	protected final Rectangle clip;
 	// TODO line decorations/line numbers
 	protected FxEditorLayout layout;
-	
+	/** index of the topmost visible line */
+	protected int topLineIndex;
+	/** horizontal shift in pixels */
+	protected double offsetx;
+	/** vertical shift in pixels, applied to topmost line.  positive value moves top line upwards */
+	protected double offsety;
+
 	
 	public VFlow(FxEditor ed)
 	{
 		this.editor = ed;
+		
+		clip = new Rectangle();
 		
 		selectionHighlight = new Path();
 		FX.style(selectionHighlight, FxEditor.HIGHLIGHT);
@@ -56,6 +64,7 @@ public class VFlow
 		caretAnimation.setCycleCount(Animation.INDEFINITE);
 		
 		getChildren().addAll(selectionHighlight, caretPath);
+		setClip(clip);
 	}
 	
 	
@@ -115,22 +124,24 @@ public class VFlow
 		
 		double width = getWidth();
 		double height = getHeight();
+		clip.setWidth(width);
+		clip.setHeight(height);
 		
 		// TODO is loaded?
 		FxEditorModel model = editor.getTextModel();
 		int lines = model.getLineCount();
-		FxEditorLayout la = new FxEditorLayout(editor.topLineIndex, editor.offsety);
+		FxEditorLayout la = new FxEditorLayout(editor, topLineIndex);
 		
 		Insets pad = getInsets();
 		double maxy = height - pad.getBottom();
-		double y = pad.getTop();
+		double y = pad.getTop() - offsety;
 		double x0 = pad.getLeft();
 		boolean wrap = editor.isWrapText();
 		
 		// TODO account for leading, trailing components
 		double wid = width - x0 - pad.getRight();
 		
-		for(int ix=editor.topLineIndex; ix<lines; ix++)
+		for(int ix=topLineIndex; ix<lines; ix++)
 		{
 			LineBox b = (prev == null ? null : prev.getLineBox(ix));
 			
@@ -148,7 +159,8 @@ public class VFlow
 			nd.setManaged(true);
 			
 			double w = wrap ? wid : nd.prefWidth(-1);
-			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE); 
+			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
+			
 			double h = nd.prefHeight(w);
 			
 			if(b == null)
@@ -156,6 +168,7 @@ public class VFlow
 				b = new LineBox(ix, nd);
 			}
 			la.addLineBox(b);
+			b.setHeight(h);
 			
 			layoutInArea(nd, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			
@@ -167,6 +180,27 @@ public class VFlow
 		}
 		
 		return la;
+	}
+	
+	
+	public double addAndComputePreferredHeight(Region nd)
+	{
+		// warning: the same code in recreateLayout() above
+		Insets pad = getInsets();
+		double x0 = pad.getLeft();
+		boolean wrap = editor.isWrapText();
+		double width = getWidth();
+		
+		// TODO account for leading, trailing components
+		double wid = width - x0 - pad.getRight();
+		
+		getChildren().add(nd);
+		nd.applyCss();
+		nd.setManaged(true);
+		
+		double w = wrap ? wid : nd.prefWidth(-1);
+		nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
+		return nd.prefHeight(w);
 	}
 	
 	
@@ -215,13 +249,13 @@ public class VFlow
 			endMarker = tmp;
 		}
 		
-		if(endMarker.getLine() < editor.topLineIndex)
+		if(endMarker.getLine() < topLineIndex)
 		{
 			// selection is above visible area
 			return;
 		}
 		
-		if(startMarker.getLine() >= (editor.topLineIndex + layout.getVisibleLineCount()))
+		if(startMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount()))
 		{
 			// selection is below visible area
 			return;
@@ -243,7 +277,7 @@ public class VFlow
 		{
 			if(end == null)
 			{
-				if((startMarker.getLine() < editor.topLineIndex) && (endMarker.getLine() >= (editor.topLineIndex + layout.getVisibleLineCount())))
+				if((startMarker.getLine() < topLineIndex) && (endMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount())))
 				{
 					// 04
 					p.moveto(left, top);
@@ -385,5 +419,104 @@ public class VFlow
 				p.lineto(beg.x, beg.y0);
 			}
 		}
+	}
+	
+	
+	public void pageUp()
+	{
+		// TODO
+		D.print();
+	}
+	
+	
+	public void pageDown()
+	{
+		// TODO
+		D.print();
+	}
+	
+	
+	protected FxEditorLayout getEditorLayout()
+	{
+		if(layout == null)
+		{
+			layout = new FxEditorLayout(editor, topLineIndex);
+		}
+		return layout;
+	}
+	
+	
+	public void blockScroll(boolean up)
+	{
+		D.print(up, topLineIndex, offsety); // FIX
+		
+		// this could be a preference
+		double BLOCK_SCROLL_FACTOR = 0.3;
+		double BLOCK_MIN_SCROLL = 40;
+		
+		double h = editor.getHeight(); // padding?
+		double delta = h * BLOCK_SCROLL_FACTOR;
+		if(delta < BLOCK_MIN_SCROLL)
+		{
+			delta = h;
+		}
+		
+		if(up)
+		{
+			double targetY = offsety - delta;
+			double y = -offsety;
+			
+			if(y < targetY)
+			{
+				// no need to query the model
+				setOrigin(topLineIndex, offsety -= delta);
+				return;
+			}
+			else
+			{
+				int ix = topLineIndex;
+	
+				for(;;)
+				{
+					--ix;
+					if(ix < 0)
+					{
+						// top line
+						setOrigin(0, 0);
+						return;
+					}
+					
+					double dy = getEditorLayout().getLineHeight(ix);
+					if((y - dy) < targetY)
+					{
+						break;
+					}
+					
+					y -= dy;
+				}
+				
+				setOrigin(ix, y - targetY);
+				return;
+			}
+		}
+		else
+		{
+			// TODO
+		}
+	}
+	
+	
+	protected void setOrigin(int top, double offy)
+	{
+		topLineIndex = top;
+		offsety = offy;
+		
+		layoutChildren();
+	}
+
+
+	public void setTopLineIndex(int ix)
+	{
+		topLineIndex = ix;
 	}
 }

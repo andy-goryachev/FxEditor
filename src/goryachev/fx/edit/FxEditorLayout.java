@@ -1,6 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CList;
+import goryachev.common.util.CMap;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
 import goryachev.fx.edit.internal.Markers;
@@ -18,21 +19,16 @@ import javafx.scene.shape.PathElement;
  */
 public class FxEditorLayout
 {
-	private final int offsety;
+	private final FxEditor editor;
 	private final int topLine;
 	private final CList<LineBox> lines = new CList<>();
+	private CMap<Integer,LineBox> newLines;
 	
 
-	public FxEditorLayout(int topLine, int offsety)
+	public FxEditorLayout(FxEditor ed, int topLine)
 	{
+		this.editor = ed;
 		this.topLine = topLine;
-		this.offsety = offsety;
-	}
-	
-	
-	public CList<LineBox> lines()
-	{
-		return lines;
 	}
 	
 	
@@ -72,6 +68,15 @@ public class FxEditorLayout
 	
 	public LineBox getLineBox(int line)
 	{
+		if(newLines != null)
+		{
+			LineBox b = newLines.get(line);
+			if(b != null)
+			{
+				return b;
+			}
+		}
+		
 		line -= topLine;
 		if((line >= 0) && (line < lines.size()))
 		{
@@ -116,6 +121,14 @@ public class FxEditorLayout
 		{
 			cs.remove(b.getBox());
 		}
+		
+		if(newLines != null)
+		{
+			for(LineBox b: newLines.values())
+			{
+				cs.remove(b.getBox());
+			}
+		}
 	}
 
 
@@ -128,5 +141,31 @@ public class FxEditorLayout
 	public int getVisibleLineCount()
 	{
 		return lines.size();
+	}
+	
+	
+	public double getLineHeight(int ix)
+	{
+		LineBox b = (newLines == null ? null : newLines.get(ix));
+		if(b == null)
+		{
+			b = getLineBox(ix);
+			if(b == null)
+			{
+				Region r = editor.getTextModel().getDecoratedLine(ix);
+				b = new LineBox(ix, r);
+				
+				double h = editor.vflow.addAndComputePreferredHeight(r);
+				b.setHeight(h);
+			}
+			
+			if(newLines == null)
+			{
+				newLines = new CMap();
+			}
+			newLines.put(ix, b);
+		}
+			
+		return b.getHeight();
 	}
 }

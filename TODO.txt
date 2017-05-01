@@ -4,3 +4,6 @@
 - click outside of text should move caret to the last character
 - focused border
 - fix LTR+RTL selection
+- highlight current line
+- model: create leading component
+- model: has leading component
