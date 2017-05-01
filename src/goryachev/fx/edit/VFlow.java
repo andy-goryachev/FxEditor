@@ -454,7 +454,7 @@ public class VFlow
 		double BLOCK_SCROLL_FACTOR = 0.3;
 		double BLOCK_MIN_SCROLL = 40;
 		
-		double h = editor.getHeight(); // padding?
+		double h = getHeight();
 		double delta = h * BLOCK_SCROLL_FACTOR;
 		if(delta < BLOCK_MIN_SCROLL)
 		{
