@@ -1,6 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.common.util.D;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
@@ -8,6 +7,7 @@ import goryachev.fx.util.FxPathBuilder;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.HPos;
@@ -32,6 +32,7 @@ public class VFlow
 	public final Path caretPath;
 	public final Path selectionHighlight;
 	protected final BooleanProperty caretVisible = new SimpleBooleanProperty(true);
+	protected final BooleanProperty suppressBlink = new SimpleBooleanProperty(false);
 	protected final Rectangle clip;
 	// TODO line decorations/line numbers
 	protected FxEditorLayout layout;
@@ -65,6 +66,18 @@ public class VFlow
 		
 		getChildren().addAll(selectionHighlight, caretPath);
 		setClip(clip);
+		
+		caretPath.visibleProperty().bind(new BooleanBinding()
+		{
+			{
+				bind(caretVisible, editor.displayCaret, editor.focusedProperty(), editor.disabledProperty(), suppressBlink);
+			}
+
+			protected boolean computeValue()
+			{
+				return (isCaretVisible() || suppressBlink.get()) && editor.isDisplayCaret() && editor.isFocused() && (!editor.isDisabled());
+			}
+		});
 	}
 	
 	
@@ -85,7 +98,18 @@ public class VFlow
 	}
 	
 	
-	// TODO stop blinking when dragging
+	public void setSuppressBlink(boolean on)
+	{
+		suppressBlink.set(on);
+		
+		if(!on)
+		{
+			// restart animation cycle
+			updateBlinkRate();
+		}
+	}
+	
+	
 	public void updateBlinkRate()
 	{
 		Duration d = editor.getBlinkRate();
@@ -102,8 +126,8 @@ public class VFlow
 	}
 	
 	
-	// blinking caret
-	public void setCaretVisible(boolean on)
+	/** used for blinking animation */
+	protected void setCaretVisible(boolean on)
 	{
 		caretVisible.set(on);
 	}

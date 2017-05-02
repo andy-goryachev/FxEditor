@@ -85,6 +85,7 @@ public class FxEditorMouseController
 		}
 			
 		Marker pos = getTextPos(ev);
+		editor.setSuppressBlink(true);
 		
 		if(ev.isShiftDown())
 		{
@@ -146,6 +147,7 @@ public class FxEditorMouseController
 	{
 		dragging = false;
 		draggingScroll = false;
+		editor.setSuppressBlink(false);
 
 		if(isOverScrollBar(ev.getX(), ev.getY()))
 		{
