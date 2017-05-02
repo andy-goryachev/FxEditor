@@ -512,7 +512,7 @@ public class FxEditor
 			
 			String s = getTextModel().getPlainText(ix);
 			Marker beg = new Marker(0, 0, true);
-			Marker end = new Marker(ix, s.length(), false);
+			Marker end = new Marker(ix, Math.max(0, s.length() - 1), false);
 			
 			selector.setSelection(beg, end);
 			selector.commitSelection();

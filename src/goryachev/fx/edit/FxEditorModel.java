@@ -206,7 +206,7 @@ public abstract class FxEditorModel
 			{
 				if(i == last)
 				{
-					s = s.substring(m0.getLineOffset(), m1.getLineOffset() - 1);
+					s = s.substring(m0.getLineOffset(), m1.getLineOffset());
 				}
 				else
 				{
@@ -219,7 +219,7 @@ public abstract class FxEditorModel
 				
 				if(i == last)
 				{
-					s = s.substring(0, m1.getLineOffset() - 1);
+					s = s.substring(0, m1.getLineOffset());
 				}
 			}
 			
