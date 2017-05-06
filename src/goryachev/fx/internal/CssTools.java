@@ -4,6 +4,7 @@ import goryachev.common.util.SB;
 import goryachev.fx.CssID;
 import goryachev.fx.CssPseudo;
 import goryachev.fx.CssStyle;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 
@@ -143,6 +144,29 @@ public class CssTools
 	public static String toValue(double x)
 	{
 		return String.valueOf(x);
+	}
+	
+	
+	public static String toValue(OverrunStyle s)
+	{
+		switch(s)
+		{
+		case CENTER_ELLIPSIS:
+			return "center-ellipsis";
+		case CENTER_WORD_ELLIPSIS:
+			return "center-word-ellipsis";
+		case CLIP:
+			return "clip";
+		case ELLIPSIS:
+			return "ellipsis";
+		case LEADING_ELLIPSIS:
+			return "leading-ellipsis";
+		case LEADING_WORD_ELLIPSIS:
+			return "leading-word-ellipsis";
+		case WORD_ELLIPSIS:
+			return "word-ellipsis";
+		}
+		throw new Error("?" + s);
 	}
 	
 	

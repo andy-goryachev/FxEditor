@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -188,6 +189,10 @@ public final class FX
 			else if(a instanceof Color)
 			{
 				n.setTextFill((Color)a);
+			}
+			else if(a instanceof StringProperty)
+			{
+				n.textProperty().bind((StringProperty)a);
 			}
 			else
 			{

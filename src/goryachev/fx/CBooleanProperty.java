@@ -23,6 +23,12 @@ public class CBooleanProperty
 	}
 	
 	
+	public CBooleanProperty(Runnable invalidationListener)
+	{
+		addListener((s) -> invalidationListener.run());
+	}
+	
+	
 	public CBooleanProperty()
 	{
 	}

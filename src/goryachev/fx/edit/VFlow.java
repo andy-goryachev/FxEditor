@@ -98,6 +98,14 @@ public class VFlow
 	}
 	
 	
+	public void reset()
+	{
+		offsetx = 0;
+		offsety = 0;
+		topLineIndex = 0;
+	}
+	
+	
 	public void setSuppressBlink(boolean on)
 	{
 		suppressBlink.set(on);
@@ -551,7 +559,7 @@ public class VFlow
 	}
 	
 	
-	protected void setOrigin(int top, double offy)
+	public void setOrigin(int top, double offy)
 	{
 		topLineIndex = top;
 		offsety = offy;

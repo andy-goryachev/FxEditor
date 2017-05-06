@@ -4,7 +4,7 @@ import javafx.scene.control.Button;
 
 
 /**
- * CButton.
+ * Convenient Button.
  */
 public class CButton
 	extends Button
@@ -19,5 +19,11 @@ public class CButton
 	public CButton(String text)
 	{
 		super(text);
+	}
+	
+	
+	public CButton(String text, Runnable handler)
+	{
+		this(text, new CAction(handler));
 	}
 }

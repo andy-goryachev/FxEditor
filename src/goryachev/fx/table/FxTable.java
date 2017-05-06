@@ -77,11 +77,23 @@ public class FxTable<T>
 		return table.getColumns().size();
 	}
 	
-	
+
 	public FxTableColumn<T> lastColumn()
 	{
 		ObservableList<TableColumn<T,?>> cs = table.getColumns();
 		return (FxTableColumn<T>)cs.get(cs.size() - 1);
+	}
+	
+	
+	public int getRowCount()
+	{
+		return table.getItems().size();
+	}
+	
+	
+	public ObservableList<T> getItems()
+	{
+		return table.getItems();
 	}
 	
 	

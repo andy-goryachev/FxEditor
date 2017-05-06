@@ -1,6 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.internal;
 import goryachev.fx.CssPseudo;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ScrollPane;
 
 
@@ -22,7 +23,7 @@ public class StandardFxProperties
 	public static final CssPseudo PRESSED = new CssPseudo(":pressed");
 	
 	public static final String TRANSPARENT = "transparent";
-	
+	public static final String TABLE = ".table";
 
 	// B
 	public static FxCssProp backgroundColor(Object x) { return new FxCssProp("-fx-background-color", CssTools.toColor(x)); }
@@ -45,6 +46,7 @@ public class StandardFxProperties
 	public static FxCssProp fillColor(boolean x) { return new FxCssProp("-fx-fit-to-height", x); }
 	public static FxCssProp fitToHeight(boolean x) { return new FxCssProp("-fx-fit-to-height", x); }
 	public static FxCssProp fitToWidth(boolean x) { return new FxCssProp("-fx-fit-to-width", x); }
+	public static FxCssProp fixedCellSize(Object x) { return new FxCssProp("-fx-fixed-cell-size", x); }
 	public static FxCssProp fontFamily(Object x) { return new FxCssProp("-fx-font-family", x); }
 	public static FxCssProp fontSize(Object x) { return new FxCssProp("-fx-font-size", x); }
 	public static FxCssProp fontStyle(Object x) { return new FxCssProp("-fx-font-style", x); }
@@ -54,6 +56,7 @@ public class StandardFxProperties
 	public static FxCssProp hBarPolicy(ScrollPane.ScrollBarPolicy x) { return new FxCssProp("-fx-hbar-policy", CssTools.toValue(x)); }
 	// M
 	public static FxCssProp maxHeight(double x) { return new FxCssProp("-fx-max-height", x); }
+	public static FxCssProp maxHeight(Object x) { return new FxCssProp("-fx-max-height", x); }
 	public static FxCssProp maxWidth(double x) { return new FxCssProp("-fx-max-width", x); }
 	public static FxCssProp minHeight(double x) { return new FxCssProp("-fx-min-height", x); }
 	public static FxCssProp minWidth(double x) { return new FxCssProp("-fx-min-width", x); }
@@ -69,6 +72,7 @@ public class StandardFxProperties
 	public static FxCssProp shape(Object x) { return new FxCssProp("-fx-shape", x); }
 	// T
 	public static FxCssProp textFill(Object x) { return new FxCssProp("-fx-text-fill", CssTools.toColor(x)); }
+	public static FxCssProp textOverrun(OverrunStyle x) { return new FxCssProp("-fx-text-overrun", CssTools.toColor(x)); }
 	public static FxCssProp translateX(double x) { return new FxCssProp("-fx-translate-x", x); }
 	public static FxCssProp translateY(double x) { return new FxCssProp("-fx-translate-y", x); }
 	
