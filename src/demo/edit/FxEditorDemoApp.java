@@ -37,6 +37,6 @@ public class FxEditorDemoApp
 
 	public void start(Stage stage) throws Exception
 	{
-		new DemoWindow().open();
+		new MainWindow().open();
 	}
 }

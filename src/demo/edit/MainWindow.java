@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
+import goryachev.fx.CAction;
 import goryachev.fx.CInsets;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
@@ -14,13 +15,14 @@ import javafx.util.Duration;
 /**
  * Demo Window.
  */
-public class DemoWindow
+public class MainWindow
 	extends FxWindow
 {
+	public final CAction prefsAction = new CAction(this::preferences);
 	public final FxEditor editor;
 	
 	
-	public DemoWindow()
+	public MainWindow()
 	{
 		super("TestFxEditorWindow");
 
@@ -49,6 +51,8 @@ public class DemoWindow
 		CMenuBar b = new CMenuBar();
 		// file
 		CMenu m = b.addMenu("File");
+		m.add("Preferences", prefsAction);
+		m.separator();
 		m.add("Exit", FX.exitAction());
 		// edit
 		m = b.addMenu("Edit");
@@ -64,5 +68,11 @@ public class DemoWindow
 		m = b.addMenu("Help");
 		m.add("About");
 		return b;
+	}
+	
+	
+	protected void preferences()
+	{
+		new PreferencesDialog(this).open();
 	}
 }
