@@ -3,6 +3,7 @@ package demo.edit;
 import goryachev.common.util.FileSettingsProvider;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
+import goryachev.fx.CssLoader;
 import java.io.File;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -38,5 +39,7 @@ public class FxEditorDemoApp
 	public void start(Stage stage) throws Exception
 	{
 		new MainWindow().open();
+		// init styles
+		CssLoader.setStyles(() -> new Styles());
 	}
 }

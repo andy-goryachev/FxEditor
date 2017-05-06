@@ -3,7 +3,10 @@ package demo.edit;
 import goryachev.fx.CCheckBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
+import goryachev.fx.edit.FxEditor;
 import javafx.geometry.Pos;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
 import research.fx.FxDialog;
@@ -18,10 +21,13 @@ public class PreferencesDialog
 	public PreferencesDialog(Window parent)
 	{
 		super("PreferencesDialog", parent);
-		setTitle("Preferences");
-		setSize(300, 300);
+		setTitle("Styling Demo");
+		setSize(500, 400);
 		center();
-				
+		
+		FxEditor ed = new FxEditor(new TestFxColorEditorModel(Conf.LINE_COUNT));
+		
+		// layout
 		CPane p = new CPane();
 		p.setPadding(10);
 		p.setGaps(10, 5);
@@ -31,16 +37,34 @@ public class PreferencesDialog
 			CPane.FILL
 		);
 		int r = 0;
-		p.add(0, r, FX.label("TextField", Pos.CENTER_RIGHT));
+		p.add(0, r, FX.label("Check Boxes:", Pos.TOP_RIGHT));
+		p.add(1, r, new CCheckBox("selected", true));
+		r++;
+		p.add(1, r, new CCheckBox("deselected", false));
+		r++;
+		p.add(1, r, cb("selected, disabled", true, true));
+		r++;
+		p.add(1, r, cb("deselected, disabled", false, true));
+		r++;
+		p.add(0, r, FX.label("Radio Buttons:", Pos.TOP_RIGHT));
+		p.add(1, r, rb("selected", true, false));
+		r++;
+		p.add(1, r, rb("deselected", false, false));
+		r++;
+		p.add(1, r, rb("selected, disabled", true, true));
+		r++;
+		p.add(1, r, rb("deselected, disabled", false, true));
+		r++;
+		p.add(0, r, FX.label("Text Field:", Pos.TOP_RIGHT));
 		p.add(1, r, new TextField());
 		r++;
-		p.add(1, r, new CCheckBox("selected checkbox", true));
+		p.addRow(CPane.FILL);
+		p.add(0, r, FX.label("Text Area:", Pos.TOP_RIGHT));
+		p.add(1, r, new TextArea("1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n"));
 		r++;
-		p.add(1, r, new CCheckBox("deselected checkbox", false));
-		r++;
-		p.add(1, r, cb("selected disabled checkbox", true, true));
-		r++;
-		p.add(1, r, cb("deselected disabled checkbox", false, true));
+		p.addRow(CPane.FILL);
+		p.add(0, r, FX.label("FxEditor:", Pos.TOP_RIGHT));
+		p.add(1, r, ed);
 		r++;
 		setCenter(p);
 		
@@ -53,5 +77,14 @@ public class PreferencesDialog
 		CCheckBox c = new CCheckBox(text, selected);
 		c.setDisable(disabled);
 		return c;
+	}
+	
+	
+	protected RadioButton rb(String text, boolean selected, boolean disabled)
+	{
+		RadioButton b = new RadioButton(text);
+		b.setSelected(selected);
+		b.setDisable(disabled);
+		return b;
 	}
 }
