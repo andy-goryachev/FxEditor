@@ -147,6 +147,12 @@ public class CssTools
 	}
 	
 	
+	public static String toValue(boolean x)
+	{
+		return x ? "true" : "false";
+	}
+	
+	
 	public static String toValue(OverrunStyle s)
 	{
 		switch(s)
@@ -294,6 +300,25 @@ public class CssTools
 		else
 		{
 			throw new Error("?" + x);
+		}
+	}
+	
+	
+	public static String toQuotedString(Object x)
+	{
+		if(x == null)
+		{
+			return "null";
+		}
+		
+		String s = x.toString();
+		if(s.startsWith("\"") && s.endsWith("\""))
+		{
+			return s;
+		}
+		else
+		{
+			return "\"" + s + "\"";
 		}
 	}
 }

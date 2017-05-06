@@ -30,37 +30,8 @@ public class Styles
 				prop("-fx-faint-focus-color", FX.rgba(0xff6d00, 0.1)) // FIX
 			),
 			
-			selector(".text").defines
-			(
-				prop("-fx-font-smoothing-type", "gray")
-			),
-			
-			selector(".scroll-pane").defines
-			(
-//				new Selector(FOCUSED).defines
-//				(
-//					// removes focused border from scroll pane
-//					// TODO do it specifically for the content pane
-//					backgroundInsets(1)
-//				),
-				new Selector(" > .viewport").defines
-				(
-					backgroundColor(Color.WHITE) // FIX theme
-				)
-			),
-			
 			// common fx styles
-			new CommonStyles(),
-			
-			// fix text selection colors
-			selector(".text-input").defines
-			(
-				new Selector(FOCUSED).defines
-				(
-					textFill(Color.BLACK), // FIX theme
-					prop("-fx-highlight-text-fill", Color.BLACK) // FIX theme
-				)
-			)
+			new CommonStyles()
 		);
 	}
 }
