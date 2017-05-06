@@ -1,6 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 
+
 /**
  * Common Styles.
  */
@@ -19,27 +20,27 @@ public class CommonStyles
 		add
 		(
 			// bold
-			new Selector(BOLD).defines
+			selector(BOLD).defines
 			(
 				fontWeight("bold")
 			),
 			
 			// hide empty table rows
-			new Selector(".table-row-cell:empty").defines
+			selector(".table-row-cell:empty").defines
 			(
 				backgroundColor(TRANSPARENT)
 			),
 			
 			// disables horizontal scroll bar
-			new Selector(NO_HORIZONTAL_SCROLL_BAR).defines
+			selector(NO_HORIZONTAL_SCROLL_BAR).defines
 			(
-				new Selector(".scroll-bar:horizontal").defines
+				selector(".scroll-bar:horizontal").defines
 				(
 					maxHeight(0),
 					padding(0),
 					opacity(0)
 				),
-				new Selector(".scroll-bar:horizontal *").defines
+				selector(".scroll-bar:horizontal *").defines
 				(
 					maxHeight(0),
 					padding(0),

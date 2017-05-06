@@ -26,6 +26,12 @@ public class FxStyleSheet
 	}
 	
 	
+	public Selector selector(Object ... sel)
+	{
+		return new Selector(sel);
+	}
+	
+	
 	/** adds multiple selectors or style sheets */
 	public void add(Object ... sel)
 	{

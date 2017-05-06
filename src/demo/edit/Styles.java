@@ -19,7 +19,7 @@ public class Styles
 		add
 		(
 			// basic styles
-			new Selector(".root").defines
+			selector(".root").defines
 			(
 				// text selection
 				prop("-fx-accent", FX.rgba(0xffff8b, 0.7)),
@@ -30,12 +30,12 @@ public class Styles
 				prop("-fx-faint-focus-color", FX.rgba(0xff6d00, 0.1)) // FIX
 			),
 			
-			new Selector(".text").defines
+			selector(".text").defines
 			(
 				prop("-fx-font-smoothing-type", "gray")
 			),
 			
-			new Selector(".scroll-pane").defines
+			selector(".scroll-pane").defines
 			(
 //				new Selector(FOCUSED).defines
 //				(
@@ -45,7 +45,7 @@ public class Styles
 //				),
 				new Selector(" > .viewport").defines
 				(
-					backgroundColor(Color.WHITE)
+					backgroundColor(Color.WHITE) // FIX theme
 				)
 			),
 			
@@ -53,12 +53,12 @@ public class Styles
 			new CommonStyles(),
 			
 			// fix text selection colors
-			new Selector(".text-input").defines
+			selector(".text-input").defines
 			(
 				new Selector(FOCUSED).defines
 				(
-					textFill(Color.BLACK),
-					prop("-fx-highlight-text-fill", Color.BLACK)
+					textFill(Color.BLACK), // FIX theme
+					prop("-fx-highlight-text-fill", Color.BLACK) // FIX theme
 				)
 			)
 		);
