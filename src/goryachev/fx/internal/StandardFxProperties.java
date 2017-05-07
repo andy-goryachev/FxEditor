@@ -17,6 +17,7 @@ import javafx.scene.control.ScrollPane;
  */
 public class StandardFxProperties
 {
+	public static final CssPseudo ARMED = new CssPseudo(":armed");
 	public static final CssPseudo DISABLED = new CssPseudo(":disabled");
 	public static final CssPseudo FOCUSED = new CssPseudo(":focused");
 	public static final CssPseudo HOVER = new CssPseudo(":hover");
@@ -42,6 +43,7 @@ public class StandardFxProperties
 
 	// C
 	public static FxCssProp cellSize(Object x) { return new FxCssProp("-fx-cell-size", x); }
+	public static FxCssProp color(Object x) { return new FxCssProp("-fx-color", CssTools.toColor(x)); }
 	
 	// F
 	public static FxCssProp fill(Object x) { return new FxCssProp("-fx-fill", x); }

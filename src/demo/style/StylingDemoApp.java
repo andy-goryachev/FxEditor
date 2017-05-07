@@ -1,5 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package demo.edit;
+package demo.style;
 import goryachev.common.util.FileSettingsProvider;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
@@ -10,9 +10,9 @@ import javafx.stage.Stage;
 
 
 /**
- * Test FxEditor app.
+ * Styling Demo App.
  */
-public class FxEditorDemoApp
+public class StylingDemoApp
 	extends Application
 {
 	public static void main(String[] args)
@@ -24,7 +24,7 @@ public class FxEditorDemoApp
 	public void init() throws Exception
 	{
 		// TODO change to something visible in Documents? platform-specific?
-		File baseDir = new File(System.getProperty("user.home"), ".goryachev.com/FxEditorDemo");
+		File baseDir = new File(System.getProperty("user.home"), ".goryachev.com/StylingDemo");
 			
 		File logFolder = new File(baseDir, "logs"); 
 		Log.init(logFolder);
@@ -38,7 +38,7 @@ public class FxEditorDemoApp
 
 	public void start(Stage stage) throws Exception
 	{
-		new MainWindow().open();
+		new StylingDemoMainWindow().open();
 		// init styles
 		CssLoader.setStyles(() -> new Styles());
 	}

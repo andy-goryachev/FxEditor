@@ -87,6 +87,15 @@ public class CommonStyles
 				labelPadding("0.0em 0.0em 0.0em 0.416667em"),
 				textFill("-fx-text-background-color"),
 				
+				selector(HOVER, "> .box").defines
+				(
+					color(Color.RED) // -fx-hover-base;
+				),
+				selector(ARMED).defines
+				(
+					color(Color.GREEN) // "-fx-pressed-base")
+				),
+				
 				selector(" > .box").defines
 				(
 					backgroundRadius(commas(3, 2, 1)),
@@ -98,6 +107,17 @@ public class CommonStyles
 						padding("0.416667em 0.416667em 0.5em 0.5em"),
 						shape("M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z")
 					)
+				),
+				
+				selector(FOCUSED, "> .box").defines
+				(
+					backgroundColor("-fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color"),
+					backgroundInsets("-0.2, 1, 2, -1.4, 2.6"),
+					backgroundRadius("3, 2, 1, 4, 1")
+					
+//					backgroundColor("-fx-focus-color, -fx-body-color"),
+//					backgroundInsets("-2, -1"),
+//					backgroundRadius("3, 2")
 				),
 				
 				selector(":indeterminate > .box").defines

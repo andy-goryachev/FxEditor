@@ -24,7 +24,7 @@ public class MainWindow
 	
 	public MainWindow()
 	{
-		super("TestFxEditorWindow");
+		super("MainWindow");
 
 		FxEditorModel m = new TestFxColorEditorModel(Conf.LINE_COUNT);
 		
