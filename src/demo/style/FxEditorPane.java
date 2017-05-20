@@ -4,6 +4,7 @@ import goryachev.fx.CPane;
 import goryachev.fx.edit.FxEditor;
 import demo.edit.Conf;
 import demo.edit.TestFxColorEditorModel;
+import javafx.geometry.Insets;
 
 
 /**
@@ -18,6 +19,7 @@ public class FxEditorPane
 	public FxEditorPane()
 	{
 		ed = new FxEditor(new TestFxColorEditorModel(Conf.LINE_COUNT));
+		ed.setContentPadding(new Insets(2, 5, 2, 5));
 		
 		setCenter(ed);
 	}
