@@ -29,6 +29,7 @@ public class StylingDemoPane
 		table.getItems().setAll
 		(
 			new DemoPage("Buttons", ButtonPane.class),
+			new DemoPage("FxEditor", FxEditorPane.class),
 			new DemoPage("Text Components", TextPane.class)
 		);
 		table.selectedItemProperty().addListener((s) -> updateSelection());
