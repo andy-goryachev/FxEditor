@@ -15,15 +15,18 @@ public class StylingDemoMainWindow
 	extends FxWindow
 {
 	public final CAction prefsAction = new CAction(this::preferences);
+	public final StylingDemoPane pane;
 	
 	
 	public StylingDemoMainWindow()
 	{
 		super("MainWindow");
+		
+		pane = new StylingDemoPane();
 
 		setTitle("FxEditor Demo");
 		setTop(createMenu());
-		setCenter(new StylingDemoPane());
+		setCenter(pane);
 		setSize(600, 700);
 		
 		// debug
@@ -39,6 +42,9 @@ public class StylingDemoMainWindow
 		m.add("Preferences", prefsAction);
 		m.separator();
 		m.add("Exit", FX.exitAction());
+		// tools
+		m = b.addMenu("Tools");
+		m.add("Reload", pane.reloadAction);
 		// help
 		m = b.addMenu("Help");
 		m.add("About");

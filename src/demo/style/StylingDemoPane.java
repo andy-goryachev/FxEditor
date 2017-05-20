@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package demo.style;
+import goryachev.fx.CAction;
 import goryachev.fx.CPane;
 import goryachev.fx.table.FxTable;
 import javafx.geometry.Orientation;
@@ -13,6 +14,7 @@ import javafx.scene.control.SplitPane;
 public class StylingDemoPane
 	extends CPane
 {
+	public final CAction reloadAction = new CAction(this::reload);
 	public final FxTable<DemoPage> table;
 	public final CPane detailPane;
 	public final SplitPane split;
@@ -59,5 +61,11 @@ public class StylingDemoPane
 		// TODO restore
 
 		detailPane.setCenter(n);
+	}
+	
+	
+	protected void reload()
+	{
+		updateSelection();
 	}
 }
