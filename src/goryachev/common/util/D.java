@@ -2,14 +2,8 @@
 package goryachev.common.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 
@@ -17,9 +11,6 @@ import java.util.function.Function;
 // TODO move conversion to Dump
 public class D
 {
-	private static Executor exec;
-	
-	
 	// convert milliseconds to MM:SS or HHH:MM:SS String
 	public static String msToString(long ms)
 	{
@@ -424,51 +415,12 @@ public class D
 	}
 
 
-	private static Executor createExecutor()
-	{
-		ArrayBlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(65536);
-		
-		ThreadPoolExecutor ex = new ThreadPoolExecutor
-		(
-			1, 
-			1, 
-			0L, 
-			TimeUnit.MILLISECONDS, 
-			queue,
-			new ThreadFactory()
-			{
-				public Thread newThread(Runnable r)
-				{
-					Thread t = new Thread(r, "debug printout");
-					t.setDaemon(true);
-					return t;
-				}
-			}
-		);
-		
-		Runtime.getRuntime().addShutdownHook(new Thread()
-		{
-			public void run()
-			{
-				ex.shutdown();
-			}
-		});
-		return ex;
-	}
-
-
 	private static void log(String msg, int depth)
 	{
 		StackTraceElement t = new Throwable().getStackTrace()[depth];
 		String className = getClassName(t);
 		String s = className + "." + t.getMethodName() + " " + msg;
-		
-		if(exec == null)
-		{
-			exec = createExecutor();
-		}
-		
-		exec.execute(() -> System.err.println(s));
+		System.err.println(s);
 	}
 	
 	

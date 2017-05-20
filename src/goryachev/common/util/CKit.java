@@ -1979,10 +1979,24 @@ public final class CKit
 	}
 	
 	
-	/** alias to Math.round(), returns int */
+	/** alias to Math.round() typecast returns int */
 	public static int round(double x)
 	{
 		return (int)Math.round(x);
+	}
+	
+	
+	/** alias to Math.ceil() typecast returns int */
+	public static int ceil(double x)
+	{
+		return (int)Math.ceil(x);
+	}
+	
+	
+	/** alias to Math.floor() typecast returns int */
+	public static int floor(double x)
+	{
+		return (int)Math.floor(x);
 	}
 	
 	
@@ -2025,5 +2039,11 @@ public final class CKit
 			eclipseDetected = new File(".project").exists() && new File(".classpath").exists();
 		}
 		return eclipseDetected;
+	}
+
+
+	public static <T> Collection<T> asList(T ... items)
+	{
+		return new CList<>(items);
 	}
 }
