@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 /**
  * Styling Demo App.
  */
-public class StylingDemoApp
+public class DemoStylingApp
 	extends Application
 {
 	public static void main(String[] args)
@@ -38,7 +38,7 @@ public class StylingDemoApp
 
 	public void start(Stage stage) throws Exception
 	{
-		new StylingDemoMainWindow().open();
+		new DemoStylingMainWindow().open();
 		// init styles
 		CssLoader.setStyles(() -> new Styles());
 	}

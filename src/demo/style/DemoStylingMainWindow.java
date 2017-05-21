@@ -11,18 +11,18 @@ import goryachev.fx.FxWindow;
 /**
  * Demo Window.
  */
-public class StylingDemoMainWindow
+public class DemoStylingMainWindow
 	extends FxWindow
 {
 	public final CAction prefsAction = new CAction(this::preferences);
-	public final StylingDemoPane pane;
+	public final DemoPane pane;
 	
 	
-	public StylingDemoMainWindow()
+	public DemoStylingMainWindow()
 	{
 		super("MainWindow");
 		
-		pane = new StylingDemoPane();
+		pane = new DemoPane();
 
 		setTitle("FxEditor Demo");
 		setTop(createMenu());

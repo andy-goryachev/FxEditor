@@ -11,16 +11,16 @@ import javafx.scene.control.SplitPane;
 /**
  * Styling Demo Pane.
  */
-public class StylingDemoPane
+public class DemoPane
 	extends CPane
 {
 	public final CAction reloadAction = new CAction(this::reload);
-	public final FxTable<DemoPage> table;
+	public final FxTable<Page> table;
 	public final CPane detailPane;
 	public final SplitPane split;
 	
 	
-	public StylingDemoPane()
+	public DemoPane()
 	{
 		detailPane = new CPane();
 		
@@ -30,9 +30,9 @@ public class StylingDemoPane
 		
 		table.getItems().setAll
 		(
-			new DemoPage("Buttons", ButtonPane.class),
-			new DemoPage("FxEditor", FxEditorPane.class),
-			new DemoPage("Text Components", TextPane.class)
+			new Page("Buttons", ButtonPane.class),
+			new Page("FxEditor", FxEditorPane.class),
+			new Page("Text Components", TextPane.class)
 		);
 		table.selectedItemProperty().addListener((s) -> updateSelection());
 		
@@ -49,7 +49,7 @@ public class StylingDemoPane
 	{
 		// TODO store
 		Node n;
-		DemoPage p = table.getSelectedItem();
+		Page p = table.getSelectedItem();
 		if(p == null)
 		{
 			n = null;

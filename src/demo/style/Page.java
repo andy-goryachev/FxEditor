@@ -7,13 +7,13 @@ import javafx.scene.Node;
 /**
  * Demo Page.
  */
-public class DemoPage
+public class Page
 {
 	public final String text;
 	public final Class<? extends Node> type;
 	
 	
-	public DemoPage(String text, Class<? extends Node> c)
+	public Page(String text, Class<? extends Node> c)
 	{
 		this.text = text;
 		this.type = c;
