@@ -3,6 +3,8 @@ package goryachev.fx.internal;
 import goryachev.fx.CssPseudo;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
 
 
 /**
@@ -23,9 +25,16 @@ public class StandardFxProperties
 	public static final CssPseudo FOCUSED = new CssPseudo(":focused");
 	public static final CssPseudo HOVER = new CssPseudo(":hover");
 	public static final CssPseudo PRESSED = new CssPseudo(":pressed");
+	public static final CssPseudo SELECTED = new CssPseudo(":selected");
 	
 	public static final String TRANSPARENT = "transparent";
 	public static final String TABLE = ".table";
+	
+	// these colors are for debugging
+	protected static final Color R = Color.RED;
+	protected static final Color G = Color.GREEN;
+	protected static final Color B = Color.BLUE;
+	protected static final Color M = Color.MAGENTA;
 
 	// B
 	public static FxCssProp backgroundColor(Object x) { return new FxCssProp("-fx-background-color", CssTools.toColor(x)); }
@@ -80,6 +89,9 @@ public class StandardFxProperties
 	// S
 	public static FxCssProp scaleShape(boolean x) { return new FxCssProp("-fx-shape", CssTools.toValue(x)); }
 	public static FxCssProp shape(Object x) { return new FxCssProp("-fx-shape", CssTools.toQuotedString(x)); }
+	public static FxCssProp stroke(Object x) { return new FxCssProp("-fx-stroke", CssTools.toColor(x)); }
+	public static FxCssProp strokeLineCap(StrokeLineCap x) { return new FxCssProp("-fx-stroke-width", CssTools.toValue(x)); }
+	public static FxCssProp strokeWidth(double x) { return new FxCssProp("-fx-stroke-width", x); }
 	// T
 	public static FxCssProp textFill(Object x) { return new FxCssProp("-fx-text-fill", CssTools.toColor(x)); }
 	public static FxCssProp textOverrun(OverrunStyle x) { return new FxCssProp("-fx-text-overrun", CssTools.toColor(x)); }

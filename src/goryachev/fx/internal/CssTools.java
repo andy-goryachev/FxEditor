@@ -7,6 +7,7 @@ import goryachev.fx.CssStyle;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
 
 
 /**
@@ -183,6 +184,18 @@ public class CssTools
 		case ALWAYS: return "always";
 		case AS_NEEDED: return "as-needed";
 		case NEVER: return "never";
+		}
+		throw new Error("?" + x);
+	}
+	
+	
+	public static String toValue(StrokeLineCap x)
+	{
+		switch(x)
+		{
+		case BUTT: return "butt";
+		case ROUND: return "round";
+		case SQUARE: return "square";
 		}
 		throw new Error("?" + x);
 	}

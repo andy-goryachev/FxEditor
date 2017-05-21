@@ -1,6 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
-import javafx.scene.effect.BlurType;
 import javafx.scene.paint.Color;
 
 
@@ -27,70 +26,21 @@ public class CommonStyles
 				// text selection
 				prop("-fx-accent", FX.rgba(0xffff8b, 0.7)),
 				prop("-fx-base", theme.base),
+				// controls FIX
+//				prop("-fx-color", theme.control),
 				prop("-fx-highlight-text-fill", theme.selectedTextFG),
 				// focus outline
 				prop("-fx-focus-color", theme.focus),
 				// focus glow
 				prop("-fx-faint-focus-color", TRANSPARENT)
 			),
-						
-			// checkbox FIX
-			selector(".check-box").defines
-			(
-				labelPadding("0.0em 0.0em 0.0em 0.416667em"),
-				textFill("-fx-text-background-color"),
-				
-				selector(HOVER, "> .box").defines
-				(
-					color(Color.RED) // -fx-hover-base;
-				),
-				selector(ARMED).defines
-				(
-					color(Color.GREEN) // "-fx-pressed-base")
-				),
-				
-				selector(" > .box").defines
-				(
-					backgroundRadius(commas(3, 2, 1)),
-					padding("0.166667em 0.166667em 0.25em 0.25em"),
-					
-					selector("> .mark").defines
-					(
-						backgroundColor(null),
-						padding("0.416667em 0.416667em 0.5em 0.5em"),
-						shape("M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z")
-					)
-				),
-				
-				selector(FOCUSED, "> .box").defines
-				(
-					backgroundColor("-fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color"),
-					backgroundInsets("-0.2, 1, 2, -1.4, 2.6"),
-					backgroundRadius("3, 2, 1, 4, 1")
-					
-//					backgroundColor("-fx-focus-color, -fx-body-color"),
-//					backgroundInsets("-2, -1"),
-//					backgroundRadius("3, 2")
-				),
-				
-				selector(":indeterminate > .box").defines
-				(
-					padding(0),
-					
-					selector("> .mark").defines
-					(
-						shape("M0,0H10V2H0Z"),
-						scaleShape(false),
-						padding("0.666667em")
-					)
-				)
-			),
+			
+			// FIX
+//			checkbox(theme),						
 			
 			// combo box
 			selector(".combo-box-base").defines
 			(
-//				backgroundColor(Color.RED),
-//				backgroundInsets(0),
 				backgroundRadius(0),
 				
 				selector(EDITABLE).defines
@@ -183,26 +133,9 @@ public class CommonStyles
 				)
 			),
 			
-			// radio buttons - FIX
-			selector(".radio-button").defines
-			(
-//				padding(10),
-				
-				selector(".text").defines
-				(
-					fill("-fx-text-base-color")
-				)
-			),
-			selector(".radio-button>.radio, .radio-button>.radio.unfocused, .radio-button:disabled>.radio, .radio-button:selected>.radio").defines
-			(
-				borderRadius(100),
-				borderColor("gray"), // FIX
-				borderWidth(2),
-				backgroundRadius(100),
-				backgroundColor(TRANSPARENT),
-				padding(3)
-			),
-			
+			// FIX
+			//radioButton(theme),
+						
 			// andy's hacks
 			
 			// FX.style() bold 
@@ -229,5 +162,109 @@ public class CommonStyles
 				)
 			)
 		);
+	}
+	
+	
+	protected Object checkbox(Theme theme)
+	{
+		return selector(".check-box").defines
+		(
+			labelPadding("0.0em 0.0em 0.0em 0.416667em"),
+			textFill("-fx-text-background-color"),
+			
+			selector(HOVER, "> .box").defines
+			(
+				color(theme.control) // may be change a bit
+			),
+			selector(ARMED).defines
+			(
+				color(Color.GREEN) // "-fx-pressed-base")
+			),
+			
+			selector(" > .box").defines
+			(
+//				backgroundColor(commas(R, G, B)),
+//				backgroundRadius(commas(3, 2, 1)),
+//				backgroundInsets(commas(3, 2, 1)),
+//				padding("0.166667em 0.166667em 0.25em 0.25em"),
+				
+				backgroundColor(theme.control),
+				backgroundInsets(3),
+				backgroundRadius(3),
+				padding("0.5em"),
+				
+				selector("> .mark").defines
+				(
+					backgroundColor(null),
+					padding("0.4em"),
+					//shape("M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z")
+					shape("M49,119 L64,106 L100,139 L176,66 L188,78 L100,166 z")
+				)
+			),
+			
+			selector(FOCUSED, "> .box").defines
+			(
+//				backgroundColor("-fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color"),
+//				backgroundInsets("-0.2, 1, 2, -1.4, 2.6"),
+//				backgroundRadius("3, 2, 1, 4, 1")
+				
+				backgroundColor(commas(theme.focus, TRANSPARENT, theme.control)),
+				backgroundInsets(commas(0, 1, 3)),
+				backgroundRadius(commas(3, 2, 1)),
+				padding("0.5em")
+				
+//				selector("> .mark").defines
+//				(
+//					backgroundColor(null),
+//					padding("0.4em")
+//				)
+			),
+			
+			selector(SELECTED, "> .box > .mark").defines
+			(
+				backgroundColor(theme.outline),
+				backgroundInsets(0)
+			),
+			
+			selector(":indeterminate > .box").defines
+			(
+				padding(0),
+				
+				selector("> .mark").defines
+				(
+					shape("M0,0H10V2H0Z"),
+					scaleShape(false),
+					padding("0.5em")
+				)
+			)
+		);
+	}
+	
+	
+	protected Object radioButton(Theme theme)
+	{
+		// FIX
+		return new Object[]
+		{
+			selector(".radio-button").defines
+			(
+	//			padding(10),
+				
+				selector(".text").defines
+				(
+					fill("-fx-text-base-color")
+				)
+			),
+			
+			selector(".radio-button>.radio, .radio-button>.radio.unfocused, .radio-button:disabled>.radio, .radio-button:selected>.radio").defines
+			(
+				borderRadius(100),
+				borderColor("gray"), // FIX
+				borderWidth(2),
+				backgroundRadius(100),
+				backgroundColor(TRANSPARENT),
+				padding(3)
+			)
+		};
 	}
 }

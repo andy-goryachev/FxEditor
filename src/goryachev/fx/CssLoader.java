@@ -158,6 +158,11 @@ public class CssLoader
 				}
 			}
 		}
+		catch(Error e)
+		{
+			Log.ex(e);
+			throw e;
+		}
 		catch(Throwable e)
 		{
 			Log.ex(e);

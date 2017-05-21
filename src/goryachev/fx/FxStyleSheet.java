@@ -35,7 +35,17 @@ public class FxStyleSheet
 	/** adds multiple selectors or style sheets */
 	public void add(Object ... sel)
 	{
-		elements.addAll(sel);
+		for(Object x: sel)
+		{
+			if(x instanceof Object[])
+			{
+				add((Object[])x);
+			}
+			else
+			{
+				elements.add(x);
+			}
+		}
 	}
 	
 	

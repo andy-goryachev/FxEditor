@@ -1,8 +1,8 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
-import goryachev.common.util.CKit;
-import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
+import goryachev.common.util.SB;
+import goryachev.fx.internal.StandardThemes;
 import javafx.scene.paint.Color;
 
 
@@ -11,11 +11,12 @@ import javafx.scene.paint.Color;
  */
 public class Theme
 {
-	// TODO perhaps use annotations?
 	public enum Key
 	{
 		/** base color for all objects */
 		BASE("base", Color.class),
+		/** checkbox, etc. color */
+		CONTROL("control", Color.class),
 		/** focus outline color */
 		FOCUS("focus", Color.class),
 		/** inactive or unfocused selection color */
@@ -37,7 +38,10 @@ public class Theme
 		}
 	}
 	
+	//
+	
 	public final Color base;
+	public final Color control;
 	public final Color focus;
 	public final Color inactiveSelectionBG;
 	public final Color outline;
@@ -55,6 +59,7 @@ public class Theme
 		this.data = data;
 		
 		base = c(Key.BASE);
+		control = c(Key.CONTROL);
 		focus = c(Key.FOCUS);
 		inactiveSelectionBG = c(Key.INACTIVE_SELECTION_BG);
 		outline = c(Key.OUTLINE);
@@ -88,8 +93,9 @@ public class Theme
 			CMap<Key,Object> m = loadFromSettings();
 			if(m == null)
 			{
-				m = createDefaultTheme();
+				m = StandardThemes.createDefaultLightTheme();
 			}
+			check(m);
 			current = new Theme(m);
 		}
 		return current;
@@ -104,48 +110,30 @@ public class Theme
 	}
 	
 
-	public void check()
+	private static void check(CMap<Key,Object> m)
 	{
-		CList<Color> fs = CKit.collectPublicStaticFields(getClass(), Color.class);
-		for(Color c: fs)
+		SB sb = null;
+		for(Key k: Key.values())
 		{
-			if(c == null)
+			Object v = m.get(k);
+			String s = null;
+			if(v == null)
 			{
-				throw new Error("must defina all colors in a theme");
+				if(sb == null)
+				{
+					sb = new SB();
+				}
+				else
+				{
+					sb.nl();
+				}
+				sb.a("undefined ").a(k);
 			}
 		}
-	}
-	
-	
-	private static CMap<Key,Object> createDefaultTheme()
-	{
-		return createFromArray
-		(
-			Key.BASE, FX.rgb(0xececec),
-			Key.FOCUS, FX.rgb(0xff6d00),
-			Key.INACTIVE_SELECTION_BG, FX.rgb(0xff6d00),
-			Key.OUTLINE, FX.rgb(0xdddddd),
-			Key.SELECTED_TEXT_BG, FX.rgb(0xffff00),
-			Key.SELECTED_TEXT_FG, Color.BLACK,
-			Key.TEXT_BG, Color.WHITE,
-			Key.TEXT_FG, Color.BLACK
-		);
-	}
-	
-	
-	private static CMap<Key,Object> createFromArray(Object ... items)
-	{
-		CMap<Key,Object> d = new CMap();
-		for(int i=0; i<items.length; )
+		
+		if(sb != null)
 		{
-			Key k = (Key)items[i++];
-			Object v = items[i++];
-			if(!k.type.isAssignableFrom(v.getClass()))
-			{
-				throw new Error(k + " requires type " + k.type);
-			}
-			d.put(k, v);
+			throw new Error(sb.toString());
 		}
-		return d;
-	}
+	}	
 }
