@@ -2002,9 +2002,9 @@ public final class CKit
 	
 	/** collect public static fields from a class, of specified type */
 	@SuppressWarnings("unchecked")
-	public static <T> CSet<T> collectPublicStaticFields(Class<?> c, Class<T> type)
+	public static <T> CList<T> collectPublicStaticFields(Class<?> c, Class<T> type)
 	{
-		CSet<T> rv = new CSet();
+		CList<T> rv = new CList();
 		for(Field f: c.getFields())
 		{
 			int m = f.getModifiers();

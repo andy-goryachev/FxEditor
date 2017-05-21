@@ -302,7 +302,7 @@ public class HtmlTools
 	{
 		if(htmlTags == null)
 		{
-			htmlTags = CKit.collectPublicStaticFields(HTML4.class, String.class);
+			htmlTags = new CSet<>(CKit.collectPublicStaticFields(HTML4.class, String.class));
 		}
 		return htmlTags;
 	}

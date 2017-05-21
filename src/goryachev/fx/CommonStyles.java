@@ -1,8 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
-
-import goryachev.fx.FxStyleSheet.Selector;
 import javafx.scene.paint.Color;
+
 
 /**
  * Common Styles.
@@ -12,15 +11,28 @@ public class CommonStyles
 {
 	/** bold type face */
 	public static final CssStyle BOLD = new CssStyle("CommonStyles_BOLD");
-
 	/** disables horizontal scroll bar */
 	public static final CssStyle NO_HORIZONTAL_SCROLL_BAR = new CssStyle("CommonStyles_NO_HORIZONTAL_SCROLL_BAR");
 
 	
 	public CommonStyles()
 	{
+		Theme theme = Theme.current();
+		
 		add
 		(
+			selector(".root").defines
+			(
+				// text selection
+				prop("-fx-accent", FX.rgba(0xffff8b, 0.7)),
+				prop("-fx-base", theme.base),
+				prop("-fx-highlight-text-fill", theme.selectedTextFG),
+				// focus outline
+				prop("-fx-focus-color", theme.focus),
+				// focus glow
+				prop("-fx-faint-focus-color", TRANSPARENT)
+			),
+			
 			// bold
 			selector(BOLD).defines
 			(

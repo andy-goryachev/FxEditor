@@ -1,9 +1,8 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
 import goryachev.fx.CommonStyles;
-import goryachev.fx.FX;
 import goryachev.fx.FxStyleSheet;
-import javafx.scene.paint.Color;
+import goryachev.fx.Theme;
 
 
 /**
@@ -14,22 +13,10 @@ public class Styles
 {
 	public Styles()
 	{
-		// TODO themes
+		Theme theme = Theme.current();
 		
 		add
 		(
-			// basic styles
-			selector(".root").defines
-			(
-				// text selection
-				prop("-fx-accent", FX.rgba(0xffff8b, 0.7)),
-				prop("-fx-highlight-text-fill", Color.BLACK), //"-fx-dark-text-color"),
-				// focus outline
-				prop("-fx-focus-color", FX.rgb(0xff6d00)),
-				// focus glow
-				prop("-fx-faint-focus-color", FX.rgba(0xff6d00, 0.1)) // FIX
-			),
-			
 			// common fx styles
 			new CommonStyles()
 		);

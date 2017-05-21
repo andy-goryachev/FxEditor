@@ -6,4 +6,5 @@
 .settings/
 /*.log
 /*.conf
+/reference/reference.css
 hs_err_pid*
