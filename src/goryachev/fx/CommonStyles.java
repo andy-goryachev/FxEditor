@@ -91,7 +91,7 @@ public class CommonStyles
 			(
 //				backgroundColor(Color.RED),
 //				backgroundInsets(0),
-//				backgroundRadius(0),
+				backgroundRadius(0),
 				
 				selector(EDITABLE).defines
 				(
@@ -108,6 +108,11 @@ public class CommonStyles
 						backgroundInsets(1),
 						backgroundRadius(0)
 					)
+				),
+				
+				selector(FOCUSED).defines
+				(
+					backgroundRadius(0)
 				)
 			),
 			
