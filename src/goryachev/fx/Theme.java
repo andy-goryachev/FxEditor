@@ -20,6 +20,7 @@ public class Theme
 		FOCUS("focus", Color.class),
 		/** inactive or unfocused selection color */
 		INACTIVE_SELECTION_BG("inactiveSelectionBG", Color.class),
+		OUTLINE("outline", Color.class),
 		SELECTED_TEXT_BG("selectedTextBG", Color.class),
 		SELECTED_TEXT_FG("selectedTextFG", Color.class),
 		TEXT_BG("textBG", Color.class),
@@ -39,6 +40,7 @@ public class Theme
 	public final Color base;
 	public final Color focus;
 	public final Color inactiveSelectionBG;
+	public final Color outline;
 	public final Color selectedTextBG;
 	public final Color selectedTextFG;
 	public final Color textBG;
@@ -55,6 +57,7 @@ public class Theme
 		base = c(Key.BASE);
 		focus = c(Key.FOCUS);
 		inactiveSelectionBG = c(Key.INACTIVE_SELECTION_BG);
+		outline = c(Key.OUTLINE);
 		selectedTextBG = c(Key.SELECTED_TEXT_BG);
 		selectedTextFG = c(Key.SELECTED_TEXT_FG);
 		textBG = c(Key.TEXT_BG);
@@ -83,12 +86,10 @@ public class Theme
 		if(current == null)
 		{
 			CMap<Key,Object> m = loadFromSettings();
-			
 			if(m == null)
 			{
 				m = createDefaultTheme();
 			}
-			
 			current = new Theme(m);
 		}
 		return current;
@@ -118,16 +119,33 @@ public class Theme
 	
 	private static CMap<Key,Object> createDefaultTheme()
 	{
+		return createFromArray
+		(
+			Key.BASE, FX.rgb(0xececec),
+			Key.FOCUS, FX.rgb(0xff6d00),
+			Key.INACTIVE_SELECTION_BG, FX.rgb(0xff6d00),
+			Key.OUTLINE, FX.rgb(0xdddddd),
+			Key.SELECTED_TEXT_BG, FX.rgb(0xffff00),
+			Key.SELECTED_TEXT_FG, Color.BLACK,
+			Key.TEXT_BG, Color.WHITE,
+			Key.TEXT_FG, Color.BLACK
+		);
+	}
+	
+	
+	private static CMap<Key,Object> createFromArray(Object ... items)
+	{
 		CMap<Key,Object> d = new CMap();
-		
-		d.put(Key.BASE, FX.rgb(0xececec));
-		d.put(Key.FOCUS, FX.rgb(0xff6d00));
-		d.put(Key.INACTIVE_SELECTION_BG, FX.rgb(0xff6d00));
-		d.put(Key.SELECTED_TEXT_BG, FX.rgb(0xffff00));
-		d.put(Key.SELECTED_TEXT_FG, Color.BLACK);
-		d.put(Key.TEXT_BG, Color.WHITE);
-		d.put(Key.TEXT_FG, Color.BLACK);
-		
+		for(int i=0; i<items.length; )
+		{
+			Key k = (Key)items[i++];
+			Object v = items[i++];
+			if(!k.type.isAssignableFrom(v.getClass()))
+			{
+				throw new Error(k + " requires type " + k.type);
+			}
+			d.put(k, v);
+		}
 		return d;
 	}
 }

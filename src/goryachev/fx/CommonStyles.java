@@ -1,5 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import javafx.scene.effect.BlurType;
 import javafx.scene.paint.Color;
 
 
@@ -32,67 +33,7 @@ public class CommonStyles
 				// focus glow
 				prop("-fx-faint-focus-color", TRANSPARENT)
 			),
-			
-			// bold
-			selector(BOLD).defines
-			(
-				fontWeight("bold")
-			),
-			
-			// hide empty table rows
-			selector(".table-row-cell:empty").defines
-			(
-				backgroundColor(TRANSPARENT)
-			),
-			
-			// disables horizontal scroll bar
-			selector(NO_HORIZONTAL_SCROLL_BAR).defines
-			(
-				selector(".scroll-bar:horizontal").defines
-				(
-					maxHeight(0),
-					padding(0),
-					opacity(0)
-				),
-				selector(".scroll-bar:horizontal *").defines
-				(
-					maxHeight(0),
-					padding(0),
-					opacity(0)
-				)
-			),
-			
-			// fix text selection colors
-			selector(".text-input").defines
-			(
-				new Selector(FOCUSED).defines
-				(
-					textFill(Color.BLACK), // FIX theme
-					prop("-fx-highlight-text-fill", Color.BLACK) // FIX theme
-				)
-			),
-			
-			// text smoothing
-			selector(".text").defines
-			(
-				prop("-fx-font-smoothing-type", "gray")
-			),
-			
-			// scroll pane
-			selector(".scroll-pane").defines
-			(
-//				new Selector(FOCUSED).defines
-//				(
-//					// removes focused border from scroll pane
-//					// TODO do it specifically for the content pane
-//					backgroundInsets(1)
-//				),
-				new Selector(" > .viewport").defines
-				(
-					backgroundColor(Color.WHITE) // FIX theme
-				)
-			),
-			
+						
 			// checkbox FIX
 			selector(".check-box").defines
 			(
@@ -145,6 +86,98 @@ public class CommonStyles
 				)
 			),
 			
+			// combo box
+			selector(".combo-box-base").defines
+			(
+//				backgroundColor(Color.RED),
+//				backgroundInsets(0),
+//				backgroundRadius(0),
+				
+				selector(EDITABLE).defines
+				(
+					selector("> .text-field").defines
+					(
+						backgroundColor(theme.textBG),
+						backgroundInsets(1), // 1 0 1 1
+						backgroundRadius(0)
+					),
+					
+					selector(FOCUSED, "> .text-field").defines
+					(
+						backgroundColor(theme.textBG),
+						backgroundInsets(1),
+						backgroundRadius(0)
+					)
+				)
+			),
+			
+			// scroll pane
+			selector(".scroll-pane").defines
+			(
+//				new Selector(FOCUSED).defines
+//				(
+//					// removes focused border from scroll pane
+//					// TODO do it specifically for the content pane
+//					backgroundInsets(1)
+//				),
+				new Selector(" > .viewport").defines
+				(
+					backgroundColor(theme.textBG)
+				)
+			),
+			
+			// hide empty table rows
+			selector(".table-row-cell:empty").defines
+			(
+				backgroundColor(TRANSPARENT)
+			),
+			
+			// text smoothing
+			selector(".text").defines
+			(
+				prop("-fx-font-smoothing-type", "gray")
+			),
+			
+			// text area
+			// FIX change insets
+			selector(".text-area").defines
+			(
+				backgroundColor(theme.textBG),
+				
+				selector(".content").defines
+				(
+					backgroundColor(theme.textBG),
+					backgroundRadius(0)
+				),
+				
+				selector(FOCUSED, ".content").defines
+				(
+					backgroundColor(theme.textBG),
+					backgroundRadius(0),
+					backgroundInsets(0)
+				)
+			),
+			
+			// fix text selection colors
+			selector(".text-input").defines
+			(
+				backgroundInsets(commas(0, 1)),
+				backgroundColor(commas(theme.outline, theme.textBG)),
+				backgroundRadius(commas(0, 0)),
+				
+				new Selector(FOCUSED).defines
+				(
+					textFill(theme.textFG),
+					prop("-fx-highlight-text-fill", theme.selectedTextFG),
+					backgroundInsets(commas(0, 1)),
+					backgroundColor(commas(theme.focus, theme.textBG)),
+					backgroundRadius(commas(0, 0)),
+					// TODO provide a method
+					// BlurType blurType, Color color, double radius, double spread, double offsetX, double offsetY
+					effect("dropshadow(two-pass-box, rgba(0, 0, 0, 0.4), 12, 0, 2, 2)")
+				)
+			),
+			
 			// radio buttons - FIX
 			selector(".radio-button").defines
 			(
@@ -163,6 +196,32 @@ public class CommonStyles
 				backgroundRadius(100),
 				backgroundColor(TRANSPARENT),
 				padding(3)
+			),
+			
+			// andy's hacks
+			
+			// FX.style() bold 
+			selector(BOLD).defines
+			(
+				fontWeight("bold")
+			),
+
+			// disables horizontal scroll bar
+			// FIX does not disable completely
+			selector(NO_HORIZONTAL_SCROLL_BAR).defines
+			(
+				selector(".scroll-bar:horizontal").defines
+				(
+					maxHeight(0),
+					padding(0),
+					opacity(0)
+				),
+				selector(".scroll-bar:horizontal *").defines
+				(
+					maxHeight(0),
+					padding(0),
+					opacity(0)
+				)
 			)
 		);
 	}

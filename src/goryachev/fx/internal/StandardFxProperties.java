@@ -19,6 +19,7 @@ public class StandardFxProperties
 {
 	public static final CssPseudo ARMED = new CssPseudo(":armed");
 	public static final CssPseudo DISABLED = new CssPseudo(":disabled");
+	public static final CssPseudo EDITABLE = new CssPseudo(":editable");
 	public static final CssPseudo FOCUSED = new CssPseudo(":focused");
 	public static final CssPseudo HOVER = new CssPseudo(":hover");
 	public static final CssPseudo PRESSED = new CssPseudo(":pressed");
@@ -44,6 +45,9 @@ public class StandardFxProperties
 	// C
 	public static FxCssProp cellSize(Object x) { return new FxCssProp("-fx-cell-size", x); }
 	public static FxCssProp color(Object x) { return new FxCssProp("-fx-color", CssTools.toColor(x)); }
+	
+	// E
+	public static FxCssProp effect(Object x) { return new FxCssProp("-fx-effect", x); }
 	
 	// F
 	public static FxCssProp fill(Object x) { return new FxCssProp("-fx-fill", x); }
