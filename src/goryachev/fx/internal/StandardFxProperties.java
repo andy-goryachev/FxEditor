@@ -16,6 +16,9 @@ import javafx.scene.shape.StrokeLineCap;
  * text input:
  * -fx-highlight-fill 0x0096c9ff
  * -fx-highlight-text-fill 0xffffffff
+ * 
+ * order or Insets:
+ * TRBL
  */
 public class StandardFxProperties
 {

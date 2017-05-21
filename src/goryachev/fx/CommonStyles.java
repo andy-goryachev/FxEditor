@@ -38,33 +38,7 @@ public class CommonStyles
 			// FIX
 //			checkbox(theme),						
 			
-			// combo box
-			selector(".combo-box-base").defines
-			(
-				backgroundRadius(0),
-				
-				selector(EDITABLE).defines
-				(
-					selector("> .text-field").defines
-					(
-						backgroundColor(theme.textBG),
-						backgroundInsets(1), // 1 0 1 1
-						backgroundRadius(0)
-					),
-					
-					selector(FOCUSED, "> .text-field").defines
-					(
-						backgroundColor(theme.textBG),
-						backgroundInsets(1),
-						backgroundRadius(0)
-					)
-				),
-				
-				selector(FOCUSED).defines
-				(
-					backgroundRadius(0)
-				)
-			),
+			comboBox(theme),
 			
 			// scroll pane
 			selector(".scroll-pane").defines
@@ -129,7 +103,8 @@ public class CommonStyles
 					backgroundRadius(commas(0, 0)),
 					// TODO provide a method
 					// BlurType blurType, Color color, double radius, double spread, double offsetX, double offsetY
-					effect("dropshadow(two-pass-box, rgba(0, 0, 0, 0.4), 12, 0, 2, 2)")
+					//effect("dropshadow(two-pass-box, rgba(0, 0, 0, 0.4), 12, 0, 2, 2)")
+					shadow()
 				)
 			),
 			
@@ -241,6 +216,46 @@ public class CommonStyles
 	}
 	
 	
+	protected Object comboBox(Theme theme)
+	{
+		return selector(".combo-box-base").defines
+		(
+			backgroundRadius(0),
+			
+			selector(EDITABLE).defines
+			(
+				selector("> .text-field").defines
+				(
+					backgroundColor(theme.textBG),
+					backgroundInsets(1),
+					backgroundRadius(0)
+				),
+				
+				selector(FOCUSED).defines
+				(
+					backgroundColor(theme.focus),
+					backgroundInsets(0),
+					backgroundRadius(0),
+					
+					selector("> .text-field").defines
+					(
+						backgroundColor(theme.textBG),
+						backgroundInsets(spaces(1, 0, 1, 1)),
+						backgroundRadius(0),
+						effect(null)
+					)
+				)
+			),
+			
+			selector(FOCUSED).defines
+			(
+				backgroundRadius(0),
+				shadow()
+			)
+		);
+	}
+	
+	
 	protected Object radioButton(Theme theme)
 	{
 		// FIX
@@ -266,5 +281,11 @@ public class CommonStyles
 				padding(3)
 			)
 		};
+	}
+	
+	
+	protected Object shadow()
+	{
+		return effect("dropshadow(two-pass-box, rgba(0, 0, 0, 0.4), 12, 0, 2, 2)");
 	}
 }
