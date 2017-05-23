@@ -40,6 +40,8 @@ public class CommonStyles
 			
 			comboBox(theme),
 			
+			scrollBar(theme),
+			
 			// scroll pane
 			selector(".scroll-pane").defines
 			(
@@ -287,5 +289,114 @@ public class CommonStyles
 	protected Object shadow()
 	{
 		return effect("dropshadow(two-pass-box, rgba(0, 0, 0, 0.4), 12, 0, 2, 2)");
+	}
+	
+	
+	protected Object scrollBar(Theme theme)
+	{
+		Color fg = FX.alpha(theme.control, 0.5);
+		
+		return selector(".scroll-bar").defines
+		(
+			selector(":vertical").defines
+			(
+				maxWidth(12),
+				padding(0),
+				
+				selector(".thumb").defines
+				(
+					backgroundColor(fg),
+					backgroundInsets(spaces(0, 2, 0, 2)),
+					backgroundRadius(3),
+					maxWidth(10)
+				),
+				
+				selector(".increment-button").defines
+				(
+					minWidth(0),
+					maxWidth(0),
+					maxHeight(0),
+					prefWidth(14),
+					prefHeight(0)
+				),
+				
+				selector(".decrement-button").defines
+				(
+					minWidth(0),
+					maxWidth(0),
+					maxHeight(0),
+					prefWidth(14),
+					prefHeight(0)
+				),
+				
+				selector(".increment-arrow").defines
+				(
+					minWidth(0),
+					maxWidth(0),
+					maxHeight(0),
+					prefWidth(14),
+					prefHeight(0)
+				),
+				
+				selector(".decrement-arrow").defines
+				(
+					minWidth(0),
+					maxWidth(0),
+					maxHeight(0),
+					prefWidth(14),
+					prefHeight(0)
+				)
+			),
+			
+			selector(":horizontal").defines
+			(
+				maxHeight(12),
+				padding(0),
+				
+				selector(".thumb").defines
+				(
+					backgroundColor(fg),
+					backgroundInsets(spaces(2, 0, 2, 0)),
+					backgroundRadius(3),
+					maxHeight(10)
+				),
+				
+				selector(".increment-button").defines
+				(
+					minWidth(0),
+					maxWidth(0),
+					maxHeight(0),
+					prefHeight(14),
+					prefWidth(0)
+				),
+				
+				selector(".decrement-button").defines
+				(
+					minWidth(0),
+					maxWidth(0),
+					maxHeight(0),
+					prefHeight(14),
+					prefWidth(0)
+				),
+				
+				selector(".increment-arrow").defines
+				(
+					minWidth(0),
+					maxWidth(0),
+					maxHeight(0),
+					prefHeight(14),
+					prefWidth(0)
+				),
+				
+				selector(".decrement-arrow").defines
+				(
+					minWidth(0),
+					maxWidth(0),
+					maxHeight(0),
+					prefHeight(14),
+					prefWidth(0)
+				)
+			)
+		);
 	}
 }
