@@ -336,20 +336,26 @@ public class CommonStyles
 	protected Object scrollBar(Theme theme)
 	{
 		Color fg = FX.alpha(theme.control, 0.5);
+		double w = 7;
+		double sp = 3;
+		double g = 1;
+		double r = 3;
+		
+		double w2 = w + sp + sp;
 		
 		return selector(".scroll-bar").defines
 		(
 			selector(":vertical").defines
 			(
-				maxWidth(12),
+				maxWidth(w2),
 				padding(0),
 				
 				selector(".thumb").defines
 				(
 					backgroundColor(fg),
-					backgroundInsets(spaces(0, 2, 0, 2)),
-					backgroundRadius(3),
-					maxWidth(10)
+					backgroundInsets(spaces(g, sp, g, sp)),
+					backgroundRadius(r),
+					maxWidth(w)
 				),
 				
 				selector(".increment-button").defines
@@ -357,7 +363,7 @@ public class CommonStyles
 					minWidth(0),
 					maxWidth(0),
 					maxHeight(0),
-					prefWidth(14),
+					prefWidth(w2),
 					prefHeight(0)
 				),
 				
@@ -366,7 +372,7 @@ public class CommonStyles
 					minWidth(0),
 					maxWidth(0),
 					maxHeight(0),
-					prefWidth(14),
+					prefWidth(w2),
 					prefHeight(0)
 				),
 				
@@ -375,7 +381,7 @@ public class CommonStyles
 					minWidth(0),
 					maxWidth(0),
 					maxHeight(0),
-					prefWidth(14),
+					prefWidth(0),
 					prefHeight(0)
 				),
 				
@@ -384,22 +390,22 @@ public class CommonStyles
 					minWidth(0),
 					maxWidth(0),
 					maxHeight(0),
-					prefWidth(14),
+					prefWidth(0),
 					prefHeight(0)
 				)
 			),
 			
 			selector(":horizontal").defines
 			(
-				maxHeight(12),
+				maxHeight(w2),
 				padding(0),
 				
 				selector(".thumb").defines
 				(
 					backgroundColor(fg),
-					backgroundInsets(spaces(2, 0, 2, 0)),
-					backgroundRadius(3),
-					maxHeight(10)
+					backgroundInsets(spaces(sp, g, sp, g)),
+					backgroundRadius(r),
+					maxHeight(w)
 				),
 				
 				selector(".increment-button").defines
@@ -407,7 +413,7 @@ public class CommonStyles
 					minWidth(0),
 					maxWidth(0),
 					maxHeight(0),
-					prefHeight(14),
+					prefHeight(w2),
 					prefWidth(0)
 				),
 				
@@ -416,7 +422,7 @@ public class CommonStyles
 					minWidth(0),
 					maxWidth(0),
 					maxHeight(0),
-					prefHeight(14),
+					prefHeight(w2),
 					prefWidth(0)
 				),
 				
@@ -425,7 +431,7 @@ public class CommonStyles
 					minWidth(0),
 					maxWidth(0),
 					maxHeight(0),
-					prefHeight(14),
+					prefHeight(0),
 					prefWidth(0)
 				),
 				
@@ -434,7 +440,7 @@ public class CommonStyles
 					minWidth(0),
 					maxWidth(0),
 					maxHeight(0),
-					prefHeight(14),
+					prefHeight(0),
 					prefWidth(0)
 				)
 			)
