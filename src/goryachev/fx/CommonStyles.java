@@ -40,6 +40,8 @@ public class CommonStyles
 			
 			comboBox(theme),
 			
+			menuBar(theme),
+			
 			scrollBar(theme),
 			
 			// scroll pane
@@ -255,6 +257,45 @@ public class CommonStyles
 				shadow()
 			)
 		);
+	}
+	
+	
+	protected Object menuBar(Theme theme)
+	{
+		Color bg = FX.alpha(theme.focus, 0.8);
+		
+		return new Object[]
+		{			
+			selector(".menu-bar").defines
+			(
+				backgroundColor("derive(-fx-base, -5%)"),
+				backgroundInsets(0),
+				backgroundRadius(0),
+				
+				selector("> .container").defines
+				(
+					selector("> .menu-button:hover").defines
+					(
+						backgroundColor(bg) // TODO own color?
+					),
+				
+					selector("> .menu-button:focused").defines
+					(
+						backgroundColor(bg)
+					),
+					
+					selector("> .menu-button:showing").defines
+					(
+						backgroundColor(bg)
+					)
+				)
+			),
+			
+			selector(".menu-item:focused").defines
+			(
+				backgroundColor(bg)
+			)
+		};
 	}
 	
 	
