@@ -1,5 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.fx.internal.CssTools;
 import javafx.scene.paint.Color;
 
 
@@ -59,11 +60,7 @@ public class CommonStyles
 				)
 			),
 			
-			// hide empty table rows
-			selector(".table-row-cell:empty").defines
-			(
-				backgroundColor(TRANSPARENT)
-			),
+			table(theme),
 			
 			// text smoothing
 			selector(".text").defines
@@ -445,5 +442,28 @@ public class CommonStyles
 				)
 			)
 		);
+	}
+	
+	
+	protected Object table(Theme theme)
+	{
+		Color c = FX.alpha(theme.selectedTextBG, 0.15);
+		Color s = FX.mix(theme.selectedTextBG, theme.textFG, 0.9);
+		
+		return new Object[]
+		{
+			selector(".table-row-cell:filled:selected").defines
+			(
+				backgroundColor(c),
+				backgroundInsets(spaces(0, 0, 1, 0)),
+				prop("-fx-table-cell-border-color", G) //"derive(" + CssTools.toColor(c) + ", 20%)")
+			),
+			
+			// hide empty table rows
+			selector(".table-row-cell:empty").defines
+			(
+				backgroundColor(TRANSPARENT)
+			)
+		};
 	}
 }
