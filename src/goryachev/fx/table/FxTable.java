@@ -212,4 +212,10 @@ public class FxTable<T>
 	{
 		table.getSelectionModel().setSelectionMode(on ? SelectionMode.MULTIPLE : SelectionMode.SINGLE);
 	}
+	
+	
+	public void setCellSelectionEnabled(boolean on)
+	{
+		table.getSelectionModel().setCellSelectionEnabled(on);
+	}
 }
