@@ -30,9 +30,10 @@ public class DemoPane
 		
 		table.getItems().setAll
 		(
-			new Page("Buttons", ButtonPane.class),
-			new Page("FxEditor", FxEditorPane.class),
-			new Page("Text Components", TextPane.class)
+			new Page("Buttons", ButtonDemoPane.class),
+			new Page("FxEditor", FxEditorDemoPane.class),
+			new Page("FxTable", TableDemoPane.class),
+			new Page("Text Components", TextDemoPane.class)
 		);
 		table.selectedItemProperty().addListener((s) -> updateSelection());
 		

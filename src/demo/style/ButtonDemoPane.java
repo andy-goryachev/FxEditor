@@ -12,10 +12,10 @@ import javafx.scene.control.RadioButton;
 /**
  * ButtonPane.
  */
-public class ButtonPane
+public class ButtonDemoPane
 	extends CPane
 {
-	public ButtonPane()
+	public ButtonDemoPane()
 	{
 		HPane bp = new HPane(10);
 		bp.add(button("Active", false));

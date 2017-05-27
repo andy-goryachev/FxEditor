@@ -10,13 +10,13 @@ import javafx.geometry.Insets;
 /**
  * FxEditor Demo Pane.
  */
-public class FxEditorPane
+public class FxEditorDemoPane
 	extends CPane
 {
 	public final FxEditor ed;
 	
 	
-	public FxEditorPane()
+	public FxEditorDemoPane()
 	{
 		ed = new FxEditor(new TestFxColorEditorModel(Conf.LINE_COUNT));
 		ed.setContentPadding(new Insets(2, 5, 2, 5));

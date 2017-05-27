@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 /**
  * Text Components Pane.
  */
-public class TextPane
+public class TextDemoPane
 	extends CPane
 {
 	public final TextField textField;
@@ -21,7 +21,7 @@ public class TextPane
 	public final TextArea textFill;
 	
 	
-	public TextPane()
+	public TextDemoPane()
 	{
 		textField = new TextField("sample text");
 		
