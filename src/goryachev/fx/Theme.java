@@ -19,8 +19,6 @@ public class Theme
 		CONTROL("control", Color.class),
 		/** focus outline color */
 		FOCUS("focus", Color.class),
-		/** inactive or unfocused selection color */
-		INACTIVE_SELECTION_BG("inactiveSelectionBG", Color.class),
 		OUTLINE("outline", Color.class),
 		SELECTED_TEXT_BG("selectedTextBG", Color.class),
 		SELECTED_TEXT_FG("selectedTextFG", Color.class),
@@ -43,7 +41,6 @@ public class Theme
 	public final Color base;
 	public final Color control;
 	public final Color focus;
-	public final Color inactiveSelectionBG;
 	public final Color outline;
 	public final Color selectedTextBG;
 	public final Color selectedTextFG;
@@ -61,7 +58,6 @@ public class Theme
 		base = c(Key.BASE);
 		control = c(Key.CONTROL);
 		focus = c(Key.FOCUS);
-		inactiveSelectionBG = c(Key.INACTIVE_SELECTION_BG);
 		outline = c(Key.OUTLINE);
 		selectedTextBG = c(Key.SELECTED_TEXT_BG);
 		selectedTextFG = c(Key.SELECTED_TEXT_FG);

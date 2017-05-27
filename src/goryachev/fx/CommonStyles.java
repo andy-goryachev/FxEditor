@@ -25,7 +25,7 @@ public class CommonStyles
 			selector(".root").defines
 			(
 				// text selection
-				prop("-fx-accent", FX.rgba(0xffff8b, 0.7)),
+				prop("-fx-accent", FX.alpha(theme.selectedTextBG, 0.7)),
 				prop("-fx-base", theme.base),
 				// controls FIX
 //				prop("-fx-color", theme.control),
@@ -45,69 +45,11 @@ public class CommonStyles
 			
 			scrollBar(theme),
 			
-			// scroll pane
-			selector(".scroll-pane").defines
-			(
-//				new Selector(FOCUSED).defines
-//				(
-//					// removes focused border from scroll pane
-//					// TODO do it specifically for the content pane
-//					backgroundInsets(1)
-//				),
-				new Selector(" > .viewport").defines
-				(
-					backgroundColor(theme.textBG)
-				)
-			),
+			scrollPane(theme),
 			
 			table(theme),
 			
-			// text smoothing
-			selector(".text").defines
-			(
-				prop("-fx-font-smoothing-type", "gray")
-			),
-			
-			// text area
-			// FIX change insets
-			selector(".text-area").defines
-			(
-				backgroundColor(theme.textBG),
-				
-				selector(".content").defines
-				(
-					backgroundColor(theme.textBG),
-					backgroundRadius(0)
-				),
-				
-				selector(FOCUSED, ".content").defines
-				(
-					backgroundColor(theme.textBG),
-					backgroundRadius(0),
-					backgroundInsets(0)
-				)
-			),
-			
-			// fix text selection colors
-			selector(".text-input").defines
-			(
-				backgroundInsets(commas(0, 1)),
-				backgroundColor(commas(theme.outline, theme.textBG)),
-				backgroundRadius(commas(0, 0)),
-				
-				new Selector(FOCUSED).defines
-				(
-					textFill(theme.textFG),
-					prop("-fx-highlight-text-fill", theme.selectedTextFG),
-					backgroundInsets(commas(0, 1)),
-					backgroundColor(commas(theme.focus, theme.textBG)),
-					backgroundRadius(commas(0, 0)),
-					// TODO provide a method
-					// BlurType blurType, Color color, double radius, double spread, double offsetX, double offsetY
-					//effect("dropshadow(two-pass-box, rgba(0, 0, 0, 0.4), 12, 0, 2, 2)")
-					shadow()
-				)
-			),
+			text(theme),
 			
 			// FIX
 			//radioButton(theme),
@@ -445,6 +387,28 @@ public class CommonStyles
 	}
 	
 	
+	protected Object scrollPane(Theme theme)
+	{
+		// scroll pane
+		return selector(".scroll-pane").defines
+		(
+//			backgroundColor(theme.textBG),
+//			backgroundInsets(2),
+//			
+//			new Selector(FOCUSED).defines
+//			(
+//				backgroundColor(commas(theme.focus, theme.textBG)),
+//				backgroundInsets(commas(0, 1))
+//			),
+			
+			new Selector(" > .viewport").defines
+			(
+				backgroundColor(theme.textBG)
+			)
+		);
+	}
+	
+	
 	protected Object table(Theme theme)
 	{
 		Color c = FX.alpha(theme.selectedTextBG, 0.15);
@@ -455,14 +419,84 @@ public class CommonStyles
 			selector(".table-row-cell:filled:selected").defines
 			(
 				backgroundColor(c),
-				backgroundInsets(spaces(0, 0, 1, 0)),
-				prop("-fx-table-cell-border-color", G) //"derive(" + CssTools.toColor(c) + ", 20%)")
+				backgroundInsets(spaces(0, 0, 1, 0))
+//				,
+//				prop("-fx-table-cell-border-color", G) //"derive(" + CssTools.toColor(c) + ", 20%)")
+			),
+			
+			selector(".table-row-cell:filled").defines
+			(
+//				backgroundColor(R),
+//				backgroundInsets(spaces(0, 0, 1, 0))
+//				,
+//				prop("-fx-table-cell-border-color", G) //"derive(" + CssTools.toColor(c) + ", 20%)")
 			),
 			
 			// hide empty table rows
 			selector(".table-row-cell:empty").defines
 			(
-				backgroundColor(TRANSPARENT)
+				backgroundColor(TRANSPARENT),
+				borderColor(TRANSPARENT)
+			),
+			
+			selector(".table-view > .virtual-flow > .clipped-container > .sheet > .table-row-cell .table-cell:selected").defines
+			(
+				backgroundColor(commas("-fx-table-cell-border-color", "-fx-background")),
+				backgroundInsets(commas(0, spaces(0, 0, 1, 0)))
+			)
+		};
+	}
+	
+	
+	protected Object text(Theme theme)
+	{
+		return new Object[]
+		{
+			// text smoothing
+			selector(".text").defines
+			(
+				prop("-fx-font-smoothing-type", "gray")
+			),
+			
+			// text area
+			// FIX change insets
+			selector(".text-area").defines
+			(
+				backgroundColor(theme.textBG),
+				
+				selector(".content").defines
+				(
+					backgroundColor(theme.textBG),
+					backgroundRadius(0)
+				),
+				
+				selector(FOCUSED, ".content").defines
+				(
+					backgroundColor(theme.textBG),
+					backgroundRadius(0),
+					backgroundInsets(0)
+				)
+			),
+			
+			// fix text selection colors
+			selector(".text-input").defines
+			(
+				backgroundInsets(commas(0, 1)),
+				backgroundColor(commas(theme.outline, theme.textBG)),
+				backgroundRadius(commas(0, 0)),
+				
+				new Selector(FOCUSED).defines
+				(
+					textFill(theme.textFG),
+					prop("-fx-highlight-text-fill", theme.selectedTextFG),
+					backgroundInsets(commas(0, 1)),
+					backgroundColor(commas(theme.focus, theme.textBG)),
+					backgroundRadius(commas(0, 0)),
+					// TODO provide a method
+					// BlurType blurType, Color color, double radius, double spread, double offsetX, double offsetY
+					//effect("dropshadow(two-pass-box, rgba(0, 0, 0, 0.4), 12, 0, 2, 2)")
+					shadow()
+				)
 			)
 		};
 	}

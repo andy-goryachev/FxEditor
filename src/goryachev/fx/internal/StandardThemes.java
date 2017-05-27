@@ -19,7 +19,6 @@ public class StandardThemes
 			Key.BASE, FX.rgb(0xececec),
 			Key.CONTROL, FX.rgb(0x666666),
 			Key.FOCUS, FX.rgb(0xff6d00),
-			Key.INACTIVE_SELECTION_BG, FX.rgb(0xff6d00),
 			Key.OUTLINE, FX.rgb(0xdddddd),
 			Key.SELECTED_TEXT_BG, FX.rgb(0xffff00),
 			Key.SELECTED_TEXT_FG, Color.BLACK,
