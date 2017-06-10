@@ -82,6 +82,7 @@ public class EditorSelection
 	}
 
 
+	@Deprecated // TODO make sure always normalized + add boolean flag to the selection to indicate where the caret is
 	public EditorSelection getNormalizedSelection()
 	{
 		return NormalizedSelection.create(segments);

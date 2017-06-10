@@ -67,16 +67,18 @@ public abstract class FxEditorModel
 	
 	//
 
-	private CBooleanProperty editableProperty = new CBooleanProperty(false);
-	private CList<FxEditor> listeners = new CList<>();
+	protected CBooleanProperty editableProperty = new CBooleanProperty(false);
+	protected CList<FxEditor> listeners = new CList<>();
+	protected final CMap<DataFormat,ClipboardHandlerBase> clipboardHandlers = new CMap(); 
 	private static FxEditorModel empty;
 	
 	
 	public FxEditorModel()
 	{
+		addClipboardHandler(new PlainTextClipboardHandler());
 	}
-	
-	
+
+
 	public void addListener(FxEditor li)
 	{
 		listeners.add(li);
@@ -143,39 +145,77 @@ public abstract class FxEditorModel
 	}
 	
 	
-	/** copies every data format the model contains to the clipboard */
-	public void copy(EditorSelection sel)
+	public void addClipboardHandler(ClipboardHandlerBase h)
+	{
+		clipboardHandlers.put(h.getFormat(), h);
+	}
+	
+	
+	public void removeClipboardHandler(DataFormat f)
+	{
+		clipboardHandlers.remove(f);
+	}
+	
+	
+	/** returns all supported copy/paste formats */
+	public DataFormat[] getSupportedFormats()
+	{
+		return clipboardHandlers.keySet().toArray(new DataFormat[clipboardHandlers.size()]);
+	}
+	
+	
+	/** returns true if the format is supported */
+	public boolean isFormatSupported(DataFormat f)
+	{
+		return (clipboardHandlers.get(f) != null);
+	}
+	
+	
+	/** copies specified data formats to the clipboard.  silently ignores unsupported data format.  DataFormat.PLAIN_TEXT is always supported. */
+	public void copy(EditorSelection sel, Consumer<Throwable> errorHandler, DataFormat ... formats)
 	{
 		sel = sel.getNormalizedSelection();
 		
-		CMap<DataFormat,Object> m = new CMap();
-		String s = copyPlainText(sel);
-		if(s != null)
-		{
-			m.put(DataFormat.PLAIN_TEXT, s);
-		}
-		
-		Clipboard c = Clipboard.getSystemClipboard();
-		c.setContent(m);
-	}
-	
-	
-	public String copyPlainText(EditorSelection sel)
-	{
 		try
 		{
-			StringWriter wr = new StringWriter();
-			getPlainText(sel, wr);
-			return wr.toString();
+			CMap<DataFormat,Object> m = new CMap();
+			
+			for(DataFormat f: formats)
+			{
+				if(isFormatSupported(f))
+				{
+					ClipboardHandlerBase handler = clipboardHandlers.get(f);
+					if(handler != null)
+					{
+						Object v = handler.copy(this, sel);
+						if(v != null)
+						{
+							m.put(f, v);
+						}						
+					}
+				}
+			}
+			
+			Clipboard c = Clipboard.getSystemClipboard();
+			c.setContent(m);
 		}
-		catch(Exception e)
+		catch(Throwable e)
 		{
-			// TODO communicate error to the ui
-			Log.ex(e);
-			return null;
+			if(errorHandler == null)
+			{
+				Log.ex(e);
+			}
+			else
+			{
+				errorHandler.accept(e);
+			}
 		}
 	}
-
+	
+	
+	@Deprecated // TODO remove
+	protected final void copyOtherFormats(CMap<DataFormat,Object> clipboardData, EditorSelection sel) { }
+	
 
 	/** plain text copy, expecting normalized selection ranges */
 	public void getPlainText(EditorSelection sel, Writer wr) throws Exception

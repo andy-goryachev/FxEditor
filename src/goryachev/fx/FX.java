@@ -194,6 +194,10 @@ public final class FX
 			{
 				n.textProperty().bind((StringProperty)a);
 			}
+			else if(a instanceof Node)
+			{
+				n.setGraphic((Node)a);
+			}
 			else
 			{
 				throw new Error("?" + a);

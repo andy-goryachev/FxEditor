@@ -9,6 +9,7 @@ import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.Markers;
 import java.io.StringWriter;
+import java.util.function.Consumer;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -23,6 +24,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -455,7 +457,7 @@ public class FxEditor
 	/** returns plain text on the specified line */
 	public String getTextOnLine(int line)
 	{
-		return modelProperty.get().getPlainText(line);
+		return getTextModel().getPlainText(line);
 	}
 
 
@@ -463,7 +465,7 @@ public class FxEditor
 	public String getSelectedText() throws Exception
 	{
 		StringWriter wr = new StringWriter();
-		modelProperty.get().getPlainText(getSelection(), wr);
+		getTextModel().getPlainText(getSelection(), wr);
 		return wr.toString();
 	}
 	
@@ -486,9 +488,17 @@ public class FxEditor
 	}
 	
 	
+	/** copies all supported formats */
 	public void copy()
 	{
-		modelProperty.get().copy(getSelection());
+		copy(null, getTextModel().getSupportedFormats());
+	}
+	
+	
+	/** copies specified formats to clipboard, using an error handler */
+	public void copy(Consumer<Throwable> errorHandler, DataFormat ... formats)
+	{
+		getTextModel().copy(getSelection(), errorHandler, formats);
 	}
 	
 	

@@ -331,7 +331,7 @@ public class CPane
 	}
 
 
-	private Node set(Node c, CC cc)
+	protected Node set(Node c, CC cc)
 	{
 		Node old = getBorderComponent(cc);
 		if(old != null)
@@ -446,8 +446,7 @@ public class CPane
 	}
 
 
-	// TODO something is wrong here
-	public void removeLayoutComponent(Node nd)
+	protected void removeLayoutComponent(Node nd)
 	{
 		for(int i=entries.size()-1; i>=0; i--)
 		{
@@ -455,11 +454,10 @@ public class CPane
 			if(en.node == nd)
 			{
 				entries.remove(i);
-				break;
+				getChildren().remove(nd);
+				return;
 			}
 		}
-		
-		getChildren().remove(nd);
 	}
 
 	

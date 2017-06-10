@@ -1937,20 +1937,20 @@ public final class CKit
 	}
 	
 	
-	/** returns row count for itemCount and specified number of columns */
-	public static int rowCount(int itemCount, int cols)
+	/** determines the number of bins required to divide items into the specified number of bins */
+	public static int binCount(int itemCount, int binSize)
 	{
 		if(itemCount == 0)
 		{
 			return 0;
 		}
-		else if(cols == 0)
+		else if(binSize == 0)
 		{
 			return itemCount;
 		}
 		else
 		{
-			return 1 + (itemCount - 1) / cols;
+			return 1 + (itemCount - 1) / binSize;
 		}
 	}
 

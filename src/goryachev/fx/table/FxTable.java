@@ -181,6 +181,7 @@ public class FxTable<T>
 	public void selectFirst()
 	{
 		table.getSelectionModel().selectFirst();
+		table.scrollTo(0);
 	}
 	
 	
