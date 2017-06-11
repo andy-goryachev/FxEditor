@@ -52,4 +52,22 @@ public class Assert
 		}
 		return x;
 	}
+
+
+	public static void assertTrue(boolean value)
+	{
+		if(!value)
+		{
+			throw new IllegalArgumentException("must be true");
+		}
+	}
+
+
+	public static void assertEquals(Object a, Object b)
+	{
+		if(CKit.notEquals(a, b))
+		{
+			throw new IllegalArgumentException("must be equal");
+		}
+	}
 }
