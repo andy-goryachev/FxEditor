@@ -19,8 +19,8 @@ file with a concurrent change log that enables editing of a very large files.
 
 ## Try It Out ##
 
-The project is at a very early stage: less than 16% of all 
-[identified features](https://github.com/andy-goryachev/FxEditor/blob/master/Feature%20Matrix.xlsx)
+The project is at a very early stage: less than 24% of all 
+[identified features](https://github.com/andy-goryachev/FxEditor/blob/master/FxEditor%20Feature%20Matrix.xlsx)
 is currently implemented. 
 
 To see how little is implemented, launch 
