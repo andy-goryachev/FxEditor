@@ -1,6 +1,9 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.CKit;
 import goryachev.common.util.D;
+import goryachev.common.util.Hex;
+import goryachev.common.util.Log;
 import goryachev.fx.Binder;
 import goryachev.fx.CAction;
 import goryachev.fx.CBooleanProperty;
@@ -19,6 +22,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -108,17 +112,7 @@ public class FxEditor
 		initMouseController();
 		
 		// init key handler
-		addEventFilter(KeyEvent.ANY, (ev) ->
-		{
-			if(!ev.isConsumed())
-			{
-				Runnable a = keymap.getActionForKeyEvent(ev);
-				if(a != null)
-				{
-					a.run();
-				}
-			}
-		});
+		addEventFilter(KeyEvent.ANY, (ev) -> handleKeyEvent(ev));
 	}
 	
 	
@@ -538,6 +532,102 @@ public class FxEditor
 		{
 			// FIX smarter positioning so the target line is somewhere at 25% of the height
 			vflow.setOrigin(ix, 0);
+		}
+	}
+	
+	
+	protected void handleKeyEvent(KeyEvent ev)
+	{
+		if(!ev.isConsumed())
+		{
+			Runnable a = keymap.getActionForKeyEvent(ev);
+			if(a != null)
+			{
+				a.run();
+				return;
+			}
+			
+			EventType<KeyEvent> t = ev.getEventType();
+			if(t == KeyEvent.KEY_PRESSED)
+			{
+				handleKeyPressed(ev);
+			}
+			else if(t == KeyEvent.KEY_RELEASED)
+			{
+				handleKeyReleased(ev);
+			}
+			else if(t == KeyEvent.KEY_TYPED)
+			{
+				handleKeyTyped(ev);
+			}
+		}
+	}
+
+
+	protected void handleKeyPressed(KeyEvent ev)
+	{
+	}
+	
+	
+	protected void handleKeyReleased(KeyEvent ev)
+	{
+	}
+	
+	
+	protected void handleKeyTyped(KeyEvent ev)
+	{
+		FxEditorModel m = getTextModel();
+		if(m.isEditable())
+		{
+			String ch = ev.getCharacter();
+			if(isTypedCharacter(ch))
+			{
+				Edit ed = new Edit(getSelection(), ch);
+				try
+				{
+					Edit undo = m.edit(ed);
+					// TODO add to undo manager
+				}
+				catch(Exception e)
+				{
+					// TODO provide user feedback
+					Log.ex(e);
+				}
+			}
+		}
+	}
+
+
+	protected boolean isTypedCharacter(String ch)
+	{
+		if(KeyEvent.CHAR_UNDEFINED.equals(ch))
+		{
+			return false;
+		}
+		
+		int len = ch.length();
+		switch(len)
+		{
+		case 0:
+			return false;
+		case 1:
+			break;
+		default:
+			return true;
+		}
+		
+		char c = ch.charAt(0);
+		if(c < ' ')
+		{
+			return false;
+		}
+		
+		switch(c)
+		{
+		case 0x7f:
+			return false;
+		default:
+			return true;
 		}
 	}
 }

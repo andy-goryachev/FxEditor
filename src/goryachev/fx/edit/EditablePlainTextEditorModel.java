@@ -55,13 +55,6 @@ public class EditablePlainTextEditorModel
 		return null; 
 	}
 	
-	
-	public Edit edit(Edit ed) throws Exception
-	{
-		// TODO
-		throw new Exception();
-	}
-
 
 	public int getLineCount()
 	{
@@ -72,5 +65,12 @@ public class EditablePlainTextEditorModel
 	public String getPlainText(int line)
 	{
 		return lines.get(line);
+	}
+
+	
+	public Edit edit(Edit ed) throws Exception
+	{
+		// TODO
+		throw new Exception();
 	}
 }
