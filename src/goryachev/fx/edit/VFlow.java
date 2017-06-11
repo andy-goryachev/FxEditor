@@ -84,7 +84,7 @@ public class VFlow
 	protected void layoutChildren()
 	{
 		layout = recreateLayout(layout);
-		reloadSelectionDecorations();
+		reloadCaretAndSelection();
 	}
 	
 	
@@ -236,7 +236,7 @@ public class VFlow
 	}
 	
 	
-	public void reloadSelectionDecorations()
+	public void reloadCaretAndSelection()
 	{
 		FxPathBuilder hb = new FxPathBuilder();
 		FxPathBuilder cb = new FxPathBuilder();

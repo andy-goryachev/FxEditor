@@ -3,7 +3,6 @@ package goryachev.fx.edit;
 import goryachev.common.util.CList;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 
 /**
@@ -40,7 +39,7 @@ public class EditablePlainTextEditorModel
 	
 	public Region getDecoratedLine(int line)
 	{
-		TextFlow t = new TextFlow();
+		CTextFlow t = new CTextFlow();
 		String s = getPlainText(line);
 		if(s != null)
 		{

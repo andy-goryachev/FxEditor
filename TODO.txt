@@ -1,6 +1,5 @@
 TODO
 ====
-
 - horizontal scrolling
 - vertical scroll bar shows percentage of the view area
 - temporarily set editable to false and do copy() in a background thread (with an error handler) if the model is large
@@ -15,6 +14,5 @@ TODO
 FIX
 ===
 - #1 fix LTR+RTL selection
-- empty model shows no caret
-- click outside of text should move caret to the last character
+- #2 click outside of text should move caret to the proper place
 

@@ -81,9 +81,12 @@ public class FxEditor
 	public FxEditor(FxEditorModel m)
 	{
 		setFocusTraversable(true);
-		setTextModel(m);
 		FX.style(this, PANEL);
 		setBackground(FX.background(Color.WHITE));
+		
+		selector = createSelectionController();
+
+		setTextModel(m);
 		
 		vflow = new VFlow(this);
 		
@@ -94,8 +97,8 @@ public class FxEditor
 		
 		getChildren().addAll(vflow, vscroll, hscroll);
 		
-		selector = createSelectionController();
-		segments.addListener((Observable src) -> vflow.reloadSelectionDecorations());
+		
+		segments.addListener((Observable src) -> vflow.reloadCaretAndSelection());
 
 		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
 		Binder.onChange(this::updateLayout, widthProperty(), heightProperty());
@@ -203,6 +206,10 @@ public class FxEditor
 		{
 			m.addListener(this);
 		}
+		
+//		Marker ma = new Marker(0, 0, true);
+//		selector.setSelection(ma, ma);
+//		selector.commitSelection();
 		
 		updateLayout();
 	}
