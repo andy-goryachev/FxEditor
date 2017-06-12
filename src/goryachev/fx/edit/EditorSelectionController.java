@@ -38,10 +38,9 @@ public class EditorSelectionController
 	}
 	
 
-	/** adds a new segment from start to end */
-	public void addSelectionSegment(Marker beg, Marker end)
+	public void addSelectionSegment(Marker anchor, Marker caret)
 	{
-		segments.add(new SelectionSegment(beg, end));
+		segments.add(new SelectionSegment(anchor, caret));
 	}
 	
 	
@@ -79,7 +78,7 @@ public class EditorSelectionController
 		else
 		{
 			SelectionSegment s = segments.get(ix);
-			Marker anchor = s.getStart();
+			Marker anchor = s.getAnchor();
 			segments.set(ix, new SelectionSegment(anchor, pos));
 		}
 	}
@@ -91,7 +90,7 @@ public class EditorSelectionController
 		if(ix >= 0)
 		{
 			SelectionSegment s = segments.get(ix);
-			return s.getStart();
+			return s.getAnchor();
 		}
 		return null;
 	}
@@ -120,10 +119,10 @@ public class EditorSelectionController
 			for(int i=segments.size()-2; i>=0; --i)
 			{
 				SelectionSegment seg = segments.get(i);
-				SelectionSegment over = last.union(seg);
-				if(over != null)
+				SelectionSegment combined = last.swallow(seg);
+				if(combined != null)
 				{
-					segments.set(sz - 1, over);
+					segments.set(sz - 1, combined);
 					segments.remove(i);
 				}
 			}

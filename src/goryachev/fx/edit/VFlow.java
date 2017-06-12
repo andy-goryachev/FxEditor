@@ -243,8 +243,8 @@ public class VFlow
 		
 		for(SelectionSegment s: editor.segments)
 		{
-			Marker start = s.getStart();
-			Marker end = s.getEnd();
+			Marker start = s.getAnchor();
+			Marker end = s.getCaret();
 			
 			createSelectionHighlight(hb, start, end);
 			createCaretPath(cb, end);

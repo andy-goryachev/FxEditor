@@ -8,94 +8,50 @@ import goryachev.common.util.FH;
  * Encapsulates a single Selection Segment.
  */
 public class SelectionSegment
+	implements Cloneable
 {
-	protected final Marker start;
-	protected final Marker end;
+	protected final Marker min;
+	protected final Marker max;
+	protected final boolean caretAtMin;
 	
 	
-	public SelectionSegment(Marker start, Marker end)
+	public SelectionSegment(Marker min, Marker max, boolean caretAtMin)
 	{
-		Assert.notNull(start, "start");
-		Assert.notNull(end, "end");
+		Assert.notNull(min, "min");
+		Assert.notNull(max, "max");
 
-		this.start = start;
-		this.end = end;
+		this.min = min;
+		this.max = max;
+		this.caretAtMin = caretAtMin;
 	}
 	
 	
-	public String toString()
+	public SelectionSegment(Marker anchor, Marker caret)
 	{
-		return "[" + start + "-" + end + "]";
-	}
-	
-	
-	/** returns the start (anchor) position */
-	public Marker getStart()
-	{
-		return start;
-	}
-	
-	
-	/** returns the end (caret) position, may be before or after the anchor */
-	public Marker getEnd()
-	{
-		return end;
-	}
-	
-	
-	/** returns a marker which is closer to the beginning of the text */
-	public Marker getTop()
-	{
-		if(start.isBefore(end))
+		Assert.notNull(anchor, "anchor");
+		Assert.notNull(caret, "caret");
+		
+		if(anchor.compareTo(caret) < 0)
 		{
-			return start;
+			this.min = anchor;
+			this.max = caret;
+			this.caretAtMin = false;
 		}
 		else
 		{
-			return end;
+			this.min = caret;
+			this.max = anchor;
+			this.caretAtMin = true;	
 		}
-	}
-	
-	
-	/** returns a marker which is further from the beginning of the text */
-	public Marker getBottom()
-	{
-		if(end.isBefore(start))
-		{
-			return start;
-		}
-		else
-		{
-			return end;
-		}
-	}
-
-
-	public boolean contains(Marker p)
-	{
-		if(p != null)
-		{
-			int st = start.compareTo(p);
-			int en = end.compareTo(p);
-			
-			if((st >= 0) && (en <= 0))
-			{
-				return true;
-			}
-			else if((st <= 0) && (en >= 0))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	
 	public int hashCode()
 	{
 		int h = FH.hash(SelectionSegment.class);
-		h = FH.hash(h, start);
-		return FH.hash(h, end);
+		h = FH.hash(h, min);
+		h = FH.hash(h, max);
+		return FH.hash(h, caretAtMin);
 	}
 	
 	
@@ -107,10 +63,11 @@ public class SelectionSegment
 		}
 		else if(x instanceof SelectionSegment)
 		{
-			SelectionSegment z = (SelectionSegment)x;
-			return 
-				start.equals(z.start) && 
-				end.equals(z.end);
+			SelectionSegment s = (SelectionSegment)x;
+			return
+				(caretAtMin == s.caretAtMin) &&
+				min.equals(s.min) && 
+				max.equals(s.max);
 		}
 		else
 		{
@@ -119,11 +76,70 @@ public class SelectionSegment
 	}
 
 
+	public String toString()
+	{
+		if(caretAtMin)
+		{
+			return "[(" + min + ")-" + max + "]";
+		}
+		else
+		{
+			return "[" + min + "-(" + max + "])";
+		}
+	}
+	
+	
+	/** returns the anchor position (opposite of caret) */
+	public Marker getAnchor()
+	{
+		return caretAtMin ? max : min;
+	}
+	
+	
+	/** returns the caret position */
+	public Marker getCaret()
+	{
+		return caretAtMin ? min : max;
+	}
+	
+	
+	/** returns a marker which is closer to the beginning of the text */
+	public Marker getMin()
+	{
+		return min;
+	}
+	
+	
+	/** returns a marker which is further from the beginning of the text */
+	public Marker getMax()
+	{
+		return max;
+	}
+
+
+	public boolean contains(Marker p)
+	{
+		if(p != null)
+		{
+			int st = p.compareTo(min);
+			if(st >= 0)
+			{
+				int en = p.compareTo(max);
+				if(en <= 0)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+
 	public boolean isEmpty()
 	{
-		if(start.getLine() == end.getLine())
+		if(min.getLine() == max.getLine())
 		{
-			if(start.getLineOffset() == end.getLineOffset())
+			if(min.getLineOffset() == max.getLineOffset())
 			{
 				return true;
 			}
@@ -132,63 +148,37 @@ public class SelectionSegment
 	}
 
 
-	/** returns overlapping segment or null if segments do not overlap.  the caret (end marker) is chosen from this segment */
-	public SelectionSegment union(SelectionSegment s)
+	/** returns combined segment if two segments overlap, null otherwise. */
+	public SelectionSegment swallow(SelectionSegment s)
 	{
-		Marker m0 = s.getTop();
-		Marker m1 = s.getBottom();
+		Marker m0 = s.getMin();
+		Marker m1 = s.getMax();
 		
 		if(contains(m0))
 		{
 			if(contains(m1))
 			{
-				// overlaps fully
+				// full overlap [  ***  ]
 				return this;
 			}
 			else
 			{
-				if(getTop() == start)
-				{
-					return new SelectionSegment(start, m1);
-				}
-				else
-				{
-					return new SelectionSegment(m1, end);
-				}
+				// [ ***]***
+				return new SelectionSegment(min, m1, caretAtMin);
 			}
 		}
 		else
 		{
 			if(contains(m1))
 			{
-				if(getTop() == start)
-				{
-					return new SelectionSegment(m0, end);
-				}
-				else
-				{
-					return new SelectionSegment(end, m0);
-				}
+				// ***[***  ]
+				return new SelectionSegment(m0, max, caretAtMin);
 			}
 			else
 			{
-				// no overlap
+				// no overlap **** [   ]
 				return null;
 			}
-		}
-	}
-
-
-	/** returns a segment in which the start marker always comes before the end marker */
-	public SelectionSegment getNormalizedSegment()
-	{
-		if(start.isBefore(end))
-		{
-			return this;
-		}
-		else
-		{
-			return new SelectionSegment(end, start);
 		}
 	}
 }
