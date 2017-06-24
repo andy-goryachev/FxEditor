@@ -65,7 +65,7 @@ public class FxEditor
 	protected final VFlow vflow;
 	protected final ScrollBar vscroll;
 	protected final ScrollBar hscroll;
-	protected final EditorSelectionController selector;
+	protected final SelectionController selector;
 	protected final KeyMap keymap;
 	protected boolean handleScrollEvents = true;
 
@@ -116,9 +116,9 @@ public class FxEditor
 	
 	
 	/** override to provide your own selection model */
-	protected EditorSelectionController createSelectionController()
+	protected SelectionController createSelectionController()
 	{
-		return new EditorSelectionController(this);
+		return new SelectionController();
 	}
 	
 	

@@ -9,16 +9,14 @@ import javafx.collections.ObservableList;
  * FxEditor Selection Controller.
  * FIX I need to redo this.
  */
-public class EditorSelectionController
+public class SelectionController
 {
-	protected final FxEditor editor;
 	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
 	protected final ReadOnlyObjectWrapper<EditorSelection> selectionProperty = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
 
 
-	public EditorSelectionController(FxEditor ed)
+	public SelectionController()
 	{
-		this.editor = ed;
 	}
 
 

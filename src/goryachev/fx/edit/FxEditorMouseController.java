@@ -11,12 +11,12 @@ import javafx.scene.input.ScrollEvent;
 public class FxEditorMouseController
 {
 	protected final FxEditor editor;
-	protected final EditorSelectionController sel;
+	protected final SelectionController sel;
 	protected boolean dragging;
 	protected boolean draggingScroll;
 
 
-	public FxEditorMouseController(FxEditor ed, EditorSelectionController sel)
+	public FxEditorMouseController(FxEditor ed, SelectionController sel)
 	{
 		this.editor = ed;
 		this.sel = sel;
