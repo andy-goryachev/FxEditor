@@ -85,7 +85,7 @@ public class EditorSelectionController
 			{
 				SelectionSegment s = segments.get(ix);
 				Marker anchor = s.getAnchor();
-				segments.set(ix, new SelectionSegment(anchor, pos, false));
+				segments.set(ix, new SelectionSegment(anchor, pos));
 			}
 		}
 	}

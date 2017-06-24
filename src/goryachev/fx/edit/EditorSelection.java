@@ -1,6 +1,7 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CComparator;
+import goryachev.common.util.Rex;
 
 
 /**
@@ -15,6 +16,30 @@ public class EditorSelection
 	public EditorSelection(SelectionSegment[] segments)
 	{
 		this.segments = segments;
+		
+		// TODO remove this check later
+		check();
+	}
+	
+	
+	private void check()
+	{
+		SelectionSegment prev = null;
+		for(SelectionSegment seg: segments)
+		{
+			if(prev != null)
+			{
+				if
+				(
+					(prev.getMin().compareTo(seg.getMin()) >= 0) ||
+					(prev.getMax().compareTo(seg.getMin()) >= 0)
+				)
+				{
+					throw new Rex("selection is not ordered " + this);
+				}
+			}
+			prev = seg;
+		}
 	}
 	
 	
