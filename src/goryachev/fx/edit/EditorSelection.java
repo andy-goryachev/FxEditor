@@ -74,6 +74,7 @@ public class EditorSelection
 	}
 
 
+	@Deprecated // FIX change selection class to be always ordered
 	public EditorSelection getOrderedSelection()
 	{
 		SelectionSegment[] ss = segments.clone();

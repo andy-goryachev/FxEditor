@@ -1,8 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.common.util.CKit;
 import goryachev.common.util.D;
-import goryachev.common.util.Hex;
 import goryachev.common.util.Log;
 import goryachev.fx.Binder;
 import goryachev.fx.CAction;
@@ -20,8 +18,6 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -59,18 +55,16 @@ public class FxEditor
 	public final CAction copyAction = new CAction(this::copy);
 	public final CAction selectAllAction = new CAction(this::selectAll);
 	
-	protected final SimpleBooleanProperty editable = new SimpleBooleanProperty(false); // TODO for now
+	protected final SimpleBooleanProperty editableProperty = new SimpleBooleanProperty(false);
 	protected final ReadOnlyObjectWrapper<FxEditorModel> modelProperty = new ReadOnlyObjectWrapper<>();
 	protected final CBooleanProperty wrapTextProperty = new CBooleanProperty(true, this::updateLayout);
-	protected final ReadOnlyBooleanWrapper multipleSelection = new ReadOnlyBooleanWrapper(false);
-	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
-	protected final ReadOnlyObjectWrapper<EditorSelection> selection = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
-	protected Markers markers = new Markers(32);
+	protected final ReadOnlyBooleanWrapper multipleSelectionProperty = new ReadOnlyBooleanWrapper(false);
+	protected final BooleanProperty displayCaretProperty = new SimpleBooleanProperty(true);
+	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRateProperty = new ReadOnlyObjectWrapper(Duration.millis(500));
+	protected final Markers markers = new Markers(32);
 	protected final VFlow vflow;
 	protected final ScrollBar vscroll;
 	protected final ScrollBar hscroll;
-	protected final BooleanProperty displayCaret = new SimpleBooleanProperty(true);
-	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRate = new ReadOnlyObjectWrapper(Duration.millis(500));
 	protected final EditorSelectionController selector;
 	protected final KeyMap keymap;
 	protected boolean handleScrollEvents = true;
@@ -101,8 +95,7 @@ public class FxEditor
 		
 		getChildren().addAll(vflow, vscroll, hscroll);
 		
-		
-		segments.addListener((Observable src) -> vflow.reloadCaretAndSelection());
+		selector.segments.addListener((Observable src) -> vflow.reloadCaretAndSelection());
 
 		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
 		Binder.onChange(this::updateLayout, widthProperty(), heightProperty());
@@ -125,7 +118,7 @@ public class FxEditor
 	/** override to provide your own selection model */
 	protected EditorSelectionController createSelectionController()
 	{
-		return new EditorSelectionController(this, segments);
+		return new EditorSelectionController(this);
 	}
 	
 	
@@ -155,21 +148,21 @@ public class FxEditor
 	
 	public ReadOnlyObjectProperty<EditorSelection> selectionProperty()
 	{
-		return selection.getReadOnlyProperty();
+		return selector.selectionProperty.getReadOnlyProperty();
 	}
 	
 	
 	public EditorSelection getSelection()
 	{
-		return selection.get();
+		return selector.selectionProperty.get();
 	}
 	
 	
-	/** perhaps make this method public */
-	protected void setSelection(EditorSelection es)
-	{
-		selection.set(es);
-	}
+	// TODO use selector for this
+//	protected void setSelection(EditorSelection es)
+//	{
+//		selectionProperty.set(es);
+//	}
 	
 	
 	public void clearSelection()
@@ -290,19 +283,19 @@ public class FxEditor
 	
 	public void setMultipleSelectionEnabled(boolean on)
 	{
-		multipleSelection.set(on);
+		multipleSelectionProperty.set(on);
 	}
 	
 	
 	public boolean isMultipleSelectionEnabled()
 	{
-		return multipleSelection.get();
+		return multipleSelectionProperty.get();
 	}
 	
 	
 	public ReadOnlyBooleanProperty multipleSelectionProperty()
 	{
-		return multipleSelection.getReadOnlyProperty();
+		return multipleSelectionProperty.getReadOnlyProperty();
 	}
 	
 	
@@ -380,32 +373,32 @@ public class FxEditor
 	
 	public ReadOnlyObjectProperty<Duration> blinkRateProperty()
 	{
-		return caretBlinkRate.getReadOnlyProperty();
+		return caretBlinkRateProperty.getReadOnlyProperty();
 	}
 	
 	
 	public Duration getBlinkRate()
 	{
-		return caretBlinkRate.get();
+		return caretBlinkRateProperty.get();
 	}
 	
 	
 	public void setBlinkRate(Duration d)
 	{
-		caretBlinkRate.set(d);
+		caretBlinkRateProperty.set(d);
 	}
 	
 	
 	public boolean isEditable()
 	{
-		return editable.get();
+		return editableProperty.get();
 	}
 	
 	
-	/** enables editing.  FIX not yet editable */
+	/** enables editing in the component.  this setting will be ignored if a a model is read only */
 	public void setEditable(boolean on)
 	{
-		editable.set(on);
+		editableProperty.set(on);
 	}
 
 	
@@ -445,13 +438,13 @@ public class FxEditor
 	
 	public void setDisplayCaret(boolean on)
 	{
-		displayCaret.set(on);
+		displayCaretProperty.set(on);
 	}
 	
 	
 	public boolean isDisplayCaret()
 	{
-		return displayCaret.get();
+		return displayCaretProperty.get();
 	}
 	
 

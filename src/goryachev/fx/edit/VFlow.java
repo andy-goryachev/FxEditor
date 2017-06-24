@@ -70,7 +70,7 @@ public class VFlow
 		caretPath.visibleProperty().bind(new BooleanBinding()
 		{
 			{
-				bind(caretVisible, editor.displayCaret, editor.focusedProperty(), editor.disabledProperty(), suppressBlink);
+				bind(caretVisible, editor.displayCaretProperty, editor.focusedProperty(), editor.disabledProperty(), suppressBlink);
 			}
 
 			protected boolean computeValue()
@@ -241,7 +241,7 @@ public class VFlow
 		FxPathBuilder hb = new FxPathBuilder();
 		FxPathBuilder cb = new FxPathBuilder();
 		
-		for(SelectionSegment s: editor.segments)
+		for(SelectionSegment s: editor.selector.segments)
 		{
 			Marker start = s.getAnchor();
 			Marker end = s.getCaret();

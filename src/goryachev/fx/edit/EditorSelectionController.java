@@ -1,21 +1,24 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 
 /**
  * FxEditor Selection Controller.
+ * FIX I need to redo this.
  */
 public class EditorSelectionController
 {
 	protected final FxEditor editor;
-	protected final ObservableList<SelectionSegment> segments;
+	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
+	protected final ReadOnlyObjectWrapper<EditorSelection> selectionProperty = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
 
 
-	public EditorSelectionController(FxEditor ed, ObservableList<SelectionSegment> segments)
+	public EditorSelectionController(FxEditor ed)
 	{
 		this.editor = ed;
-		this.segments = segments;
 	}
 
 
@@ -44,10 +47,16 @@ public class EditorSelectionController
 	}
 	
 	
-	public void setSelection(Marker beg, Marker end)
+	public void setSelection(Marker anchor, Marker caret)
 	{
 		clear();
-		addSelectionSegment(beg, end);
+		addSelectionSegment(anchor, caret);
+	}
+	
+	
+	public void setSelection(Marker m)
+	{
+		setSelection(m, m);
 	}
 	
 	
@@ -65,21 +74,19 @@ public class EditorSelectionController
 	
 	public void extendLastSegment(Marker pos)
 	{
-		if(pos == null)
+		if(pos != null)
 		{
-			return;
-		}
-		
-		int ix = segments.size() - 1;
-		if(ix < 0)
-		{
-			 addSelectionSegment(pos, pos);
-		}
-		else
-		{
-			SelectionSegment s = segments.get(ix);
-			Marker anchor = s.getAnchor();
-			segments.set(ix, new SelectionSegment(anchor, pos));
+			int ix = segments.size() - 1;
+			if(ix < 0)
+			{
+				 addSelectionSegment(pos, pos);
+			}
+			else
+			{
+				SelectionSegment s = segments.get(ix);
+				Marker anchor = s.getAnchor();
+				segments.set(ix, new SelectionSegment(anchor, pos, false));
+			}
 		}
 	}
 	
@@ -130,6 +137,6 @@ public class EditorSelectionController
 		}
 		
 		SelectionSegment[] sel = segments.toArray(new SelectionSegment[segments.size()]);
-		editor.setSelection(new EditorSelection(sel));
+		selectionProperty.set(new EditorSelection(sel));
 	}
 }

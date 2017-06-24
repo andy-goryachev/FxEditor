@@ -99,9 +99,7 @@ public class FxEditorMouseController
 		{
 			if(sel.isInsideSelection(pos) || (!editor.isMultipleSelectionEnabled()))
 			{
-				// replace selection with a single caret
-				sel.clear();
-				sel.addSelectionSegment(pos, pos);
+				sel.setSelection(pos);
 			}
 			else
 			{

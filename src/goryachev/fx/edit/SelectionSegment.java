@@ -27,13 +27,12 @@ public class SelectionSegment
 	}
 	
 	
-	@Deprecated
 	public SelectionSegment(Marker anchor, Marker caret)
 	{
 		Assert.notNull(anchor, "anchor");
 		Assert.notNull(caret, "caret");
 		
-		if(anchor.compareTo(caret) < 0)
+		if(anchor.compareTo(caret) <= 0)
 		{
 			this.min = anchor;
 			this.max = caret;
