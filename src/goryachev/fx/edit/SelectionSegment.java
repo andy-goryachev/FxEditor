@@ -19,6 +19,7 @@ public class SelectionSegment
 	{
 		Assert.notNull(min, "min");
 		Assert.notNull(max, "max");
+		Assert.isLessThanOrEqual(min, max, "min", "max");
 
 		this.min = min;
 		this.max = max;
@@ -26,6 +27,7 @@ public class SelectionSegment
 	}
 	
 	
+	@Deprecated
 	public SelectionSegment(Marker anchor, Marker caret)
 	{
 		Assert.notNull(anchor, "anchor");

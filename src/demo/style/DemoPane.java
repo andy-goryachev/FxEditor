@@ -30,8 +30,8 @@ public class DemoPane
 		
 		table.getItems().setAll
 		(
-			new Page("Buttons", ButtonDemoPane.class),
 			new Page("FxEditor", FxEditorDemoPane.class),
+			new Page("Buttons", ButtonDemoPane.class),
 			new Page("FxTable", TableDemoPane.class),
 			new Page("Text Components", TextDemoPane.class)
 		);
