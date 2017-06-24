@@ -212,7 +212,9 @@ public class Hex
 			// space or newline
 			if(col >= 15)
 			{
+				sb.sp();
 				dumpAscii(sb, bytes, lineStart);
+				sb.nl();
 				col = 0;
 			}
 			else
@@ -230,10 +232,82 @@ public class Hex
 				sb.append("   ");
 			}
 
+			sb.sp();
 			dumpAscii(sb, bytes, lineStart);
+			sb.nl();
 		}
 		
 		return sb.toString();
+	}
+	
+	
+	// dumps byte array into a nicely formatted String
+	// printing address first, then 16 bytes of hex then ascii representation then newline
+	//     "0000  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................" or
+	// "00000000  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................" 
+	// depending on startAddress
+	// address starts with startAddress
+	public static String[] toHexStringsAscii(byte[] bytes)
+	{
+		SB sb = new SB(78);
+		int len = bytes.length;
+		boolean bigfile = (bytes.length > 65535);
+		int lines = CKit.binCount(len, 16);
+		CList<String> rv = new CList(lines);
+		
+		int col = 0;
+		int addr = 0;
+		int lineStart = 0;
+
+		for(int i=0; i<len; i++)
+		{
+			// offset
+			if(col == 0)
+			{
+				lineStart = i;
+				if(bigfile)
+				{
+					hexByte(sb, addr >> 24);
+					hexByte(sb, addr >> 16);
+				}
+				hexByte(sb, addr >> 8);
+				hexByte(sb, addr);
+				sb.append("  ");
+			}
+			
+			// byte
+			hexByte(sb,bytes[i]);
+			sb.append(' ');
+
+			// space or newline
+			if(col >= 15)
+			{
+				sb.sp();
+				dumpAscii(sb, bytes, lineStart);
+				rv.add(sb.getAndClear());
+				col = 0;
+			}
+			else
+			{
+				col++;
+			}
+
+			addr++;
+		}
+
+		if(col != 0)
+		{
+			while(col++ < 16)
+			{
+				sb.append("   ");
+			}
+
+			sb.sp();
+			dumpAscii(sb, bytes, lineStart);
+			rv.add(sb.getAndClear());
+		}
+		
+		return CKit.toArray(rv);
 	}
 	
 	
@@ -246,9 +320,6 @@ public class Hex
 	
 	private static void dumpAscii(SB sb, byte[] bytes, int lineStart)
 	{
-		// first, print padding
-		sb.append(' ');
-	
 		int max = Math.min(bytes.length,lineStart+16);
 		for(int i=lineStart; i<max; i++)
 		{
@@ -259,8 +330,6 @@ public class Hex
 			}
 			sb.append((char)d);
 		}
-		
-		sb.append('\n');
 	}
 
 

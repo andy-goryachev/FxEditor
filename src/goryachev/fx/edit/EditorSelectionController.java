@@ -108,6 +108,7 @@ public class EditorSelectionController
 
 
 	/** combines overlapping segments and sets selection property */
+	// FIX
 	public void commitSelection()
 	{
 		int sz = segments.size();

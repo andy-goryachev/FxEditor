@@ -2046,4 +2046,34 @@ public final class CKit
 	{
 		return new CList<>(items);
 	}
+
+
+	/** utility method converts a String Collection to a String[] */ 
+	public static String[] toArray(Collection<String> x)
+	{
+		return x.toArray(new String[x.size()]);
+	}
+	
+	
+	/** creates a string containing the specified number of tabs */
+	public static String tabs(int count)
+	{
+		if(count <= 0)
+		{
+			return "";
+		}
+		return new SB(count).tab(count).toString();
+	}
+	
+	
+	/** creates a string containing the specified number of spaces */
+	public static String spaces(int count)
+	{
+		if(count <= 0)
+		{
+			return "";
+		}
+		return new SB(count).sp(count).toString();
+	}
+
 }
