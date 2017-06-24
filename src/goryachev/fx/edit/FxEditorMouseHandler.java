@@ -11,7 +11,7 @@ import javafx.scene.input.ScrollEvent;
 public class FxEditorMouseHandler
 {
 	protected final FxEditor editor;
-	protected final SelectionController sel;
+	protected final SelectionController selector;
 	protected boolean dragging;
 	protected boolean draggingScroll;
 
@@ -19,11 +19,11 @@ public class FxEditorMouseHandler
 	public FxEditorMouseHandler(FxEditor ed, SelectionController sel)
 	{
 		this.editor = ed;
-		this.sel = sel;
+		this.selector = sel;
 	}
 	
 	
-	protected boolean isOverScrollBar(double x, double y)
+	protected boolean isOverScrollBars(double x, double y)
 	{
 		if(x >= editor.vscroll.getLayoutX())
 		{
@@ -39,7 +39,7 @@ public class FxEditorMouseHandler
 	
 	protected void handleScroll(ScrollEvent ev)
 	{
-		if(isOverScrollBar(ev.getX(), ev.getY()))
+		if(isOverScrollBars(ev.getX(), ev.getY()))
 		{
 			return;
 		}
@@ -79,7 +79,7 @@ public class FxEditorMouseHandler
 	
 	protected void handleMousePressed(MouseEvent ev)
 	{
-		if(isOverScrollBar(ev.getX(), ev.getY()))
+		if(isOverScrollBars(ev.getX(), ev.getY()))
 		{
 			return;
 		}
@@ -93,18 +93,18 @@ public class FxEditorMouseHandler
 			
 			// expand selection from the anchor point to the current position
 			// clearing existing (possibly multiple) selection
-			sel.clearAndExtendLastSegment(pos);
+			selector.clearAndExtendLastSegment(pos);
 		}
 		else if(ev.isShortcutDown())
 		{
-			if(sel.isInsideSelection(pos) || (!editor.isMultipleSelectionEnabled()))
+			if(selector.isInsideSelection(pos) || (!editor.isMultipleSelectionEnabled()))
 			{
-				sel.setSelection(pos);
+				selector.setSelection(pos);
 			}
 			else
 			{
 				// add a new caret
-				sel.addSelectionSegment(pos, pos);
+				selector.addSelectionSegment(pos, pos);
 			}
 		}
 		else
@@ -112,7 +112,7 @@ public class FxEditorMouseHandler
 			editor.clearSelection();
 			if(pos != null)
 			{
-				sel.addSelectionSegment(pos, pos);
+				selector.addSelectionSegment(pos, pos);
 			}
 		}
 		
@@ -127,7 +127,7 @@ public class FxEditorMouseHandler
 			return;
 		}
 		
-		if(isOverScrollBar(ev.getX(), ev.getY()))
+		if(isOverScrollBars(ev.getX(), ev.getY()))
 		{
 			dragging = false;
 			draggingScroll = true;
@@ -137,7 +137,7 @@ public class FxEditorMouseHandler
 		dragging = true;
 		
 		Marker pos = getTextPos(ev);
-		sel.extendLastSegment(pos);
+		selector.extendLastSegment(pos);
 	}
 	
 	
@@ -147,11 +147,11 @@ public class FxEditorMouseHandler
 		draggingScroll = false;
 		editor.setSuppressBlink(false);
 
-		if(isOverScrollBar(ev.getX(), ev.getY()))
+		if(isOverScrollBars(ev.getX(), ev.getY()))
 		{
 			return;
 		}
 		
-		sel.commitSelection();
+		selector.commitSelection();
 	}
 }

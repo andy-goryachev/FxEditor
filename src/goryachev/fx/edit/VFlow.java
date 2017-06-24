@@ -84,7 +84,7 @@ public class VFlow
 	protected void layoutChildren()
 	{
 		layout = recreateLayout(layout);
-		reloadCaretAndSelection();
+		updateCaretAndSelection();
 	}
 	
 	
@@ -236,22 +236,24 @@ public class VFlow
 	}
 	
 	
-	public void reloadCaretAndSelection()
+	public void updateCaretAndSelection()
 	{
-		FxPathBuilder hb = new FxPathBuilder();
-		FxPathBuilder cb = new FxPathBuilder();
+		FxPathBuilder selectionBuilder = new FxPathBuilder();
+		FxPathBuilder caretBuilder = new FxPathBuilder();
 		
 		for(SelectionSegment s: editor.selector.segments)
 		{
 			Marker start = s.getAnchor();
 			Marker end = s.getCaret();
 			
-			createSelectionHighlight(hb, start, end);
-			createCaretPath(cb, end);
+			// FIX min max
+			createSelectionHighlight(selectionBuilder, start, end);
+			// FIX caret
+			createCaretPath(caretBuilder, end);
 		}
 		
-		selectionHighlight.getElements().setAll(hb.getPath());
-		caretPath.getElements().setAll(cb.getPath());
+		selectionHighlight.getElements().setAll(selectionBuilder.getPath());
+		caretPath.getElements().setAll(caretBuilder.getPath());
 	}
 	
 	
@@ -267,7 +269,7 @@ public class VFlow
 	
 	
 	// FIX selection shape is incorrect if mixing LTR and RTL languages
-	protected void createSelectionHighlight(FxPathBuilder p, Marker startMarker, Marker endMarker)
+	protected void createSelectionHighlight(FxPathBuilder b, Marker startMarker, Marker endMarker)
 	{		
 		if((startMarker == null) || (endMarker == null))
 		{
@@ -312,11 +314,11 @@ public class VFlow
 				if((startMarker.getLine() < topLineIndex) && (endMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount())))
 				{
 					// 04
-					p.moveto(left, top);
-					p.lineto(right, top);
-					p.lineto(right, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, top);
+					b.moveto(left, top);
+					b.lineto(right, top);
+					b.lineto(right, bottom);
+					b.lineto(left, bottom);
+					b.lineto(left, top);
 				}
 				return;
 			}
@@ -330,22 +332,22 @@ public class VFlow
 				if(crossTop)
 				{
 					// 01
-					p.moveto(left, top);
-					p.lineto(end.x, top);
-					p.lineto(end.x, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, top);
+					b.moveto(left, top);
+					b.lineto(end.x, top);
+					b.lineto(end.x, bottom);
+					b.lineto(left, bottom);
+					b.lineto(left, top);
 				}
 				else
 				{
 					// 02
-					p.moveto(left, top);
-					p.lineto(right, top);
-					p.lineto(right, end.y0);
-					p.lineto(end.x, end.y0);
-					p.lineto(end.x, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, top);
+					b.moveto(left, top);
+					b.lineto(right, top);
+					b.lineto(right, end.y0);
+					b.lineto(end.x, end.y0);
+					b.lineto(end.x, bottom);
+					b.lineto(left, bottom);
+					b.lineto(left, top);
 				}
 			}
 			else
@@ -353,22 +355,22 @@ public class VFlow
 				if(crossTop)
 				{
 					// 03
-					p.moveto(left, top);
-					p.lineto(end.x, top);
-					p.lineto(end.x, end.y1);
-					p.lineto(left, end.y1);
-					p.lineto(left, top);
+					b.moveto(left, top);
+					b.lineto(end.x, top);
+					b.lineto(end.x, end.y1);
+					b.lineto(left, end.y1);
+					b.lineto(left, top);
 				}
 				else
 				{
 					// 05
-					p.moveto(left, top);
-					p.lineto(right, top);
-					p.lineto(right, end.y0);
-					p.lineto(end.x, end.y0);
-					p.lineto(end.x, end.y1);
-					p.lineto(left, end.y1);
-					p.lineto(left, top);
+					b.moveto(left, top);
+					b.lineto(right, top);
+					b.lineto(right, end.y0);
+					b.lineto(end.x, end.y0);
+					b.lineto(end.x, end.y1);
+					b.lineto(left, end.y1);
+					b.lineto(left, top);
 				}
 			}
 		}
@@ -383,22 +385,22 @@ public class VFlow
 				if(crossBottom)
 				{
 					// 06
-					p.moveto(beg.x, top);
-					p.lineto(right, top);
-					p.lineto(right, bottom);
-					p.lineto(beg.x, bottom);
-					p.lineto(beg.x, top);
+					b.moveto(beg.x, top);
+					b.lineto(right, top);
+					b.lineto(right, bottom);
+					b.lineto(beg.x, bottom);
+					b.lineto(beg.x, top);
 				}
 				else
 				{
 					// 07
-					p.moveto(beg.x, top);
-					p.lineto(right, top);
-					p.lineto(right, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, beg.y1);
-					p.lineto(beg.x, beg.y1);
-					p.lineto(beg.x, top);
+					b.moveto(beg.x, top);
+					b.lineto(right, top);
+					b.lineto(right, bottom);
+					b.lineto(left, bottom);
+					b.lineto(left, beg.y1);
+					b.lineto(beg.x, beg.y1);
+					b.lineto(beg.x, top);
 				}
 			}
 			else
@@ -406,22 +408,22 @@ public class VFlow
 				if(crossBottom)
 				{
 					// 08
-					p.moveto(beg.x, beg.y0);
-					p.lineto(right, beg.y0);
-					p.lineto(right, bottom);
-					p.lineto(beg.x, bottom);
-					p.lineto(beg.x, beg.y0);
+					b.moveto(beg.x, beg.y0);
+					b.lineto(right, beg.y0);
+					b.lineto(right, bottom);
+					b.lineto(beg.x, bottom);
+					b.lineto(beg.x, beg.y0);
 				}
 				else
 				{
 					// 09
-					p.moveto(beg.x, beg.y0);
-					p.lineto(right, beg.y0);
-					p.lineto(right, bottom);
-					p.lineto(left, bottom);
-					p.lineto(left, beg.y1);
-					p.lineto(beg.x, beg.y1);
-					p.lineto(beg.x, beg.y0);
+					b.moveto(beg.x, beg.y0);
+					b.lineto(right, beg.y0);
+					b.lineto(right, bottom);
+					b.lineto(left, bottom);
+					b.lineto(left, beg.y1);
+					b.lineto(beg.x, beg.y1);
+					b.lineto(beg.x, beg.y0);
 				}
 			}
 		}
@@ -431,24 +433,24 @@ public class VFlow
 			if(EditorTools.isCloseEnough(beg.y0, end.y0))
 			{
 				// 10
-				p.moveto(beg.x, beg.y0);
-				p.lineto(end.x, beg.y0);
-				p.lineto(end.x, end.y1);
-				p.lineto(beg.x, end.y1);
-				p.lineto(beg.x, beg.y0);
+				b.moveto(beg.x, beg.y0);
+				b.lineto(end.x, beg.y0);
+				b.lineto(end.x, end.y1);
+				b.lineto(beg.x, end.y1);
+				b.lineto(beg.x, beg.y0);
 			}
 			else
 			{
 				// 11
-				p.moveto(beg.x, beg.y0);
-				p.lineto(right, beg.y0);
-				p.lineto(right, end.y0);
-				p.lineto(end.x, end.y0);
-				p.lineto(end.x, end.y1);
-				p.lineto(left, end.y1);
-				p.lineto(left, beg.y1);
-				p.lineto(beg.x, beg.y1);
-				p.lineto(beg.x, beg.y0);
+				b.moveto(beg.x, beg.y0);
+				b.lineto(right, beg.y0);
+				b.lineto(right, end.y0);
+				b.lineto(end.x, end.y0);
+				b.lineto(end.x, end.y1);
+				b.lineto(left, end.y1);
+				b.lineto(left, beg.y1);
+				b.lineto(beg.x, beg.y1);
+				b.lineto(beg.x, beg.y0);
 			}
 		}
 	}

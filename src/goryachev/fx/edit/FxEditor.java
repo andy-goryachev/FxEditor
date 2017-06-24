@@ -95,7 +95,7 @@ public class FxEditor
 		
 		getChildren().addAll(vflow, vscroll, hscroll);
 		
-		selector.segments.addListener((Observable src) -> vflow.reloadCaretAndSelection());
+		selector.segments.addListener((Observable src) -> vflow.updateCaretAndSelection());
 
 		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
 		Binder.onChange(this::updateLayout, widthProperty(), heightProperty());
