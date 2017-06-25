@@ -1,7 +1,7 @@
 TODO
 ====
 - layout: skip resizing if same width
-- double/triple click handler 
+- double click handler 
 - horizontal scrolling
 - vertical scroll bar shows percentage of the view area
 - temporarily set editable to false and do copy() in a background thread (with an error handler) if the model is large
@@ -16,7 +16,7 @@ TODO
 FIX
 ===
 - #1 fix LTR+RTL selection
-- problem in overlapping mouse selection
+- problem extending last segment (shift+drag)
 
 
 

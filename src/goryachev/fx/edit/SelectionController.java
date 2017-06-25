@@ -105,6 +105,8 @@ public class SelectionController
 			anchor = pos;
 		}
 		
+		// FIX this is incorrect: need to remove last added segment, and create new from the anchor point
+		
 		SelectionSegment last = new SelectionSegment(anchor, pos);
 		addSegmentInOrder(last);
 	}
