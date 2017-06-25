@@ -129,7 +129,7 @@ public class SelectionSegment
 		{
 			if(isEmpty())
 			{
-				return false;
+				return (p.compareTo(min) == 0);
 			}
 			
 			int st = p.compareTo(min);

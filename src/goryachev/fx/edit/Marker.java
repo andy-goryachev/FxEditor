@@ -64,15 +64,16 @@ public class Marker
 		SB sb = new SB(16);
 		sb.a(line);
 		sb.a(':');
-		if(leading)
-		{
-			sb.a('*');
-		}
-		sb.a(charIndex);
-		if(!leading)
-		{
-			sb.a('*');
-		}
+//		if(leading)
+//		{
+//			sb.a('*');
+//		}
+//		sb.a(charIndex);
+//		if(!leading)
+//		{
+//			sb.a('*');
+//		}
+		sb.a(getCharIndex());
 		return sb.toString();
 	}
 
