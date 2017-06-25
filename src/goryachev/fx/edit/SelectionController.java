@@ -26,6 +26,7 @@ public class SelectionController
 	}
 	
 	
+	/** returns true if marker is inside of any of selection segments */
 	public boolean isInsideSelection(Marker pos)
 	{
 		for(SelectionSegment s: segments)
@@ -89,15 +90,10 @@ public class SelectionController
 	}
 	
 	
-	public Marker lastAnchor()
+	protected Marker lastAnchor()
 	{
-		int ix = segments.size() - 1;
-		if(ix >= 0)
-		{
-			SelectionSegment s = segments.get(ix);
-			return s.getAnchor();
-		}
-		return null;
+		SelectionSegment seg = getLastSegment();
+		return seg == null ? null : seg.getAnchor();
 	}
 	
 	

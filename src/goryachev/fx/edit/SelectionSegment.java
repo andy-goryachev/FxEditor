@@ -122,6 +122,11 @@ public class SelectionSegment
 	{
 		if(p != null)
 		{
+			if(isEmpty())
+			{
+				return false;
+			}
+			
 			int st = p.compareTo(min);
 			if(st >= 0)
 			{
@@ -138,14 +143,7 @@ public class SelectionSegment
 
 	public boolean isEmpty()
 	{
-		if(min.getLine() == max.getLine())
-		{
-			if(min.getLineOffset() == max.getLineOffset())
-			{
-				return true;
-			}
-		}
-		return false;
+		return min.equals(max);
 	}
 
 
