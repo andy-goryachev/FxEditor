@@ -43,7 +43,7 @@ public class FxEditorLayout
 			double x = p.getX() - pad.getLeft();
 			double y = p.getY() - pad.getTop();
 			
-			if(y > 0)
+			if(y >= 0)
 			{
 				if(y < box.getHeight())
 				{

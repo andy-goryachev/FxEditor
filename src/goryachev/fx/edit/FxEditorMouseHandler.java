@@ -31,7 +31,7 @@ public class FxEditorMouseHandler
 		{
 			return true;
 		}
-		else if(y >= editor.hscroll.getLayoutY())
+		else if(editor.hscroll.isVisible() && (y >= editor.hscroll.getLayoutY()))
 		{
 			return true;
 		}
@@ -108,9 +108,7 @@ public class FxEditorMouseHandler
 			
 		Marker pos = getTextPos(ev);
 		editor.setSuppressBlink(true);
-		
-		selector.setAnchor(pos);
-		
+				
 		if(ev.isShiftDown())
 		{
 			// expand selection from the anchor point to the current position
@@ -133,6 +131,7 @@ public class FxEditorMouseHandler
 		{
 			editor.clearSelection();
 			selector.addSelectionSegment(pos, pos);
+			selector.setAnchor(pos);
 		}
 		
 		editor.requestFocus();

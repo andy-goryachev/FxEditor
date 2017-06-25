@@ -39,7 +39,6 @@ public class SelectionController
 	public void clear()
 	{
 		segments.clear();
-		anchor = null;
 		originalSelection = null;
 	}
 	
