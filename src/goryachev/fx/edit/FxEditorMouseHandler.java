@@ -25,6 +25,7 @@ public class FxEditorMouseHandler
 	
 	protected boolean isOverScrollBars(double x, double y)
 	{
+		// might use getPickResult() to see if over VFlow or any other node
 		if(x >= editor.vscroll.getLayoutX())
 		{
 			return true;
@@ -77,7 +78,13 @@ public class FxEditorMouseHandler
 	}
 	
 	
-	protected void handleMousePressed(MouseEvent ev)
+	public void handleMouseClicked(MouseEvent ev)
+	{
+		D.print(ev);
+	}
+	
+	
+	public void handleMousePressed(MouseEvent ev)
 	{
 		if(isOverScrollBars(ev.getX(), ev.getY()))
 		{
@@ -120,7 +127,7 @@ public class FxEditorMouseHandler
 	}
 	
 	
-	protected void handleMouseDragged(MouseEvent ev)
+	public void handleMouseDragged(MouseEvent ev)
 	{
 		if(draggingScroll)
 		{
@@ -141,7 +148,7 @@ public class FxEditorMouseHandler
 	}
 	
 	
-	protected void handleMouseReleased(MouseEvent ev)
+	public void handleMouseReleased(MouseEvent ev)
 	{
 		dragging = false;
 		draggingScroll = false;
