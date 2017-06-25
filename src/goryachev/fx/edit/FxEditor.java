@@ -149,13 +149,13 @@ public class FxEditor
 	
 	public ReadOnlyObjectProperty<EditorSelection> selectionProperty()
 	{
-		return selector.selectionProperty.getReadOnlyProperty();
+		return selector.selectionProperty();
 	}
 	
 	
 	public EditorSelection getSelection()
 	{
-		return selector.selectionProperty.get();
+		return selector.getSelection();
 	}
 	
 	

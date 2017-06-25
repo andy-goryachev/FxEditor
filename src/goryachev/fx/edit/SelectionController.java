@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,12 +12,24 @@ import javafx.collections.ObservableList;
  */
 public class SelectionController
 {
-	protected final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
-	protected final ReadOnlyObjectWrapper<EditorSelection> selectionProperty = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
+	public final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
+	private final ReadOnlyObjectWrapper<EditorSelection> selectionProperty = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
 
 
 	public SelectionController()
 	{
+	}
+	
+	
+	public ReadOnlyObjectProperty<EditorSelection> selectionProperty()
+	{
+		return selectionProperty.getReadOnlyProperty();
+	}
+	
+	
+	public EditorSelection getSelection()
+	{
+		return selectionProperty.get();
 	}
 
 
