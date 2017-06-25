@@ -2,7 +2,7 @@
 package goryachev.common.util;
 
 
-/** StringBuilder with a few convenient methods */
+/** More convenient StringBuilder */
 public class SB
 {
 	protected StringBuilder sb;
@@ -48,6 +48,13 @@ public class SB
 		{
 			sb.append("\n");
 		}
+		return this;
+	}
+	
+	
+	public SB comma()
+	{
+		sb.append(',');
 		return this;
 	}
 	

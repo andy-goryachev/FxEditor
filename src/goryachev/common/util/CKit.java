@@ -1051,6 +1051,36 @@ public final class CKit
 	{
 		return (x == null) ? null : x.toString(); 
 	}
+	
+	
+	public static <T> String toString(T[] items)
+	{
+		if(items == null)
+		{
+			return "null";
+		}
+		else
+		{
+			SB sb = new SB(512);
+			boolean comma = false;
+			sb.a("[");
+			for(T item: items)
+			{
+				if(comma)
+				{
+					sb.a(", ");
+				}
+				else
+				{
+					comma = true;
+				}
+				
+				sb.a(item == null ? "null" : item.toString());
+			}
+			sb.a("]");
+			return sb.toString();
+		}
+	}
 
 
 	public static void forceGC()

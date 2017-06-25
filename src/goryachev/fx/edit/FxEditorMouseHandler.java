@@ -1,6 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.D;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
@@ -80,7 +81,21 @@ public class FxEditorMouseHandler
 	
 	public void handleMouseClicked(MouseEvent ev)
 	{
-		D.print(ev);
+		if(ev.getButton() != MouseButton.PRIMARY)
+		{
+			return;
+		}
+		
+		int clicks = ev.getClickCount();
+		switch(clicks)
+		{
+		case 2:
+			D.print("double click"); // FIX
+			break;
+		case 3:
+			D.print("triple click"); // FIX
+			break;
+		}
 	}
 	
 	
@@ -94,10 +109,10 @@ public class FxEditorMouseHandler
 		Marker pos = getTextPos(ev);
 		editor.setSuppressBlink(true);
 		
+		selector.setAnchor(pos);
+		
 		if(ev.isShiftDown())
 		{
-			// FIX there might be a zero length segment (single caret)
-			
 			// expand selection from the anchor point to the current position
 			// clearing existing (possibly multiple) selection
 			selector.clearAndExtendLastSegment(pos);
@@ -117,10 +132,7 @@ public class FxEditorMouseHandler
 		else
 		{
 			editor.clearSelection();
-			if(pos != null)
-			{
-				selector.addSelectionSegment(pos, pos);
-			}
+			selector.addSelectionSegment(pos, pos);
 		}
 		
 		editor.requestFocus();

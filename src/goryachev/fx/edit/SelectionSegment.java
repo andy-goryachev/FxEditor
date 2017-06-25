@@ -79,6 +79,11 @@ public class SelectionSegment
 
 	public String toString()
 	{
+		if(min.equals(max))
+		{
+			return "[(" + min + ")]";
+		}
+		
 		if(caretAtMin)
 		{
 			return "[(" + min + ")-" + max + "]";
@@ -179,5 +184,24 @@ public class SelectionSegment
 				return null;
 			}
 		}
+	}
+
+
+	/** returns true if two segments do not overlap and this segment is before the specified one */
+	public boolean isBefore(SelectionSegment s)
+	{
+		return getMax().compareTo(s.getMin()) < 0;
+	}
+	
+	
+	public boolean overlaps(SelectionSegment s)
+	{
+		return contains(s.getMin()) || contains(s.getMax());
+	}
+
+
+	public SelectionSegment combine(SelectionSegment s)
+	{
+		return swallow(s);
 	}
 }

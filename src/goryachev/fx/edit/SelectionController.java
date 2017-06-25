@@ -1,5 +1,7 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.CList;
+import goryachev.common.util.D;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -8,12 +10,13 @@ import javafx.collections.ObservableList;
 
 /**
  * FxEditor Selection Controller.
- * FIX I need to redo this.
  */
 public class SelectionController
 {
 	public final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
 	private final ReadOnlyObjectWrapper<EditorSelection> selectionProperty = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
+	private Marker anchor;
+	private CList<SelectionSegment> originalSelection;
 
 
 	public SelectionController()
@@ -36,6 +39,8 @@ public class SelectionController
 	public void clear()
 	{
 		segments.clear();
+		anchor = null;
+		originalSelection = null;
 	}
 	
 	
@@ -52,17 +57,18 @@ public class SelectionController
 		return false;
 	}
 	
-
-	public void addSelectionSegment(Marker anchor, Marker caret)
-	{
-		segments.add(new SelectionSegment(anchor, caret));
-	}
-	
 	
 	public void setSelection(Marker anchor, Marker caret)
 	{
 		clear();
 		addSelectionSegment(anchor, caret);
+	}
+	
+
+	public void addSelectionSegment(Marker anchor, Marker caret)
+	{
+		addSegmentInOrder(new SelectionSegment(anchor, caret));
+		originalSelection = null;
 	}
 	
 	
@@ -74,7 +80,6 @@ public class SelectionController
 	
 	public void clearAndExtendLastSegment(Marker pos)
 	{
-		Marker anchor = lastAnchor();
 		if(anchor == null)
 		{
 			anchor = pos;
@@ -84,66 +89,84 @@ public class SelectionController
 	}
 	
 	
+	public void setAnchor(Marker p)
+	{
+		anchor = p;
+	}
+	
+	
+	/** 
+	 * extends the new selection segment from the anchor point to the specified position,
+	 * updating the segments list such that it remains to be ordered and the segments do not overlap each other
+	 */
 	public void extendLastSegment(Marker pos)
 	{
-		if(pos != null)
+		if(anchor == null)
 		{
-			int ix = segments.size() - 1;
-			if(ix < 0)
+			anchor = pos;
+		}
+		
+		SelectionSegment last = new SelectionSegment(anchor, pos);
+		addSegmentInOrder(last);
+	}
+	
+	
+	protected void addSegmentInOrder(SelectionSegment last)
+	{
+		D.print("last=", last); // FIX
+		
+		if(originalSelection == null)
+		{
+			originalSelection = new CList<>(segments);
+		}
+		
+		// merge last segment and original selection to produce ordered, non-overlapping segments
+		CList<SelectionSegment> sorted = new CList(originalSelection.size() + 1);
+		for(SelectionSegment s: originalSelection)
+		{
+			if(last == null)
 			{
-				 addSelectionSegment(pos, pos);
+				sorted.add(s);
 			}
 			else
 			{
-				SelectionSegment s = segments.get(ix);
-				Marker anchor = s.getAnchor();
-				segments.set(ix, new SelectionSegment(anchor, pos));
-			}
-		}
-	}
-	
-	
-	protected Marker lastAnchor()
-	{
-		SelectionSegment seg = getLastSegment();
-		return seg == null ? null : seg.getAnchor();
-	}
-	
-	
-	public SelectionSegment getLastSegment()
-	{
-		int sz = segments.size();
-		if(sz > 0)
-		{
-			return segments.get(sz - 1);
-		}
-		return null;
-	}
-
-
-	/** combines overlapping segments and sets selection property */
-	// FIX
-	public void commitSelection()
-	{
-		int sz = segments.size();
-		if(sz >= 2)
-		{
-			SelectionSegment last = segments.get(sz - 1);
-			
-			// starting from the last segment
-			for(int i=segments.size()-2; i>=0; --i)
-			{
-				SelectionSegment seg = segments.get(i);
-				SelectionSegment combined = last.swallow(seg);
-				if(combined != null)
+				if(last.overlaps(s))
 				{
-					segments.set(sz - 1, combined);
-					segments.remove(i);
+					last = last.combine(s);
+				}
+				else if(last.isBefore(s))
+				{
+					sorted.add(last);
+					sorted.add(s);
+					last = null;
+				}
+				else
+				{
+					sorted.add(s);
 				}
 			}
 		}
 		
-		SelectionSegment[] sel = segments.toArray(new SelectionSegment[segments.size()]);
-		selectionProperty.set(new EditorSelection(sel));
+		if(last != null)
+		{
+			sorted.add(last);
+		}
+		
+		// sorted list contains the new selection
+		// we could merge the original list, but for now it's easier just to replace the items
+		segments.setAll(sorted);
+		D.print(sorted); // FIX
+	}
+	
+
+	/** called at the end of drag gesture to clear transient values and update the selection property */
+	public void commitSelection()
+	{
+		originalSelection = null;
+		
+		EditorSelection es = new EditorSelection(segments.toArray(new SelectionSegment[segments.size()]));
+		selectionProperty.set(es);
+		
+		D.print(es); // FIX
 	}
 }

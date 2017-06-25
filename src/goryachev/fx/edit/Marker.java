@@ -1,6 +1,7 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.FH;
+import goryachev.common.util.SB;
 
 
 /**
@@ -60,7 +61,19 @@ public class Marker
 	
 	public String toString()
 	{
-		return line + "." + charIndex + (leading ? ".L" : "T");
+		SB sb = new SB(16);
+		sb.a(line);
+		sb.a(':');
+		if(leading)
+		{
+			sb.a('*');
+		}
+		sb.a(charIndex);
+		if(!leading)
+		{
+			sb.a('*');
+		}
+		return sb.toString();
 	}
 
 	
@@ -69,10 +82,13 @@ public class Marker
 		int d = line - m.line;
 		if(d == 0)
 		{
-			d = charIndex - m.charIndex;
-			if(leading != m.leading)
+			d = getLineOffset() - m.getLineOffset();
+			if(d == 0)
 			{
-				return leading ? -1 : 1;
+				if(leading != m.leading)
+				{
+					return leading ? -1 : 1;
+				}
 			}
 		}
 		return d;
