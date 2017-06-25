@@ -16,7 +16,6 @@ TODO
 FIX
 ===
 - #1 fix LTR+RTL selection
-- #2 click outside of text should move caret to the proper place
 - problem in overlapping mouse selection
 
 
