@@ -48,8 +48,7 @@ public class EditorSelection
 	
 	private static EditorSelection createEmpty()
 	{
-		Marker m = new Marker(0, 0, true);
-		return new EditorSelection(new SelectionSegment[] { new SelectionSegment(m, m, false) });
+		return new EditorSelection(new SelectionSegment[] { new SelectionSegment(Marker.ZERO, Marker.ZERO, false) });
 	}
 
 	

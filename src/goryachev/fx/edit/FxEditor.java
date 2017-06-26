@@ -505,8 +505,8 @@ public class FxEditor
 			--ix;
 			
 			String s = getTextModel().getPlainText(ix);
-			Marker beg = new Marker(0, 0, true);
-			Marker end = new Marker(ix, Math.max(0, s.length() - 1), false);
+			Marker beg = markers.newMarker(0, 0, true);
+			Marker end = markers.newMarker(ix, Math.max(0, s.length() - 1), false);
 			
 			selector.setSelection(beg, end);
 			selector.commitSelection();

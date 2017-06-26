@@ -1,7 +1,9 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.Assert;
 import goryachev.common.util.FH;
 import goryachev.common.util.SB;
+import goryachev.fx.edit.internal.Markers;
 
 
 /**
@@ -11,16 +13,27 @@ import goryachev.common.util.SB;
 public class Marker
 	implements Comparable<Marker>
 {
+	public static final Marker ZERO = new Marker();
 	private int line;
 	private int charIndex;
 	private boolean leading;
 	
 	
-	public Marker(int line, int charIndex, boolean leading)
+	public Marker(Markers owner, int line, int charIndex, boolean leading)
 	{
+		Assert.notNull(owner, "owner");
+		
 		this.line = line;
 		this.charIndex = charIndex;
-		this.leading = leading;
+		this.leading = leading;		
+	}
+	
+	
+	private Marker()
+	{
+		this.line = 0;
+		this.charIndex = 0;
+		this.leading = true;	
 	}
 	
 
