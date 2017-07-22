@@ -288,6 +288,111 @@ public class VFlow
 	}
 	
 	
+	protected FxEditorLayout getEditorLayout()
+	{
+		if(layout == null)
+		{
+			layout = new FxEditorLayout(editor, topLineIndex);
+		}
+		return layout;
+	}
+	
+	
+	public void pageUp()
+	{
+		blockScroll(getHeight(), true);
+	}
+	
+	
+	public void pageDown()
+	{
+		blockScroll(getHeight(), false);
+	}
+	
+	
+	public void blockScroll(boolean up)
+	{
+		// this could be a preference
+		double BLOCK_SCROLL_FACTOR = 0.1;
+		double BLOCK_MIN_SCROLL = 40;
+		
+		double h = getHeight();
+		double delta = h * BLOCK_SCROLL_FACTOR;
+		if(delta < BLOCK_MIN_SCROLL)
+		{
+			delta = h;
+		}
+		
+		blockScroll(delta, up);
+	}
+	
+	
+	protected void blockScroll(double delta, boolean up)
+	{
+		if(up)
+		{
+			if(delta <= offsety)
+			{
+				// no need to query the model
+				setOrigin(topLineIndex, offsety -= delta);
+				return;
+			}
+			else
+			{
+				int ix = topLineIndex;
+				double targetY = -delta;
+				double y = -offsety;
+					
+				for(;;)
+				{
+					--ix;
+					if(ix < 0)
+					{
+						// top line
+						setOrigin(0, 0);
+						return;
+					}
+					
+					double dy = getEditorLayout().getLineHeight(ix);
+					y -= dy;
+					if(y < targetY)
+					{
+						break;
+					}
+				}
+				
+				setOrigin(ix, targetY - y);
+				return;
+			}
+		}
+		else
+		{
+			int ix = topLineIndex;
+			double targetY = delta;
+			double y = -offsety;
+			
+			for(;;)
+			{
+				if(ix >= editor.getLineCount())
+				{
+					// FIX need to figure out what to do in this case
+					break;
+				}
+				
+				double dy = getEditorLayout().getLineHeight(ix);
+				if(y + dy > targetY)
+				{
+					setOrigin(ix, targetY - y);
+					return;
+				}
+				
+				y += dy;
+				ix++;
+			}
+		}
+	}
+	
+	
 	// FIX issue #1 selection shape is incorrect if mixing LTR and RTL languages
 	protected void createSelectionHighlight(FxPathBuilder b, Marker startMarker, Marker endMarker)
 	{		
@@ -472,111 +577,6 @@ public class VFlow
 				b.lineto(left, beg.y1);
 				b.lineto(beg.x, beg.y1);
 				b.lineto(beg.x, beg.y0);
-			}
-		}
-	}
-	
-	
-	protected FxEditorLayout getEditorLayout()
-	{
-		if(layout == null)
-		{
-			layout = new FxEditorLayout(editor, topLineIndex);
-		}
-		return layout;
-	}
-	
-	
-	public void pageUp()
-	{
-		blockScroll(getHeight(), true);
-	}
-	
-	
-	public void pageDown()
-	{
-		blockScroll(getHeight(), false);
-	}
-	
-	
-	public void blockScroll(boolean up)
-	{
-		// this could be a preference
-		double BLOCK_SCROLL_FACTOR = 0.1;
-		double BLOCK_MIN_SCROLL = 40;
-		
-		double h = getHeight();
-		double delta = h * BLOCK_SCROLL_FACTOR;
-		if(delta < BLOCK_MIN_SCROLL)
-		{
-			delta = h;
-		}
-		
-		blockScroll(delta, up);
-	}
-	
-	
-	protected void blockScroll(double delta, boolean up)
-	{
-		if(up)
-		{
-			if(delta <= offsety)
-			{
-				// no need to query the model
-				setOrigin(topLineIndex, offsety -= delta);
-				return;
-			}
-			else
-			{
-				int ix = topLineIndex;
-				double targetY = -delta;
-				double y = -offsety;
-					
-				for(;;)
-				{
-					--ix;
-					if(ix < 0)
-					{
-						// top line
-						setOrigin(0, 0);
-						return;
-					}
-					
-					double dy = getEditorLayout().getLineHeight(ix);
-					y -= dy;
-					if(y < targetY)
-					{
-						break;
-					}
-				}
-				
-				setOrigin(ix, targetY - y);
-				return;
-			}
-		}
-		else
-		{
-			int ix = topLineIndex;
-			double targetY = delta;
-			double y = -offsety;
-			
-			for(;;)
-			{
-				if(ix >= editor.getLineCount())
-				{
-					// FIX need to figure out what to do in this case
-					break;
-				}
-				
-				double dy = getEditorLayout().getLineHeight(ix);
-				if(y + dy > targetY)
-				{
-					setOrigin(ix, targetY - y);
-					return;
-				}
-				
-				y += dy;
-				ix++;
 			}
 		}
 	}
