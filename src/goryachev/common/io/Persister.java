@@ -887,7 +887,7 @@ public class Persister
 					for(int c=0; c<cols; c++)
 					{
 						Object v = in.readObject();
-						t.setValueAt(ca.read(v), r, c);
+						t.setValueAt(r, c, ca.read(v));
 					}
 				}
 				return t;

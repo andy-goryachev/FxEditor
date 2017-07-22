@@ -405,6 +405,7 @@ public class Log
 	}
 
 
+	// FIX hierarchy
 	public synchronized static Log get(String name)
 	{
 		Log ch = channels.get(name);

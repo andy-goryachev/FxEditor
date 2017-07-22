@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 
 /** 
- * Generates globally unique identifiers (one hopes).
+ * Generates (hopefully) globally unique identifiers.
  */
 public class GUID256
 {

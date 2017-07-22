@@ -1,7 +1,10 @@
 // Copyright © 2013-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import java.io.File;
+import java.io.FileNotFoundException;
 
-/** Assert */
+
+/** Assertions */
 public class Assert
 {
 	public static <T> T notNull(T x)
@@ -76,6 +79,24 @@ public class Assert
 		if(min.compareTo(max) > 0)
 		{
 			throw new IllegalArgumentException(nameMin + " must be less than or equal to " + nameMax);
+		}
+	}
+	
+	
+	public static void folderExists(File f) throws Exception
+	{
+		if(!FileTools.isFolderExist(f))
+		{
+			throw new FileNotFoundException("Folder does not exist: " + f);
+		}
+	}
+	
+	
+	public static void fileExists(File f) throws Exception
+	{
+		if(!FileTools.isFileExist(f))
+		{
+			throw new FileNotFoundException("File does not exist: " + f);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 // Copyright © 2005-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import java.lang.reflect.Array;
 import java.util.Collection;
 
 
@@ -1138,5 +1139,45 @@ public class TextTools
 			}
 		});
 		return sb.toString();
+	}
+	
+	
+	/** creates a single String[], using Object.toString(), skipping nulls, and recursively unpacking Collection's and arrays */ 
+	public static String[] array(Object ... items)
+	{
+		CList<String> rv = new CList(128);
+		array(rv, items);
+		return CKit.toArray(rv);
+	}
+	
+	
+	private static void array(CList<String> list, Object x)
+	{
+		CKit.checkCancelled();
+		
+		if(x == null)
+		{
+			return;
+		}
+		
+		if(x.getClass().isArray())
+		{
+			int sz = Array.getLength(x);
+			for(int i=0; i<sz; i++)
+			{
+				array(list, Array.get(x, i));
+			}
+		}
+		else if(x instanceof Collection)
+		{
+			for(Object item: (Collection)x)
+			{
+				array(list, item);
+			}
+		}
+		else
+		{
+			list.add(x.toString());
+		}
 	}
 }
