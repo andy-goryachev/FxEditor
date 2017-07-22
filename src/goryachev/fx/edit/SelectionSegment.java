@@ -153,7 +153,7 @@ public class SelectionSegment
 
 
 	/** returns combined segment if two segments overlap, null otherwise. */
-	public SelectionSegment swallow(SelectionSegment s)
+	public SelectionSegment merge(SelectionSegment s)
 	{
 		Marker m0 = s.getMin();
 		Marker m1 = s.getMax();
@@ -197,11 +197,5 @@ public class SelectionSegment
 	public boolean overlaps(SelectionSegment s)
 	{
 		return contains(s.getMin()) || contains(s.getMax());
-	}
-
-
-	public SelectionSegment combine(SelectionSegment s)
-	{
-		return swallow(s);
 	}
 }

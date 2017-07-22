@@ -42,8 +42,8 @@ public class SelectionController
 	}
 	
 	
-	/** returns true if marker is inside of any of selection segments */
-	public boolean isInsideSelection(Marker pos)
+	/** returns true if marker is inside of any selection segment */
+	public boolean isInsideOfSelection(Marker pos)
 	{
 		for(SelectionSegment s: segments)
 		{
@@ -105,8 +105,6 @@ public class SelectionController
 			anchor = pos;
 		}
 		
-		// FIX does not work when dragging
-		
 		SelectionSegment seg = new SelectionSegment(anchor, pos);
 		mergeSegments(seg);
 	}
@@ -114,8 +112,6 @@ public class SelectionController
 	
 	protected void mergeSegments(SelectionSegment seg)
 	{
-//		D.print("last=", seg); // FIX
-		
 		if(originalSelection == null)
 		{
 			originalSelection = new CList<>(segments);
@@ -133,7 +129,7 @@ public class SelectionController
 			{
 				if(seg.overlaps(s))
 				{
-					seg = seg.combine(s);
+					seg = seg.merge(s);
 				}
 				else if(seg.isBefore(s))
 				{

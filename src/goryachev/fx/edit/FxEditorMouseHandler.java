@@ -145,7 +145,7 @@ public class FxEditorMouseHandler
 		}
 		else if(ev.isShortcutDown())
 		{
-			if(selector.isInsideSelection(pos) || (!editor.isMultipleSelectionEnabled()))
+			if(selector.isInsideOfSelection(pos) || (!editor.isMultipleSelectionEnabled()))
 			{
 				selector.setSelection(pos);
 			}
