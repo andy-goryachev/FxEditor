@@ -81,6 +81,28 @@ public class VFlow
 	}
 	
 	
+	public void setOrigin(int top, double offy)
+	{
+		topLineIndex = top;
+		offsety = offy;
+		
+		layoutChildren();
+		
+		// update scroll
+		editor.setHandleScrollEvents(false);
+		int max = editor.getLineCount();
+		double v = (max == 0 ? 0.0 : top / (double)max); 
+		editor.vscroll.setValue(v);
+		editor.setHandleScrollEvents(true);
+	}
+
+
+	public void setTopLineIndex(int ix)
+	{
+		topLineIndex = ix;
+	}
+	
+	
 	protected void layoutChildren()
 	{
 		layout = recreateLayout(layout);
@@ -246,9 +268,7 @@ public class VFlow
 			Marker start = s.getAnchor();
 			Marker end = s.getCaret();
 			
-			// FIX min max
 			createSelectionHighlight(selectionBuilder, start, end);
-			// FIX caret
 			createCaretPath(caretBuilder, end);
 		}
 		
@@ -268,7 +288,7 @@ public class VFlow
 	}
 	
 	
-	// FIX selection shape is incorrect if mixing LTR and RTL languages
+	// FIX issue #1 selection shape is incorrect if mixing LTR and RTL languages
 	protected void createSelectionHighlight(FxPathBuilder b, Marker startMarker, Marker endMarker)
 	{		
 		if((startMarker == null) || (endMarker == null))
@@ -276,6 +296,7 @@ public class VFlow
 			return;
 		}
 		
+		// make sure startMarker < endMarker
 		if(startMarker.compareTo(endMarker) > 0)
 		{
 			Marker tmp = startMarker;
@@ -288,8 +309,7 @@ public class VFlow
 			// selection is above visible area
 			return;
 		}
-		
-		if(startMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount()))
+		else if(startMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount()))
 		{
 			// selection is below visible area
 			return;
@@ -314,6 +334,7 @@ public class VFlow
 				if((startMarker.getLine() < topLineIndex) && (endMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount())))
 				{
 					// 04
+					// start is way before visible, end is way after visible
 					b.moveto(left, top);
 					b.lineto(right, top);
 					b.lineto(right, bottom);
@@ -558,27 +579,5 @@ public class VFlow
 				ix++;
 			}
 		}
-	}
-	
-	
-	public void setOrigin(int top, double offy)
-	{
-		topLineIndex = top;
-		offsety = offy;
-		
-		layoutChildren();
-		
-		// update scroll
-		editor.setHandleScrollEvents(false);
-		int max = editor.getLineCount();
-		double v = (max == 0 ? 0.0 : top / (double)max); 
-		editor.vscroll.setValue(v);
-		editor.setHandleScrollEvents(true);
-	}
-
-
-	public void setTopLineIndex(int ix)
-	{
-		topLineIndex = ix;
 	}
 }
