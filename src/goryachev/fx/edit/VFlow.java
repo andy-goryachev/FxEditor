@@ -224,7 +224,7 @@ public class VFlow
 				b = new LineBox(ix, nd);
 			}
 			la.addLineBox(b);
-			b.setHeight(h);
+			b.setLineHeight(h);
 			
 			layoutInArea(nd, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			

@@ -40,13 +40,13 @@ public class LineBox
 	}
 
 
-	public void setHeight(double h)
+	public void setLineHeight(double h)
 	{
 		height = h;
 	}
 	
 	
-	public double getHeight()
+	public double getLineHeight()
 	{
 		return height;
 	}

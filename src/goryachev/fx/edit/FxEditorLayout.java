@@ -140,7 +140,7 @@ public class FxEditorLayout
 	}
 
 
-	public int startLine()
+	public int getTopLine()
 	{
 		return topLine;
 	}
@@ -164,7 +164,7 @@ public class FxEditorLayout
 				b = new LineBox(ix, r);
 				
 				double h = editor.vflow.addAndComputePreferredHeight(r);
-				b.setHeight(h);
+				b.setLineHeight(h);
 			}
 			
 			if(newLines == null)
@@ -174,6 +174,6 @@ public class FxEditorLayout
 			newLines.put(ix, b);
 		}
 			
-		return b.getHeight();
+		return b.getLineHeight();
 	}
 }

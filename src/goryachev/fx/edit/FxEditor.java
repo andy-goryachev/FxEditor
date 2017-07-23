@@ -368,7 +368,7 @@ public class FxEditor
 	
 	protected int getViewStartLine()
 	{
-		return vflow.layout.startLine();
+		return vflow.layout.getTopLine();
 	}
 	
 	
