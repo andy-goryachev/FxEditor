@@ -21,8 +21,8 @@ public class FxEditorLayout
 {
 	private final FxEditor editor;
 	private final int topLine;
-	private final CList<LineBox> lines = new CList<>();
-	private CMap<Integer,LineBox> newLines;
+	private final CList<EditorLineBase> lines = new CList<>();
+	private CMap<Integer,EditorLineBase> newLines;
 	
 
 	public FxEditorLayout(FxEditor ed, int topLine)
@@ -35,25 +35,21 @@ public class FxEditorLayout
 	/** returns text position at the screen coordinates, or null */
 	public Marker getTextPos(double screenx, double screeny, Markers markers)
 	{
-		for(LineBox line: lines)
+		for(EditorLineBase line: lines)
 		{
-			Region box = line.getBox();
-			Point2D p = box.screenToLocal(screenx, screeny);
-			Insets pad = box.getPadding();
+			Point2D p = line.screenToLocal(screenx, screeny);
+			Insets pad = line.getPadding();
 			double x = p.getX() - pad.getLeft();
 			double y = p.getY() - pad.getTop();
 			
 			if(y >= 0)
 			{
-				if(y < box.getHeight())
+				if(y < line.getHeight())
 				{
-					if(box instanceof CTextFlow)
+					CHitInfo hit = line.getHit(x, y);
+					if(hit != null)
 					{
-						CHitInfo hit = ((CTextFlow)box).getHit(x, y);
-						if(hit != null)
-						{
-							return markers.newMarker(line.getLineNumber(), hit.getCharIndex(), hit.isLeading());
-						}
+						return markers.newMarker(line.getLineNumber(), hit.getCharIndex(), hit.isLeading());
 					}
 				}
 			}
@@ -63,22 +59,17 @@ public class FxEditorLayout
 			}
 		}
 		
-		LineBox line = lines.getLast();
-		Region box = line.getBox();
-		int len = 0;
-		if(box instanceof CTextFlow)
-		{
-			len = Math.max(0, ((CTextFlow)box).getText().length() - 1);
-		}
+		EditorLineBase line = lines.getLast();
+		int len = Math.max(0, line.getTextLength() - 1);
 		return markers.newMarker(line.getLineNumber(), len, false);
 	}
 	
 	
-	public LineBox getLineBox(int line)
+	public EditorLineBase getLineBox(int line)
 	{
 		if(newLines != null)
 		{
-			LineBox b = newLines.get(line);
+			EditorLineBase b = newLines.get(line);
 			if(b != null)
 			{
 				return b;
@@ -98,17 +89,13 @@ public class FxEditorLayout
 	{
 		if(pos != null)
 		{
-			LineBox b = getLineBox(pos.getLine());
+			EditorLineBase b = getLineBox(pos.getLine());
 			if(b != null)
 			{
-				Region box = b.getBox();
-				if(box instanceof CTextFlow)
+				PathElement[] es = b.getCaretShape(pos);
+				if(es != null)
 				{
-					PathElement[] es = ((CTextFlow)box).getCaretShape(pos.getCharIndex(), pos.isLeading());
-					if(es != null)
-					{
-						return EditorTools.translateCaretLocation(parent, box, es);
-					}
+					return EditorTools.translateCaretLocation(parent, b, es);
 				}
 			}
 		}
@@ -116,7 +103,7 @@ public class FxEditorLayout
 	}
 	
 
-	protected void addLineBox(LineBox b)
+	protected void addLineBox(EditorLineBase b)
 	{
 		lines.add(b);
 	}
@@ -125,16 +112,16 @@ public class FxEditorLayout
 	public void removeFrom(Pane p)
 	{
 		ObservableList<Node> cs = p.getChildren();
-		for(LineBox b: lines)
+		for(EditorLineBase b: lines)
 		{
-			cs.remove(b.getBox());
+			cs.remove(b);
 		}
 		
 		if(newLines != null)
 		{
-			for(LineBox b: newLines.values())
+			for(EditorLineBase b: newLines.values())
 			{
-				cs.remove(b.getBox());
+				cs.remove(b);
 			}
 		}
 	}
@@ -154,16 +141,16 @@ public class FxEditorLayout
 	
 	public double getLineHeight(int ix)
 	{
-		LineBox b = (newLines == null ? null : newLines.get(ix));
+		EditorLineBase b = (newLines == null ? null : newLines.get(ix));
 		if(b == null)
 		{
 			b = getLineBox(ix);
 			if(b == null)
 			{
-				Region r = editor.getTextModel().getDecoratedLine(ix);
-				b = new LineBox(ix, r);
+				b = editor.getTextModel().getDecoratedLine(ix);
+				b.setLineNumber(ix);
 				
-				double h = editor.vflow.addAndComputePreferredHeight(r);
+				double h = editor.vflow.addAndComputePreferredHeight(b);
 				b.setLineHeight(h);
 			}
 			

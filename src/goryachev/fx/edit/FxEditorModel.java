@@ -5,7 +5,6 @@ import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
 import goryachev.common.util.Log;
 import goryachev.fx.CBooleanProperty;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.function.Consumer;
 import javafx.beans.property.BooleanProperty;
@@ -50,13 +49,9 @@ public abstract class FxEditorModel
 	public abstract String getPlainText(int line);
 	
 	/** 
-	 * returns a non-null Region containing Text, TextFlow, or any other Nodes representing a line.
-	 * I am not sure this should be a part of the editor model, because the presentation should be controlled by the editor ui.
-	 * What this method needs to return is a list/array of segments encapsulating text, text style and colors.
-	 * Another consideration is support for arbitrary Nodes such as images (tables and so on) - and for those we need to 
-	 * have a ui component.
+	 * returns a non-null EditorLineBase representing a line.
 	 */
-	public abstract Region getDecoratedLine(int line);
+	public abstract EditorLineBase getDecoratedLine(int line);
 	
 	/**
 	 * Applies modification to the model.  The model makes necessary changes to its internal state, 
@@ -122,7 +117,7 @@ public abstract class FxEditorModel
 				}
 				public int getLineCount() { return 0; }
 				public String getPlainText(int line) { return null; }
-				public Region getDecoratedLine(int line) { return null; }
+				public EditorLineBase getDecoratedLine(int line) { return null; }
 				public Edit edit(Edit ed) throws Exception { throw new Exception(); }
 			};
 		}

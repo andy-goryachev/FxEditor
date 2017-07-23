@@ -1,7 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CList;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 
 
@@ -37,16 +36,16 @@ public class EditablePlainTextEditorModel
 	}
 	
 	
-	public Region getDecoratedLine(int line)
+	public EditorLineBase getDecoratedLine(int line)
 	{
-		CTextFlow t = new CTextFlow();
+		EditorLineText box = new EditorLineText();
 		String s = getPlainText(line);
 		if(s != null)
 		{
-			Text tx = new Text(s);
-			t.getChildren().add(tx); 
+			Text t = new Text(s);
+			box.addText(t);
 		}
-		return t;
+		return box;
 	}
 	
 	

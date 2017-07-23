@@ -15,7 +15,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
@@ -199,34 +198,25 @@ public class VFlow
 		
 		for(int ix=topLineIndex; ix<lines; ix++)
 		{
-			LineBox b = (prev == null ? null : prev.getLineBox(ix));
-			
-			Region nd;
+			EditorLineBase b = (prev == null ? null : prev.getLineBox(ix));
 			if(b == null)
 			{
-				nd = model.getDecoratedLine(ix);
+				b = model.getDecoratedLine(ix);
+				b.setLineNumber(ix);
 			}
-			else
-			{
-				nd = b.getBox();
-			}
-			getChildren().add(nd);
-			nd.applyCss();
-			nd.setManaged(true);
+			getChildren().add(b);
+			b.applyCss();
+			b.setManaged(true);
 			
-			double w = wrap ? wid : nd.prefWidth(-1);
-			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
+			double w = wrap ? wid : b.prefWidth(-1);
+			b.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
 			
-			double h = nd.prefHeight(w);
+			double h = b.prefHeight(w);
 			
-			if(b == null)
-			{
-				b = new LineBox(ix, nd);
-			}
 			la.addLineBox(b);
 			b.setLineHeight(h);
 			
-			layoutInArea(nd, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			layoutInArea(b, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			
 			y += h;
 			if(y > maxy)
@@ -239,7 +229,7 @@ public class VFlow
 	}
 	
 	
-	public double addAndComputePreferredHeight(Region nd)
+	public double addAndComputePreferredHeight(EditorLineBase nd)
 	{
 		// warning: the same code in recreateLayout() above
 		Insets pad = getInsets();
@@ -397,7 +387,7 @@ public class VFlow
 	
 	protected PathElement[] getRange(int line, int startOffset, int endOffset)
 	{
-		LineBox lineBox = layout.getLineBox(line);
+		EditorLineBase lineBox = layout.getLineBox(line);
 		PathElement[] pe = lineBox.getRange(startOffset, endOffset);
 		if(pe == null)
 		{
@@ -405,7 +395,7 @@ public class VFlow
 		}
 		else
 		{
-			return EditorTools.translatePath(this, lineBox.getBox(), pe);	
+			return EditorTools.translatePath(this, lineBox, pe);	
 		}
 	}
 	

@@ -1,10 +1,10 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
 import goryachev.common.util.SB;
-import goryachev.fx.edit.CTextFlow;
 import goryachev.fx.edit.Edit;
+import goryachev.fx.edit.EditorLineBase;
+import goryachev.fx.edit.EditorLineText;
 import goryachev.fx.edit.FxPlainEditorModel;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 
 
@@ -19,16 +19,16 @@ public class TestFxPlainEditorModel
 	}
 	
 	
-	public Region getDecoratedLine(int line)
+	public EditorLineBase getDecoratedLine(int line)
 	{
-		CTextFlow f = new CTextFlow();
+		EditorLineText box = new EditorLineText();
 		String s = getPlainText(line);
 		if(s != null)
 		{
 			Text t = new Text(s);
-			f.getChildren().add(t); 
+			box.addText(t);
 		}
-		return f;
+		return box;
 	}
 
 

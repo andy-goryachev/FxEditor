@@ -1,8 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
 
 /**
@@ -16,15 +14,15 @@ public abstract class FxPlainEditorModel
 	}
 	
 	
-	public Region getDecoratedLine(int line)
-	{
-		TextFlow t = new TextFlow();
+	public EditorLineBase getDecoratedLine(int line)
+	{		
+		EditorLineText b = new EditorLineText();
 		String s = getPlainText(line);
 		if(s != null)
 		{
 			Text tx = new Text(s);
-			t.getChildren().add(tx); 
+			b.addText(tx);
 		}
-		return t;
+		return b;
 	}
 }

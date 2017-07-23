@@ -17,7 +17,7 @@ import javafx.scene.shape.PathElement;
  * spanning several rows (when text wrap is enabled), or an image, 
  * or some other component.
  */
-public class EditorLineBase
+public abstract class EditorLineBase
 	extends CPane
 {
 	public final static CssStyle TEXT_LINE = new CssStyle("TextLine_TEXT_LINE");
@@ -78,7 +78,15 @@ public class EditorLineBase
 	public void setLineNumber(int num)
 	{
 		this.line = num;
-		setLeadingNode(createLineNumberNode(num));
+		
+		// TODO extract into a separate call
+		//setLeadingNode(createLineNumberNode(num));
+	}
+	
+	
+	public int getLineNumber()
+	{
+		return line;
 	}
 	
 	
@@ -113,5 +121,25 @@ public class EditorLineBase
 			new LineTo(0, height),
 			new LineTo(0, 0)
 		};
+	}
+
+
+	/** returns caret shape */
+	public PathElement[] getCaretShape(Marker m)
+	{
+		// TODO perhaps returns a full height caret at the start/end of the block?
+		return null;
+	}
+
+
+	public CHitInfo getHit(double x, double y)
+	{
+		return null;
+	}
+
+	
+	public int getTextLength()
+	{
+		return 0;
 	}
 }
