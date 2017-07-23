@@ -16,6 +16,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
@@ -185,7 +186,7 @@ public class VFlow
 		
 		// TODO is loaded?
 		FxEditorModel model = editor.getTextModel();
-		int lines = model.getLineCount();
+		int lineCount = model.getLineCount();
 		FxEditorLayout la = new FxEditorLayout(editor, topLineIndex);
 		
 		Insets pad = getInsets();
@@ -194,10 +195,13 @@ public class VFlow
 		double x0 = pad.getLeft();
 		boolean wrap = editor.isWrapText();
 		
+		// TODO compute left/right side components
+		// depending on the editor settings + model support
+		
 		// TODO account for leading, trailing components
 		double wid = width - x0 - pad.getRight();
 		
-		for(int ix=topLineIndex; ix<lines; ix++)
+		for(int ix=topLineIndex; ix<lineCount; ix++)
 		{
 			EditorLineBase b = (prev == null ? null : prev.getLineBox(ix));
 			if(b == null)
@@ -205,22 +209,21 @@ public class VFlow
 				b = model.getDecoratedLine(ix);
 				b.setLineNumber(ix);
 			}
+			la.addLineBox(b);
+			
+			Region center = b.getCenterNode();
 			
 			double w = wrap ? wid : b.prefWidth(-1);
-			b.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
+			center.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
 						
-			getChildren().add(b);
+			getChildren().add(b); // TODO
 			b.applyCss();
 			b.setManaged(true);
 			
-			// FIX incorrect
-			double h = b.prefHeight(w);
-			D.print(h);
-			
-			la.addLineBox(b);
+			double h = center.prefHeight(w);
 			b.setLineHeight(h);
 			
-			layoutInArea(b, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			layoutInArea(center, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			
 			y += h;
 			if(y > maxy)
@@ -392,6 +395,12 @@ public class VFlow
 	protected PathElement[] getRange(int line, int startOffset, int endOffset)
 	{
 		EditorLineBase lineBox = layout.getLineBox(line);
+		if(lineBox == null)
+		{
+			// FIX should not happen...
+			return null;
+		}
+		
 		PathElement[] pe = lineBox.getRange(startOffset, endOffset);
 		if(pe == null)
 		{

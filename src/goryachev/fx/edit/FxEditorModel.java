@@ -169,8 +169,6 @@ public abstract class FxEditorModel
 	/** copies specified data formats to the clipboard.  silently ignores unsupported data format.  DataFormat.PLAIN_TEXT is always supported. */
 	public void copy(EditorSelection sel, Consumer<Throwable> errorHandler, DataFormat ... formats)
 	{
-		sel = sel.getOrderedSelection();
-		
 		try
 		{
 			CMap<DataFormat,Object> m = new CMap();
@@ -215,7 +213,6 @@ public abstract class FxEditorModel
 	/** plain text copy, expecting ordered selection ranges */
 	public void getPlainText(EditorSelection sel, Writer wr) throws Exception
 	{
-		sel = sel.getOrderedSelection();
 		for(SelectionSegment s: sel.getSegments())
 		{
 			CKit.checkCancelled();

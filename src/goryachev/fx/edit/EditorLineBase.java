@@ -1,11 +1,11 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import java.text.NumberFormat;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.layout.Region;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.PathElement;
@@ -18,11 +18,14 @@ import javafx.scene.shape.PathElement;
  * or some other component.
  */
 public abstract class EditorLineBase
-	extends CPane
+	extends Region
 {
 	public final static CssStyle TEXT_LINE = new CssStyle("TextLine_TEXT_LINE");
 	public final static CssStyle LINE_NUMBERS = new CssStyle("TextLine_LINE_NUMBERS");
 	
+	private Region left;
+	private Region center;
+	private Region right;
 	private int line;
 	private double height;
 	private static NumberFormat format;
@@ -31,30 +34,60 @@ public abstract class EditorLineBase
 	public EditorLineBase()
 	{
 		FX.style(this, TEXT_LINE);
+		setBackground(null);
 	}
 	
 	
-	public Node getLeadingNode()
+	public Region getLeadingNode()
 	{
-		return getLeft();
+		return left;
 	}
 	
 	
-	public void setLeadingNode(Node n)
+	public void setLeadingNode(Region n)
 	{
-		setLeft(n);
+		updateChild(left, n);
+		left = n;
 	}
 	
 	
-	public Node getTrailingNode()
+	public Region getTrailingNode()
 	{
-		return getRight();
+		return right;
 	}
 	
 	
-	public void setTrailingNode(Node n)
+	public void setTrailingNode(Region n)
 	{
-		setRight(n);
+		updateChild(right, n);
+		right = n;
+	}
+	
+	
+	public Region getCenterNode()
+	{
+		return center;
+	}
+	
+	
+	public void setCenterNode(Region n)
+	{
+		updateChild(center, n);
+		center = n;
+	}
+	
+	
+	protected void updateChild(Region old, Region n)
+	{
+		if(old != null)
+		{
+			getChildren().remove(old);
+		}
+		
+		if(n != null)
+		{
+			getChildren().add(n);
+		}
 	}
 	
 	

@@ -27,7 +27,7 @@ public class EditorLineText
 		if(textFlow == null)
 		{
 			textFlow = new CTextFlow();
-			setCenter(textFlow);
+			setCenterNode(textFlow);
 		}
 		return textFlow;
 	}
