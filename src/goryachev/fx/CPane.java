@@ -475,7 +475,7 @@ public class CPane
 	
 	protected double computePrefHeight(double width)
 	{
-		return new Helper().computeHeight(true);	
+		return new Helper().computeHeight(width, true);	
 	}
 
 
@@ -487,7 +487,7 @@ public class CPane
 	
 	protected double computeMinHeight(double width)
 	{
-		return new Helper().computeHeight(false);
+		return new Helper().computeHeight(width, false);
 	}
 	
 	
@@ -991,8 +991,10 @@ public class CPane
 		}
 		
 		
-		protected int computeBorderHeight(boolean pref)
+		protected int computeBorderHeight(double width, boolean pref)
 		{
+			// TODO use width
+			
 			int h = 0;
 			Node c;
 			
@@ -1214,11 +1216,11 @@ public class CPane
 		}
 		
 		
-		public double computeHeight(boolean pref)
+		public double computeHeight(double width, boolean pref)
 		{
 			scanBorderComponents();
 			
-			double d = computeBorderHeight(pref);
+			double d = computeBorderHeight(width, pref);
 			
 			if(centerComp != null)
 			{

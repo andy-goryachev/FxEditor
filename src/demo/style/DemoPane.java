@@ -33,7 +33,9 @@ public class DemoPane
 			new Page("FxEditor", FxEditorDemoPane.class),
 			new Page("Buttons", ButtonDemoPane.class),
 			new Page("FxTable", TableDemoPane.class),
-			new Page("Text Components", TextDemoPane.class)
+			new Page("Text Components", TextDemoPane.class),
+			new Page("Login Panel", DemoLoginPane.class),
+			new Page("CPane", DemoCPane.class)
 		);
 		table.selectedItemProperty().addListener((s) -> updateSelection());
 		
