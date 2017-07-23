@@ -6,6 +6,9 @@ import goryachev.fx.FX;
 import java.text.NumberFormat;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.PathElement;
 
 
 /**
@@ -95,5 +98,20 @@ public class EditorLineBase
 	public double getLineHeight()
 	{
 		return height;
+	}
+	
+	
+	/** returns selection shape for a given range.  the base class returns a rectangular shape that envelopes the whole node */
+	public PathElement[] getRange(int start, int end)
+	{
+		double w = getWidth();
+		return new PathElement[]
+		{
+			new MoveTo(0, 0),
+			new LineTo(w, 0),
+			new LineTo(w, height),
+			new LineTo(0, height),
+			new LineTo(0, 0)
+		};
 	}
 }

@@ -1,11 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.fx.CPane;
-import goryachev.fx.CssStyle;
-import goryachev.fx.FX;
-import java.text.NumberFormat;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
+import javafx.scene.shape.PathElement;
 
 
 /**
@@ -34,5 +29,18 @@ public class EditorLineText
 			setCenter(textFlow);
 		}
 		return textFlow;
+	}
+	
+	
+	
+	/** returns selection shape for a given range.  negative 'end' value is equivalent to the offset of the last symbol in the text */
+	public PathElement[] getRange(int start, int end)
+	{
+		CTextFlow t = text();
+		if(end < 0)
+		{
+			end = t.getText().length();
+		}
+		return t.getRange(start, end);
 	}
 }
