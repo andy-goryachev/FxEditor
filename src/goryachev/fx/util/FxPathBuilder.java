@@ -36,4 +36,16 @@ public class FxPathBuilder
 	{
 		return path;
 	}
+	
+	
+	public void add(PathElement em)
+	{
+		path.add(em);
+	}
+	
+	
+	public void addAll(PathElement[] elements)
+	{
+		path.addAll(elements);
+	}
 }

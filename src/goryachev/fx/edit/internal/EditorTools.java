@@ -1,10 +1,11 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit.internal;
+import goryachev.common.util.SB;
 import goryachev.fx.FxSize;
+import java.text.DecimalFormat;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.LineTo;
@@ -21,7 +22,7 @@ public class EditorTools
 	private static Text helper = new Text();
 
 	
-	public static CaretLocation translateCaretLocation(Region target, Region src, PathElement[] es)
+	public static CaretLocation translateCaretLocation(Region target, Region src, PathElement[] elements)
 	{
 		double x = 0.0;
 		double y0 = 0.0;
@@ -34,10 +35,10 @@ public class EditorTools
 		double dx = p.getX();
 		double dy = p.getY();
 		
-		int sz = es.length;
+		int sz = elements.length;
 		for(int i=0; i<sz; i++)
 		{
-			PathElement em = es[i];
+			PathElement em = elements[i];
 			if(em instanceof LineTo)
 			{
 				LineTo m = (LineTo)em;
@@ -61,8 +62,41 @@ public class EditorTools
 			return new CaretLocation(x, y0, y1);
 		}
 	}
-	
-	
+
+
+	public static PathElement[] translatePath(Region target, Region src, PathElement[] elements)
+	{
+		Insets pad = src.getPadding();
+		Point2D p = src.localToScreen(pad.getLeft(), pad.getTop());
+		
+		p = target.screenToLocal(p);
+		double dx = p.getX();
+		double dy = p.getY();
+		
+		for(int i=0; i<elements.length; i++)
+		{
+			PathElement em = elements[i];
+			if(em instanceof LineTo)
+			{
+				LineTo m = (LineTo)em;
+				em = new LineTo(m.getX() + dx, m.getY() + dy);
+			}
+			else if(em instanceof MoveTo)
+			{
+				MoveTo m = (MoveTo)em;
+				em = new MoveTo(m.getX() + dx, m.getY() + dy);
+			}
+			else
+			{
+				throw new Error("can't handle " + em);
+			}
+			
+			elements[i] = em;
+		}
+		return elements;
+	}
+
+
 	public static double halfPixel(double coord)
 	{
 		return Math.round(coord + 0.5) - 0.5;
@@ -107,5 +141,50 @@ public class EditorTools
 	{
 		// in case for some reason floating point computation result is slightly off
 		return Math.abs(a - b) < 0.01;
+	}
+
+
+	@Deprecated // for debugging only
+	public static void dump(PathElement[] elements)
+	{
+		DecimalFormat f = new DecimalFormat("#0.0");
+		boolean sp = false;
+
+		SB sb = new SB();
+		for(PathElement em: elements)
+		{
+			if(sp)
+			{
+				sb.sp();
+			}
+			else
+			{
+				sp = true;
+			}
+			
+			if(em instanceof LineTo)
+			{
+				LineTo m = (LineTo)em;
+				sb.a("L(");
+				sb.a(f.format(m.getX()));
+				sb.comma();
+				sb.a(f.format(m.getY()));
+				sb.a(")");
+			}
+			else if(em instanceof MoveTo)
+			{
+				MoveTo m = (MoveTo)em;
+				sb.a("M(");
+				sb.a(f.format(m.getX()));
+				sb.comma();
+				sb.a(f.format(m.getY()));
+				sb.a(")");
+			}
+			else
+			{
+				sb.a(em);
+			}
+		}
+		System.err.println(sb);
 	}
 }

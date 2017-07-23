@@ -30,6 +30,7 @@ public class CTextFlow
 	}
 
 
+	/** returns selection shape for a given range.  negative 'end' value is equivalent to the offset of the last symbol in the text */
 	public PathElement[] getRange(int start, int end)
 	{
 		return FxHacks.get().getRange(this, start, end);

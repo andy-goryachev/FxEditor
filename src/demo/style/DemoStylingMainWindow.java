@@ -24,7 +24,7 @@ public class DemoStylingMainWindow
 		
 		pane = new DemoPane();
 
-		setTitle("FxEditor Demo");
+		setTitle("FX Demo");
 		setTop(createMenu());
 		setCenter(pane);
 		setSize(600, 700);

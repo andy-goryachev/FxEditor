@@ -3,6 +3,7 @@ package goryachev.fx.edit;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
+import goryachev.fx.edit.internal.SelectionHelper;
 import goryachev.fx.util.FxPathBuilder;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -17,6 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
@@ -393,7 +395,25 @@ public class VFlow
 	}
 	
 	
-	// FIX issue #1 selection shape is incorrect if mixing LTR and RTL languages
+	protected PathElement[] getRange(int line, int startOffset, int endOffset)
+	{
+		LineBox lineBox = layout.getLineBox(line);
+		PathElement[] pe = lineBox.getRange(startOffset, endOffset);
+		if(pe == null)
+		{
+			return null;
+		}
+		else
+		{
+			return EditorTools.translatePath(this, lineBox.getBox(), pe);	
+		}
+	}
+	
+	
+	/**
+	 * Populates path builder with selection shapes between two markers.
+	 * This method handles RTL and LTR text.
+	 */
 	protected void createSelectionHighlight(FxPathBuilder b, Marker startMarker, Marker endMarker)
 	{		
 		if((startMarker == null) || (endMarker == null))
@@ -419,165 +439,44 @@ public class VFlow
 			// selection is below visible area
 			return;
 		}
-
-		CaretLocation beg = editor.getCaretLocation(startMarker);
-		CaretLocation end = editor.getCaretLocation(endMarker);
 		
-		double left = 0.0;
-		double right = getWidth() - left;
-		double top = 0.0; 
-		double bottom = getHeight();
-		
-		// there is a number of possible shapes resulting from intersection of
-		// the selection shape and the visible area.  the logic below explicitly generates 
-		// resulting paths because the selection can be quite large.
-		
-		if(beg == null)
+		// get selection shapes for top and bottom lines
+		// translated to this VFlow coordinates.
+		// when we say "visible text line" we mean the first row of text, since the model text line
+		// might contain multiple visible rows due to wrapping.
+		PathElement[] top;
+		PathElement[] bottom;
+		if(startMarker.getLine() == endMarker.getLine())
 		{
-			if(end == null)
-			{
-				if((startMarker.getLine() < topLineIndex) && (endMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount())))
-				{
-					// 04
-					// start is way before visible, end is way after visible
-					b.moveto(left, top);
-					b.lineto(right, top);
-					b.lineto(right, bottom);
-					b.lineto(left, bottom);
-					b.lineto(left, top);
-				}
-				return;
-			}
-			
-			// start caret is above the visible area
-			boolean crossTop = end.containsY(top);
-			boolean crossBottom = end.containsY(bottom);
-			
-			if(crossBottom)
-			{
-				if(crossTop)
-				{
-					// 01
-					b.moveto(left, top);
-					b.lineto(end.x, top);
-					b.lineto(end.x, bottom);
-					b.lineto(left, bottom);
-					b.lineto(left, top);
-				}
-				else
-				{
-					// 02
-					b.moveto(left, top);
-					b.lineto(right, top);
-					b.lineto(right, end.y0);
-					b.lineto(end.x, end.y0);
-					b.lineto(end.x, bottom);
-					b.lineto(left, bottom);
-					b.lineto(left, top);
-				}
-			}
-			else
-			{
-				if(crossTop)
-				{
-					// 03
-					b.moveto(left, top);
-					b.lineto(end.x, top);
-					b.lineto(end.x, end.y1);
-					b.lineto(left, end.y1);
-					b.lineto(left, top);
-				}
-				else
-				{
-					// 05
-					b.moveto(left, top);
-					b.lineto(right, top);
-					b.lineto(right, end.y0);
-					b.lineto(end.x, end.y0);
-					b.lineto(end.x, end.y1);
-					b.lineto(left, end.y1);
-					b.lineto(left, top);
-				}
-			}
-		}
-		else if(end == null)
-		{
-			// end caret is below the visible area
-			boolean crossTop = beg.containsY(top);
-			boolean crossBottom = beg.containsY(bottom);
-			
-			if(crossTop)
-			{
-				if(crossBottom)
-				{
-					// 06
-					b.moveto(beg.x, top);
-					b.lineto(right, top);
-					b.lineto(right, bottom);
-					b.lineto(beg.x, bottom);
-					b.lineto(beg.x, top);
-				}
-				else
-				{
-					// 07
-					b.moveto(beg.x, top);
-					b.lineto(right, top);
-					b.lineto(right, bottom);
-					b.lineto(left, bottom);
-					b.lineto(left, beg.y1);
-					b.lineto(beg.x, beg.y1);
-					b.lineto(beg.x, top);
-				}
-			}
-			else
-			{
-				if(crossBottom)
-				{
-					// 08
-					b.moveto(beg.x, beg.y0);
-					b.lineto(right, beg.y0);
-					b.lineto(right, bottom);
-					b.lineto(beg.x, bottom);
-					b.lineto(beg.x, beg.y0);
-				}
-				else
-				{
-					// 09
-					b.moveto(beg.x, beg.y0);
-					b.lineto(right, beg.y0);
-					b.lineto(right, bottom);
-					b.lineto(left, bottom);
-					b.lineto(left, beg.y1);
-					b.lineto(beg.x, beg.y1);
-					b.lineto(beg.x, beg.y0);
-				}
-			}
+			top = getRange(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset());
+			bottom = null;
 		}
 		else
 		{
-			// both carets are in the visible area
-			if(EditorTools.isCloseEnough(beg.y0, end.y0))
-			{
-				// 10
-				b.moveto(beg.x, beg.y0);
-				b.lineto(end.x, beg.y0);
-				b.lineto(end.x, end.y1);
-				b.lineto(beg.x, end.y1);
-				b.lineto(beg.x, beg.y0);
-			}
-			else
-			{
-				// 11
-				b.moveto(beg.x, beg.y0);
-				b.lineto(right, beg.y0);
-				b.lineto(right, end.y0);
-				b.lineto(end.x, end.y0);
-				b.lineto(end.x, end.y1);
-				b.lineto(left, end.y1);
-				b.lineto(left, beg.y1);
-				b.lineto(beg.x, beg.y1);
-				b.lineto(beg.x, beg.y0);
-			}
+			top = getRange(startMarker.getLine(), startMarker.getLineOffset(), -1);
+			bottom = getRange(endMarker.getLine(), 0, endMarker.getLineOffset());
+		}
+		
+		// generate shapes
+		double left = 0.0;
+		double right = getWidth() - left;
+		
+		SelectionHelper h = new SelectionHelper(b);
+		h.process(top);
+		
+		if(bottom == null)
+		{
+			h.generateTop(top);
+			h.generateMiddle(left, right);
+			h.generateBottom(top);
+		}
+		else
+		{
+			h.process(bottom);
+
+			h.generateTop(top);
+			h.generateMiddle(left, right);
+			h.generateBottom(bottom);
 		}
 	}
 }
