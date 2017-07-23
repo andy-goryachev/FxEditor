@@ -9,34 +9,25 @@ import javafx.scene.Node;
 
 
 /**
- * Component represents a line of text.
+ * Base component representing a line in the editor.
+ * Depending on the actual implementation, a line might be a text line
+ * spanning several rows (when text wrap is enabled), or an image, 
+ * or some other component.
  */
-public class TextLine
+public class EditorLineBase
 	extends CPane
 {
 	public final static CssStyle TEXT_LINE = new CssStyle("TextLine_TEXT_LINE");
 	public final static CssStyle LINE_NUMBERS = new CssStyle("TextLine_LINE_NUMBERS");
 	
 	private int line;
-	private CTextFlow textFlow;
 	private double height;
 	private static NumberFormat format;
 	
 	
-	public TextLine()
+	public EditorLineBase()
 	{
 		FX.style(this, TEXT_LINE);
-	}
-	
-	
-	public CTextFlow text()
-	{
-		if(textFlow == null)
-		{
-			textFlow = new CTextFlow();
-			setCenter(textFlow);
-		}
-		return textFlow;
 	}
 	
 	
