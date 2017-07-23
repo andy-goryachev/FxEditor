@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.D;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
@@ -204,14 +205,17 @@ public class VFlow
 				b = model.getDecoratedLine(ix);
 				b.setLineNumber(ix);
 			}
+			
+			double w = wrap ? wid : b.prefWidth(-1);
+			b.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
+						
 			getChildren().add(b);
 			b.applyCss();
 			b.setManaged(true);
 			
-			double w = wrap ? wid : b.prefWidth(-1);
-			b.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
-			
+			// FIX incorrect
 			double h = b.prefHeight(w);
+			D.print(h);
 			
 			la.addLineBox(b);
 			b.setLineHeight(h);
