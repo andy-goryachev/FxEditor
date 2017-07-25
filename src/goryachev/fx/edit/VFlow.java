@@ -201,29 +201,22 @@ public class VFlow
 		{
 			LineBox b = (prev == null ? null : prev.getLineBox(ix));
 			
-			Region nd;
 			if(b == null)
 			{
-				nd = model.getDecoratedLine(ix);
+				b = model.getDecoratedLine(ix);
+				b.init(ix);
 			}
-			else
-			{
-				nd = b.getBox();
-			}
+			
+			Region nd = b.getCenter();
 			getChildren().add(nd);
 			nd.applyCss();
 			nd.setManaged(true);
+			la.addLineBox(b);
 			
 			double w = wrap ? wid : nd.prefWidth(-1);
 			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
 			
 			double h = nd.prefHeight(w);
-			
-			if(b == null)
-			{
-				b = new LineBox(ix, nd);
-			}
-			la.addLineBox(b);
 			b.setLineHeight(h);
 			
 			layoutInArea(nd, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
@@ -398,6 +391,12 @@ public class VFlow
 	protected PathElement[] getRange(int line, int startOffset, int endOffset)
 	{
 		LineBox lineBox = layout.getLineBox(line);
+		if(lineBox == null)
+		{
+			// FIX this should not happen
+			return null;
+		}
+		
 		PathElement[] pe = lineBox.getRange(startOffset, endOffset);
 		if(pe == null)
 		{
@@ -405,7 +404,7 @@ public class VFlow
 		}
 		else
 		{
-			return EditorTools.translatePath(this, lineBox.getBox(), pe);	
+			return EditorTools.translatePath(this, lineBox.getCenter(), pe);	
 		}
 	}
 	
@@ -462,7 +461,10 @@ public class VFlow
 		double right = getWidth() - left;
 		
 		SelectionHelper h = new SelectionHelper(b);
-		h.process(top);
+		if(top != null) // FIX should not be null
+		{
+			h.process(top);
+		}
 		
 		if(bottom == null)
 		{
@@ -474,7 +476,10 @@ public class VFlow
 		{
 			h.process(bottom);
 
-			h.generateTop(top);
+			if(top != null) // FIX why null?
+			{
+				h.generateTop(top);
+			}
 			h.generateMiddle(left, right);
 			h.generateBottom(bottom);
 		}

@@ -16,15 +16,15 @@ public abstract class FxPlainEditorModel
 	}
 	
 	
-	public Region getDecoratedLine(int line)
+	public LineBox getDecoratedLine(int line)
 	{
-		TextFlow t = new TextFlow();
+		LineBox b = new LineBox();
 		String s = getPlainText(line);
 		if(s != null)
 		{
 			Text tx = new Text(s);
-			t.getChildren().add(tx); 
+			b.addText(tx);
 		}
-		return t;
+		return b;
 	}
 }

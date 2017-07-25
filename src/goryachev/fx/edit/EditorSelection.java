@@ -101,21 +101,8 @@ public class EditorSelection
 	}
 
 
-	@Deprecated // FIX change selection class to be always ordered
-	public EditorSelection getOrderedSelection()
+	public EditorSelection getSelection()
 	{
-		SelectionSegment[] ss = segments.clone();
-		if(ss.length > 1)
-		{
-			new CComparator<SelectionSegment>()
-			{
-				public int compare(SelectionSegment a, SelectionSegment b)
-				{
-					return a.getMin().compareTo(b.getMin());
-				}
-			}.sort(ss);
-		}
-		
-		return new EditorSelection(ss);
+		return new EditorSelection(segments);
 	}
 }
