@@ -29,6 +29,12 @@ public class LineBox
 	}
 	
 	
+	public String toString()
+	{
+		return "LineBox:" + lineNumber;
+	}
+	
+	
 	public void setCenter(Region n)
 	{
 		center = n;

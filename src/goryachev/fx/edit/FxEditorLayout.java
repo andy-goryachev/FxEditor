@@ -85,10 +85,10 @@ public class FxEditorLayout
 			}
 		}
 		
-		line -= topLine;
-		if((line >= 0) && (line < lines.size()))
+		int ix = line - topLine;
+		if((ix >= 0) && (ix < lines.size()))
 		{
-			return lines.get(line);
+			return lines.get(ix);
 		}
 		return null;
 	}

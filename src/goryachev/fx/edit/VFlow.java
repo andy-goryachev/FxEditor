@@ -17,6 +17,8 @@ import javafx.geometry.VPos;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Rectangle;
@@ -393,7 +395,6 @@ public class VFlow
 		LineBox lineBox = layout.getLineBox(line);
 		if(lineBox == null)
 		{
-			// FIX this should not happen
 			return null;
 		}
 		
@@ -406,6 +407,38 @@ public class VFlow
 		{
 			return EditorTools.translatePath(this, lineBox.getCenter(), pe);	
 		}
+	}
+	
+	
+	protected PathElement[] getRangeTop()
+	{
+		double w = getWidth();
+		
+		return new PathElement[]
+		{
+			new MoveTo(0, -1),
+			new LineTo(w, -1),
+			new LineTo(w, 0),
+			new LineTo(0, 0),
+			new LineTo(0, -1)
+		};
+	}
+	
+	
+	protected PathElement[] getRangeBottom()
+	{
+		double w = getWidth();
+		double h = getHeight();
+		double h1 = h + 1;
+		
+		return new PathElement[]
+		{
+			new MoveTo(0, h),
+			new LineTo(w, h),
+			new LineTo(w, h1),
+			new LineTo(0, h1),
+			new LineTo(0, h)
+		};
 	}
 	
 	
@@ -453,7 +486,16 @@ public class VFlow
 		else
 		{
 			top = getRange(startMarker.getLine(), startMarker.getLineOffset(), -1);
+			if(top == null)
+			{
+				top = getRangeTop();
+			}
+			
 			bottom = getRange(endMarker.getLine(), 0, endMarker.getLineOffset());
+			if(bottom == null)
+			{
+				bottom = getRangeBottom();
+			}
 		}
 		
 		// generate shapes
@@ -461,10 +503,8 @@ public class VFlow
 		double right = getWidth() - left;
 		
 		SelectionHelper h = new SelectionHelper(b);
-		if(top != null) // FIX should not be null
-		{
-			h.process(top);
-		}
+		
+		h.process(top);
 		
 		if(bottom == null)
 		{
@@ -476,10 +516,7 @@ public class VFlow
 		{
 			h.process(bottom);
 
-			if(top != null) // FIX why null?
-			{
-				h.generateTop(top);
-			}
+			h.generateTop(top);
 			h.generateMiddle(left, right);
 			h.generateBottom(bottom);
 		}
