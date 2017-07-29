@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.control.Labeled;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
@@ -172,6 +173,34 @@ public class VFlow
 		return caretVisible.get();
 	}
 	
+	
+	/** estimates the last visible line number and computes preferred width based on that */ 
+	protected double estimateLineNumberColumnWidth(Labeled c)
+	{			
+		double h = Math.max(1.0, c.prefHeight(-1));
+		int lineCount = (int)(getHeight() / h);
+		int ix = topLineIndex + lineCount + 1;
+		
+		setLineNumber(c, ix);
+		
+		c.setManaged(true);
+		getChildren().add(c);
+		c.applyCss();
+		
+		double w = c.prefWidth(-1);
+		
+		getChildren().remove(c);
+		
+		return w;
+	}
+	
+	
+	protected void setLineNumber(Labeled c, int ix)
+	{
+		String s = editor.getLineNumberFormatter().format(ix + 1);
+		c.setText(s);
+	}
+	
 
 	public FxEditorLayout recreateLayout(FxEditorLayout prev)
 	{
@@ -191,40 +220,87 @@ public class VFlow
 		FxEditorLayout la = new FxEditorLayout(editor, topLineIndex);
 		
 		Insets pad = getInsets();
-		double maxy = height - pad.getBottom();
+		double ymax = height - pad.getBottom();
 		double y = pad.getTop() - offsety;
 		double x0 = pad.getLeft();
+		double x1 = x0;
 		boolean wrap = editor.isWrapText();
+		boolean showLineNumbers = editor.isShowLineNumbers();
+		boolean estimateLineNumberWidth = showLineNumbers;
+		double wid = width - x1 - pad.getRight();
 		
-		// TODO account for leading, trailing components
-		double wid = width - x0 - pad.getRight();
-		
+		// from top to bottom
 		for(int ix=topLineIndex; ix<lines; ix++)
 		{
 			LineBox b = (prev == null ? null : prev.getLineBox(ix));
-			
 			if(b == null)
 			{
 				b = model.getDecoratedLine(ix);
 				b.init(ix);
 			}
 			
+			double lnw = 0;
+			if(estimateLineNumberWidth)
+			{
+				lnw = estimateLineNumberColumnWidth(b.getLineNumberComponent());
+				
+//				lnw = 100; // FIX
+				
+				x1 += lnw;
+				wid -= lnw;
+				if(wid < 0)
+				{
+					wid = 0;
+				}
+				estimateLineNumberWidth = false;
+			}
+			
+			// TODO skip sizing if the width has not changed (incl. line number component)
+			
 			Region nd = b.getCenter();
+			nd.setManaged(true);
 			getChildren().add(nd);
 			nd.applyCss();
-			nd.setManaged(true);
 			la.addLineBox(b);
 			
 			double w = wrap ? wid : nd.prefWidth(-1);
 			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
-			
 			double h = nd.prefHeight(w);
-			b.setLineHeight(h);
 			
-			layoutInArea(nd, x0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			double lnh = 0;
+			if(showLineNumbers)
+			{
+				Labeled nc = b.getLineNumberComponent();
+				setLineNumber(nc, ix);
+				
+				nc.setManaged(true);
+				getChildren().add(nc);
+				nc.applyCss();
+				//nc.setMaxWidth(lnw);
+				
+				lnh = nc.prefHeight(lnw);
+			}
+			
+			h = Math.max(h, lnh);
+			b.setLineHeight(h);
+			// TODO set line box width
+
+			layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			
+			if(showLineNumbers)
+			{
+				Labeled nc = b.getLineNumberComponent();
+				
+//				nc.resize(lnw, h);
+				
+				// FIX this does not work for some reason
+//				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
+				// and this lays line number component left aligned??
+				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			}
 			
 			y += h;
-			if(y > maxy)
+			if(y > ymax)
 			{
 				break;
 			}

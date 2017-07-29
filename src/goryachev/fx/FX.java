@@ -198,6 +198,10 @@ public final class FX
 			{
 				n.setGraphic((Node)a);
 			}
+			else if(a instanceof Background)
+			{
+				n.setBackground((Background)a);
+			}
 			else
 			{
 				throw new Error("?" + a);

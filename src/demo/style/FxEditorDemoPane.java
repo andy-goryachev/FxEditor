@@ -22,6 +22,7 @@ public class FxEditorDemoPane
 		FxEditor ed = new FxEditor(new TestFxColorEditorModel(Conf.LINE_COUNT));
 		ed.setContentPadding(new Insets(2, 5, 2, 5));
 		ed.setMultipleSelectionEnabled(true);
+		ed.setShowLineNumbers(true);
 		
 		FxEditor edit = new FxEditor(new EditablePlainTextEditorModel());
 		edit.setContentPadding(new Insets(2, 5, 2, 5));

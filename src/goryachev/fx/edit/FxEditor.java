@@ -7,6 +7,8 @@ import goryachev.fx.CAction;
 import goryachev.fx.CBooleanProperty;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
+import goryachev.fx.Formatters;
+import goryachev.fx.FxFormatter;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.Markers;
 import java.io.StringWriter;
@@ -18,6 +20,7 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -51,6 +54,8 @@ public class FxEditor
 	public static final CssStyle HIGHLIGHT = new CssStyle("FxEditor_HIGHLIGHT");
 	/** panel style */
 	public static final CssStyle PANEL = new CssStyle("FxEditor_PANEL");
+	/** line number component */
+	public static final CssStyle LINE_NUMBER = new CssStyle("FxEditor_LINE_NUMBER");
 	
 	public final CAction copyAction = new CAction(this::copy);
 	public final CAction selectAllAction = new CAction(this::selectAll);
@@ -60,7 +65,9 @@ public class FxEditor
 	protected final CBooleanProperty wrapTextProperty = new CBooleanProperty(true, this::updateLayout);
 	protected final ReadOnlyBooleanWrapper multipleSelectionProperty = new ReadOnlyBooleanWrapper(false);
 	protected final BooleanProperty displayCaretProperty = new SimpleBooleanProperty(true);
+	protected final BooleanProperty showLineNumbersProperty = new SimpleBooleanProperty(false);
 	protected final ReadOnlyObjectWrapper<Duration> caretBlinkRateProperty = new ReadOnlyObjectWrapper(Duration.millis(500));
+	protected final SimpleObjectProperty<FxFormatter> lineNumberFormatterProperty = new SimpleObjectProperty<>();
 	protected final Markers markers = new Markers(32);
 	protected final VFlow vflow;
 	protected final ScrollBar vscroll;
@@ -112,6 +119,24 @@ public class FxEditor
 	public void setContentPadding(Insets m)
 	{
 		vflow.setPadding(m);
+	}
+	
+	
+	public FxFormatter getLineNumberFormatter()
+	{
+		FxFormatter f = lineNumberFormatterProperty.get();
+		if(f == null)
+		{
+			f = Formatters.getIntegerFormat();
+		}
+		return f;
+	}
+	
+	
+	public void setLineNumberFormatter(FxFormatter f)
+	{
+		lineNumberFormatterProperty.set(f);
+		requestLayout();
 	}
 	
 	
@@ -446,6 +471,18 @@ public class FxEditor
 	public boolean isDisplayCaret()
 	{
 		return displayCaretProperty.get();
+	}
+	
+	
+	public void setShowLineNumbers(boolean on)
+	{
+		showLineNumbersProperty.set(on);
+	}
+	
+	
+	public boolean isShowLineNumbers()
+	{
+		return showLineNumbersProperty.get();
 	}
 	
 

@@ -134,6 +134,12 @@ public class FxEditorLayout
 		for(LineBox b: lines)
 		{
 			cs.remove(b.getCenter());
+			
+			Node ln = b.getLineNumberComponentRaw();
+			if(ln != null)
+			{
+				cs.remove(ln);
+			}
 		}
 		
 		if(newLines != null)
