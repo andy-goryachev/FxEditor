@@ -37,16 +37,16 @@ public class EditablePlainTextEditorModel
 	}
 	
 	
-	public Region getDecoratedLine(int line)
+	public LineBox getDecoratedLine(int line)
 	{
-		CTextFlow t = new CTextFlow();
+		LineBox box = new LineBox();
 		String s = getPlainText(line);
 		if(s != null)
 		{
-			Text tx = new Text(s);
-			t.getChildren().add(tx); 
+			Text t = new Text(s);
+			box.addText(t);
 		}
-		return t;
+		return box;
 	}
 	
 	

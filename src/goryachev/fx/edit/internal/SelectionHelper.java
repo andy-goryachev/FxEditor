@@ -26,25 +26,29 @@ import javafx.scene.shape.PathElement;
 public class SelectionHelper
 {
 	private final FxPathBuilder pathBuilder;
-	private double y0 = Double.NaN;
-	private double y1 = Double.NaN;
-	private double y2 = Double.NaN;
-	private double y3 = Double.NaN;
+	private final double left;
+	private final double right;
+	private double topUp = Double.NaN;
+	private double topDn = Double.NaN;
+	private double botUp = Double.NaN;
+	private double botDn = Double.NaN;
 
 	
-	public SelectionHelper(FxPathBuilder b)
+	public SelectionHelper(FxPathBuilder b, double left, double right)
 	{
 		this.pathBuilder = b;
+		this.left = left;
+		this.right = right;
 	}
 	
 	
 	public String toString()
 	{
 		return 
-			"y0=" + y0 +
-			" y1=" + y1 +
-			" y2=" + y2 +
-			" y3=" + y3;
+			"topUp=" + topUp +
+			" topDn=" + topDn +
+			" botUp=" + botUp +
+			" botDn=" + botDn;
 	}
 
 
@@ -75,7 +79,7 @@ public class SelectionHelper
 			else if(em instanceof MoveTo)
 			{
 				y = getY(em);
-				if((y == y0) || (y == y1))
+				if((y == topUp) || (y == topDn))
 				{
 					pathBuilder.add(em);
 					include = true;
@@ -89,21 +93,21 @@ public class SelectionHelper
 	}
 
 
-	public void generateMiddle(double left, double right)
+	public void generateMiddle()
 	{
-		if(Double.isNaN(y0))
+		if(Double.isNaN(topUp))
 		{
 			return;
 		}
 		
-		if(y2 > y0)
+		if(botUp > topDn)
 		{
 			// only if the middle exists
-			pathBuilder.moveto(left, y1);
-			pathBuilder.lineto(right, y1);
-			pathBuilder.lineto(right, y2);
-			pathBuilder.lineto(left, y2);
-			pathBuilder.lineto(left, y1);
+			pathBuilder.moveto(left, topDn);
+			pathBuilder.lineto(right, topDn);
+			pathBuilder.lineto(right, botUp);
+			pathBuilder.lineto(left, botUp);
+			pathBuilder.lineto(left, topDn);
 		}
 	}
 
@@ -124,7 +128,7 @@ public class SelectionHelper
 			else if(em instanceof MoveTo)
 			{
 				y = getY(em);
-				if((y == y2) || (y == y3))
+				if((y == botUp) || (y == botDn))
 				{
 					pathBuilder.add(em);
 					include = true;
@@ -159,34 +163,34 @@ public class SelectionHelper
 	
 	protected void setTop(double y)
 	{
-		if(isSmaller(y, y0))
+		if(isSmaller(y, topUp))
 		{
-			if(isSmaller(y0, y1))
+			if(isSmaller(topUp, topDn))
 			{
-				y1 = y0;
+				topDn = topUp;
 			}
-			y0 = y;
+			topUp = y;
 		}
-		else if(isSmaller(y, y1) && (y > y0))
+		else if(isSmaller(y, topDn) && (y > topUp))
 		{
-			y1 = y;
+			topDn = y;
 		}
 	}
 	
 
 	protected void setBottom(double y)
 	{
-		if(isLarger(y, y3))
+		if(isLarger(y, botDn))
 		{
-			if(isLarger(y3, y2))
+			if(isLarger(botDn, botUp))
 			{
-				y2 = y3;
+				botUp = botDn;
 			}
-			y3 = y;
+			botDn = y;
 		}
-		else if(isLarger(y, y2) && (y < y3))
+		else if(isLarger(y, botUp) && (y < botDn))
 		{
-			y2 = y;
+			botUp = y;
 		}
 	}
 	

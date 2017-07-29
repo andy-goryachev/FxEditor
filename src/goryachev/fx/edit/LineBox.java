@@ -2,6 +2,7 @@
 package goryachev.fx.edit;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.PathElement;
+import javafx.scene.text.Text;
 
 
 /**
@@ -14,29 +15,47 @@ import javafx.scene.shape.PathElement;
  */
 public class LineBox
 {
-	private final int line;
-	private final Region box;
+	private int lineNumber;
+	private Region left;
+	private Region center;
+	private Region right;
 	private double height;
 	// TODO leading component
 	// TODO trailing component
 	
 	
-	public LineBox(int line, Region box)
+	public LineBox()
 	{
-		this.line = line;
-		this.box = box;
+	}
+	
+	
+	public String toString()
+	{
+		return "LineBox:" + lineNumber;
+	}
+	
+	
+	public void setCenter(Region n)
+	{
+		center = n;
 	}
 
 
-	public Region getBox()
+	public Region getCenter()
 	{
-		return box;
+		return center;
+	}
+	
+	
+	public void init(int lineNumber)
+	{
+		this.lineNumber = lineNumber;
 	}
 	
 	
 	public int getLineNumber()
 	{
-		return line;
+		return lineNumber;
 	}
 
 
@@ -52,18 +71,69 @@ public class LineBox
 	}
 	
 	
-	/** returns selection shape for a given range.  negative 'end' value is equivalent to the offset of the last symbol in the text */
+	public int getTextLength()
+	{
+		if(center instanceof CTextFlow)
+		{
+			CTextFlow t = (CTextFlow)center;
+			return t.getText().length();
+		}
+		return 0;
+	}
+	
+	
+	/** returns selection shape for a given range */
 	public PathElement[] getRange(int start, int end)
 	{
-		if(box instanceof CTextFlow)
+		if(center instanceof CTextFlow)
 		{
-			CTextFlow t = (CTextFlow)box;
-			if(end < 0)
-			{
-				end = t.getText().length();
-			}
+			CTextFlow t = (CTextFlow)center;
 			return t.getRange(start, end);
 		}
 		return null;
+	}
+	
+	
+	/** returns selection shape for a given range */
+	public PathElement[] getCaretShape(int index, boolean leading)
+	{
+		if(center instanceof CTextFlow)
+		{
+			CTextFlow t = (CTextFlow)center;
+			return t.getCaretShape(index, leading);
+		}
+		return null;
+	}
+	
+	
+	/** returns the text flow node, creating it as necessary */
+	public CTextFlow text()
+	{
+		if(center == null)
+		{
+			CTextFlow t = new CTextFlow();
+			center = t;
+			return t;
+		}
+		else if(center instanceof CTextFlow)
+		{
+			return (CTextFlow)center;
+		}
+		else
+		{
+			throw new Error("not a text row: " + center);
+		}
+	}
+	
+	
+	public void addText(Text t)
+	{
+		text().getChildren().add(t);
+	}
+	
+	
+	public void addText(Text ... items)
+	{
+		text().getChildren().addAll(items);
 	}
 }

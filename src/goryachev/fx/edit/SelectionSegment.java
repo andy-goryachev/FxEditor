@@ -81,16 +81,16 @@ public class SelectionSegment
 	{
 		if(min.equals(max))
 		{
-			return "[(" + min + ")]";
+			return "[" + min + "*]";
 		}
 		
 		if(caretAtMin)
 		{
-			return "[(" + min + ")-" + max + "]";
+			return "[" + min + "*-" + max + "]";
 		}
 		else
 		{
-			return "[" + min + "-(" + max + "])";
+			return "[" + min + "-" + max + "*)";
 		}
 	}
 	

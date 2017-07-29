@@ -2,11 +2,10 @@
 package demo.edit;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
-import goryachev.fx.edit.CTextFlow;
 import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.FxPlainEditorModel;
+import goryachev.fx.edit.LineBox;
 import java.text.NumberFormat;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
@@ -27,19 +26,19 @@ public class TestFxColorEditorModel
 	}
 	
 	
-	public Region getDecoratedLine(int line)
+	public LineBox getDecoratedLine(int line)
 	{
 		CList<Segment> ss = getSegments(line, true);
 		
-		CTextFlow f = new CTextFlow();
+		LineBox box = new LineBox();
 		for(Segment s: ss)
 		{
 			Text t = new Text(s.text);
 			t.setFill(s.color);
 			
-			f.getChildren().add(t);
+			box.addText(t);
 		}
-		return f;
+		return box;
 	}
 	
 	

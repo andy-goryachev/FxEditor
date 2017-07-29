@@ -158,7 +158,6 @@ public class SelectionController
 	/** called at the end of drag gesture to clear transient values and update the selection property */
 	public void commitSelection()
 	{
-		anchor = null;
 		originalSelection = null;
 		
 		EditorSelection es = new EditorSelection(segments.toArray(new SelectionSegment[segments.size()]));

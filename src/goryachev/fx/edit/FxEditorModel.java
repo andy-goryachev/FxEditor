@@ -50,13 +50,9 @@ public abstract class FxEditorModel
 	public abstract String getPlainText(int line);
 	
 	/** 
-	 * returns a non-null Region containing Text, TextFlow, or any other Nodes representing a line.
-	 * I am not sure this should be a part of the editor model, because the presentation should be controlled by the editor ui.
-	 * What this method needs to return is a list/array of segments encapsulating text, text style and colors.
-	 * Another consideration is support for arbitrary Nodes such as images (tables and so on) - and for those we need to 
-	 * have a ui component.
+	 * returns a non-null LineBox containing components that represent a logical line.
 	 */
-	public abstract Region getDecoratedLine(int line);
+	public abstract LineBox getDecoratedLine(int line);
 	
 	/**
 	 * Applies modification to the model.  The model makes necessary changes to its internal state, 
@@ -122,7 +118,7 @@ public abstract class FxEditorModel
 				}
 				public int getLineCount() { return 0; }
 				public String getPlainText(int line) { return null; }
-				public Region getDecoratedLine(int line) { return null; }
+				public LineBox getDecoratedLine(int line) { return null; }
 				public Edit edit(Edit ed) throws Exception { throw new Exception(); }
 			};
 		}
@@ -174,8 +170,6 @@ public abstract class FxEditorModel
 	/** copies specified data formats to the clipboard.  silently ignores unsupported data format.  DataFormat.PLAIN_TEXT is always supported. */
 	public void copy(EditorSelection sel, Consumer<Throwable> errorHandler, DataFormat ... formats)
 	{
-		sel = sel.getOrderedSelection();
-		
 		try
 		{
 			CMap<DataFormat,Object> m = new CMap();
@@ -220,7 +214,6 @@ public abstract class FxEditorModel
 	/** plain text copy, expecting ordered selection ranges */
 	public void getPlainText(EditorSelection sel, Writer wr) throws Exception
 	{
-		sel = sel.getOrderedSelection();
 		for(SelectionSegment s: sel.getSegments())
 		{
 			CKit.checkCancelled();
