@@ -29,6 +29,12 @@ public class LineBox
 	}
 	
 	
+	public LineBox(Region center)
+	{
+		setCenter(center);
+	}
+	
+	
 	public String toString()
 	{
 		return "LineBox:" + lineNumber;
@@ -126,15 +132,17 @@ public class LineBox
 	}
 	
 	
-	public void addText(Text t)
+	public LineBox addText(Text t)
 	{
 		text().getChildren().add(t);
+		return this;
 	}
 	
 	
-	public void addText(Text ... items)
+	public LineBox addText(Text ... items)
 	{
 		text().getChildren().addAll(items);
+		return this;
 	}
 	
 	
