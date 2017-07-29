@@ -14,8 +14,6 @@ TODO
 
 FIX
 ===
-- #1 fix LTR+RTL selection
-- problem with multiple selection (ctrl-drag) anchor?
 
 
 

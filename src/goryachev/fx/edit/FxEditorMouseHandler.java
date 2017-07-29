@@ -147,11 +147,13 @@ public class FxEditorMouseHandler
 		{
 			if(selector.isInsideOfSelection(pos) || (!editor.isMultipleSelectionEnabled()))
 			{
+				selector.setAnchor(pos);
 				selector.setSelection(pos);
 			}
 			else
 			{
 				// add a new caret
+				selector.setAnchor(pos);
 				selector.addSelectionSegment(pos, pos);
 			}
 		}

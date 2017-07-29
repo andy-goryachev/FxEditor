@@ -264,9 +264,10 @@ public class VFlow
 		{
 			Marker start = s.getMin();
 			Marker end = s.getMax();
+			Marker caret = s.getCaret();
 			
 			createSelectionHighlight(selectionBuilder, start, end);
-			createCaretPath(caretBuilder, end);
+			createCaretPath(caretBuilder, caret);
 		}
 		
 		selectionHighlight.getElements().setAll(selectionBuilder.getPath());
