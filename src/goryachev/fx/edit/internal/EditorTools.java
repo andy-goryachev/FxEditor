@@ -170,20 +170,18 @@ public class EditorTools
 			if(em instanceof LineTo)
 			{
 				LineTo m = (LineTo)em;
-				sb.a("L(");
+				sb.a("L");
 				sb.a(f.format(m.getX()));
 				sb.comma();
 				sb.a(f.format(m.getY()));
-				sb.a(")");
 			}
 			else if(em instanceof MoveTo)
 			{
 				MoveTo m = (MoveTo)em;
-				sb.a("M(");
+				sb.a("M");
 				sb.a(f.format(m.getX()));
 				sb.comma();
 				sb.a(f.format(m.getY()));
-				sb.a(")");
 			}
 			else
 			{

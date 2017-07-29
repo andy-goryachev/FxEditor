@@ -391,36 +391,6 @@ public class VFlow
 	}
 	
 	
-	protected PathElement[] getRangeShape(int line, int startOffset, int endOffset, boolean leading)
-	{
-		LineBox lineBox = layout.getLineBox(line);
-		if(lineBox == null)
-		{
-			return null;
-		}
-		
-		PathElement[] pe;
-		if(startOffset == endOffset)
-		{
-			// no range, we'll take the caret shape
-			pe = lineBox.getCaretShape(startOffset, leading);
-		}
-		else
-		{
-			pe = lineBox.getRange(startOffset, endOffset);
-		}
-		
-		if(pe == null)
-		{
-			return null;
-		}
-		else
-		{
-			return EditorTools.translatePath(this, lineBox.getCenter(), pe);	
-		}
-	}
-	
-	
 	protected PathElement[] getRangeTop()
 	{
 		double w = getWidth();
@@ -453,6 +423,37 @@ public class VFlow
 	}
 	
 	
+	protected PathElement[] getRangeShape(int line, int startOffset, int endOffset, boolean addLeading, boolean addTrailing)
+	{
+		LineBox lineBox = layout.getLineBox(line);
+		if(lineBox == null)
+		{
+			return null;
+		}
+		
+		PathElement[] pe;
+		if(startOffset == endOffset)
+		{
+			// not a range, use caret shape instead
+			// FIX addLeading, addTrailing ??
+			pe = lineBox.getCaretShape(startOffset, false);
+		}
+		else
+		{
+			pe = lineBox.getRange(startOffset, endOffset);
+		}
+		
+		if(pe == null)
+		{
+			return null;
+		}
+		else
+		{
+			return EditorTools.translatePath(this, lineBox.getCenter(), pe);	
+		}
+	}
+	
+	
 	/**
 	 * Populates path builder with selection shapes between two markers.
 	 * This method handles RTL and LTR text.
@@ -464,7 +465,7 @@ public class VFlow
 			return;
 		}
 		
-		// make sure startMarker < endMarker
+		// enforce startMarker < endMarker
 		if(startMarker.compareTo(endMarker) > 0)
 		{
 			throw new Error(startMarker + "<" + endMarker);
@@ -489,18 +490,18 @@ public class VFlow
 		PathElement[] bottom;
 		if(startMarker.getLine() == endMarker.getLine())
 		{
-			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset(), true);
+			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset(), false, false);
 			bottom = null;
 		}
 		else
 		{
-			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), -1, true);
+			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), -1, false, true);
 			if(top == null)
 			{
 				top = getRangeTop();
 			}
 			
-			bottom = getRangeShape(endMarker.getLine(), 0, endMarker.getLineOffset(), false);
+			bottom = getRangeShape(endMarker.getLine(), 0, endMarker.getLineOffset(), true, false);
 			if(bottom == null)
 			{
 				bottom = getRangeBottom();

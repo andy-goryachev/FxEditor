@@ -26,10 +26,10 @@ import javafx.scene.shape.PathElement;
 public class SelectionHelper
 {
 	private final FxPathBuilder pathBuilder;
-	private double topHi = Double.NaN;
-	private double topLo = Double.NaN;
-	private double botHi = Double.NaN;
-	private double botLo = Double.NaN;
+	private double topUp = Double.NaN;
+	private double topDn = Double.NaN;
+	private double botUp = Double.NaN;
+	private double botDn = Double.NaN;
 
 	
 	public SelectionHelper(FxPathBuilder b)
@@ -41,10 +41,10 @@ public class SelectionHelper
 	public String toString()
 	{
 		return 
-			"topHi=" + topHi +
-			" topLo=" + topLo +
-			" botHi=" + botHi +
-			" botLo=" + botLo;
+			"topUp=" + topUp +
+			" topDn=" + topDn +
+			" botUp=" + botUp +
+			" botDn=" + botDn;
 	}
 
 
@@ -75,7 +75,7 @@ public class SelectionHelper
 			else if(em instanceof MoveTo)
 			{
 				y = getY(em);
-				if((y == topHi) || (y == topLo))
+				if((y == topUp) || (y == topDn))
 				{
 					pathBuilder.add(em);
 					include = true;
@@ -91,19 +91,19 @@ public class SelectionHelper
 
 	public void generateMiddle(double left, double right)
 	{
-		if(Double.isNaN(topHi))
+		if(Double.isNaN(topUp))
 		{
 			return;
 		}
 		
-		if(botHi > topHi)
+		if(botUp > topDn)
 		{
 			// only if the middle exists
-			pathBuilder.moveto(left, topLo);
-			pathBuilder.lineto(right, topLo);
-			pathBuilder.lineto(right, botHi);
-			pathBuilder.lineto(left, botHi);
-			pathBuilder.lineto(left, topLo);
+			pathBuilder.moveto(left, topDn);
+			pathBuilder.lineto(right, topDn);
+			pathBuilder.lineto(right, botUp);
+			pathBuilder.lineto(left, botUp);
+			pathBuilder.lineto(left, topDn);
 		}
 	}
 
@@ -124,7 +124,7 @@ public class SelectionHelper
 			else if(em instanceof MoveTo)
 			{
 				y = getY(em);
-				if((y == botHi) || (y == botLo))
+				if((y == botUp) || (y == botDn))
 				{
 					pathBuilder.add(em);
 					include = true;
@@ -159,34 +159,34 @@ public class SelectionHelper
 	
 	protected void setTop(double y)
 	{
-		if(isSmaller(y, topHi))
+		if(isSmaller(y, topUp))
 		{
-			if(isSmaller(topHi, topLo))
+			if(isSmaller(topUp, topDn))
 			{
-				topLo = topHi;
+				topDn = topUp;
 			}
-			topHi = y;
+			topUp = y;
 		}
-		else if(isSmaller(y, topLo) && (y > topHi))
+		else if(isSmaller(y, topDn) && (y > topUp))
 		{
-			topLo = y;
+			topDn = y;
 		}
 	}
 	
 
 	protected void setBottom(double y)
 	{
-		if(isLarger(y, botLo))
+		if(isLarger(y, botDn))
 		{
-			if(isLarger(botLo, botHi))
+			if(isLarger(botDn, botUp))
 			{
-				botHi = botLo;
+				botUp = botDn;
 			}
-			botLo = y;
+			botDn = y;
 		}
-		else if(isLarger(y, botHi) && (y < botLo))
+		else if(isLarger(y, botUp) && (y < botDn))
 		{
-			botHi = y;
+			botUp = y;
 		}
 	}
 	
