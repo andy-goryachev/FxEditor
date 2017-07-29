@@ -21,7 +21,7 @@ public class LineBox
 	private Labeled lineNumberComponent;
 	private Region center;
 	private double height;
-	private static Insets PADDING = new Insets(0, 10, 0, 0);
+	private static Insets PADDING = new Insets(0, 7, 0, 0);
 	
 	
 	public LineBox()

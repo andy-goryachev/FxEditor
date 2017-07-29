@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.D;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
@@ -228,6 +229,7 @@ public class VFlow
 		boolean showLineNumbers = editor.isShowLineNumbers();
 		boolean estimateLineNumberWidth = showLineNumbers;
 		double wid = width - x1 - pad.getRight();
+		double lnw = 0;
 		
 		// from top to bottom
 		for(int ix=topLineIndex; ix<lines; ix++)
@@ -239,7 +241,6 @@ public class VFlow
 				b.init(ix);
 			}
 			
-			double lnw = 0;
 			if(estimateLineNumberWidth)
 			{
 				lnw = estimateLineNumberColumnWidth(b.getLineNumberComponent());
@@ -290,13 +291,7 @@ public class VFlow
 			if(showLineNumbers)
 			{
 				Labeled nc = b.getLineNumberComponent();
-				
-//				nc.resize(lnw, h);
-				
-				// FIX this does not work for some reason
-//				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
-				// and this lays line number component left aligned??
-				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
 			}
 			
 			y += h;
