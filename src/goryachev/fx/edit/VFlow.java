@@ -1,6 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.common.util.D;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
@@ -423,7 +422,7 @@ public class VFlow
 	}
 	
 	
-	protected PathElement[] getRangeShape(int line, int startOffset, int endOffset, boolean addLeading, boolean addTrailing)
+	protected PathElement[] getRangeShape(int line, int startOffset, int endOffset)
 	{
 		LineBox lineBox = layout.getLineBox(line);
 		if(lineBox == null)
@@ -431,11 +430,15 @@ public class VFlow
 			return null;
 		}
 		
+		if(endOffset < 0)
+		{
+			endOffset = lineBox.getTextLength();
+		}
+		
 		PathElement[] pe;
 		if(startOffset == endOffset)
 		{
 			// not a range, use caret shape instead
-			// FIX addLeading, addTrailing ??
 			pe = lineBox.getCaretShape(startOffset, false);
 		}
 		else
@@ -490,18 +493,18 @@ public class VFlow
 		PathElement[] bottom;
 		if(startMarker.getLine() == endMarker.getLine())
 		{
-			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset(), false, false);
+			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset());
 			bottom = null;
 		}
 		else
 		{
-			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), -1, false, true);
+			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), -1);
 			if(top == null)
 			{
 				top = getRangeTop();
 			}
 			
-			bottom = getRangeShape(endMarker.getLine(), 0, endMarker.getLineOffset(), true, false);
+			bottom = getRangeShape(endMarker.getLine(), 0, endMarker.getLineOffset());
 			if(bottom == null)
 			{
 				bottom = getRangeBottom();
@@ -511,15 +514,14 @@ public class VFlow
 		// generate shapes
 		double left = 0.0;
 		double right = getWidth() - left;
-		
-		SelectionHelper h = new SelectionHelper(b);
+		SelectionHelper h = new SelectionHelper(b, left, right);
 		
 		h.process(top);
 		
 		if(bottom == null)
 		{
 			h.generateTop(top);
-			h.generateMiddle(left, right);
+			h.generateMiddle();
 			h.generateBottom(top);
 		}
 		else
@@ -527,7 +529,7 @@ public class VFlow
 			h.process(bottom);
 
 			h.generateTop(top);
-			h.generateMiddle(left, right);
+			h.generateMiddle();
 			h.generateBottom(bottom);
 		}
 	}

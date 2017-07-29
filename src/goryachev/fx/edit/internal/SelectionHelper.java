@@ -26,15 +26,19 @@ import javafx.scene.shape.PathElement;
 public class SelectionHelper
 {
 	private final FxPathBuilder pathBuilder;
+	private final double left;
+	private final double right;
 	private double topUp = Double.NaN;
 	private double topDn = Double.NaN;
 	private double botUp = Double.NaN;
 	private double botDn = Double.NaN;
 
 	
-	public SelectionHelper(FxPathBuilder b)
+	public SelectionHelper(FxPathBuilder b, double left, double right)
 	{
 		this.pathBuilder = b;
+		this.left = left;
+		this.right = right;
 	}
 	
 	
@@ -89,7 +93,7 @@ public class SelectionHelper
 	}
 
 
-	public void generateMiddle(double left, double right)
+	public void generateMiddle()
 	{
 		if(Double.isNaN(topUp))
 		{

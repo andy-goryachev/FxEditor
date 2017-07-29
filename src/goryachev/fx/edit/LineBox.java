@@ -71,23 +71,30 @@ public class LineBox
 	}
 	
 	
-	/** returns selection shape for a given range.  negative 'end' value is equivalent to the offset of the last symbol in the text */
+	public int getTextLength()
+	{
+		if(center instanceof CTextFlow)
+		{
+			CTextFlow t = (CTextFlow)center;
+			return t.getText().length();
+		}
+		return 0;
+	}
+	
+	
+	/** returns selection shape for a given range */
 	public PathElement[] getRange(int start, int end)
 	{
 		if(center instanceof CTextFlow)
 		{
 			CTextFlow t = (CTextFlow)center;
-			if(end < 0)
-			{
-				end = t.getText().length();
-			}
 			return t.getRange(start, end);
 		}
 		return null;
 	}
 	
 	
-	/** returns selection shape for a given range.  negative 'end' value is equivalent to the offset of the last symbol in the text */
+	/** returns selection shape for a given range */
 	public PathElement[] getCaretShape(int index, boolean leading)
 	{
 		if(center instanceof CTextFlow)

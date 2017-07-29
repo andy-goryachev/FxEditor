@@ -1,14 +1,13 @@
 TODO
 ====
+- highlight current line
+- line numbers
 - layout: skip resizing if same width
 - double click handler 
 - horizontal scrolling
 - vertical scroll bar shows percentage of the view area
 - temporarily set editable to false and do copy() in a background thread (with an error handler) if the model is large
 - focused border
-- highlight current line
-- model: create leading component
-- model: has leading component
 - model: highlighters
 - model: get side bar highlights
 
@@ -16,7 +15,7 @@ TODO
 FIX
 ===
 - #1 fix LTR+RTL selection
-- problem extending last segment (shift+drag)
+- problem with multiple selection (ctrl-drag) anchor?
 
 
 
