@@ -32,6 +32,12 @@ public class FxEditorLayout
 	}
 	
 	
+	public String toString()
+	{
+		return "FxEditorLayout[" + topLine + "-" + (topLine + getVisibleLineCount()) + "]";
+	}
+	
+	
 	/** returns text position at the screen coordinates, or null */
 	public Marker getTextPos(double screenx, double screeny, Markers markers)
 	{

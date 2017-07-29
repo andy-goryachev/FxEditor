@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.D;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
@@ -262,8 +263,8 @@ public class VFlow
 		
 		for(SelectionSegment s: editor.selector.segments)
 		{
-			Marker start = s.getAnchor();
-			Marker end = s.getCaret();
+			Marker start = s.getMin();
+			Marker end = s.getMax();
 			
 			createSelectionHighlight(selectionBuilder, start, end);
 			createCaretPath(caretBuilder, end);
@@ -390,7 +391,7 @@ public class VFlow
 	}
 	
 	
-	protected PathElement[] getRange(int line, int startOffset, int endOffset)
+	protected PathElement[] getRangeShape(int line, int startOffset, int endOffset, boolean leading)
 	{
 		LineBox lineBox = layout.getLineBox(line);
 		if(lineBox == null)
@@ -398,7 +399,17 @@ public class VFlow
 			return null;
 		}
 		
-		PathElement[] pe = lineBox.getRange(startOffset, endOffset);
+		PathElement[] pe;
+		if(startOffset == endOffset)
+		{
+			// no range, we'll take the caret shape
+			pe = lineBox.getCaretShape(startOffset, leading);
+		}
+		else
+		{
+			pe = lineBox.getRange(startOffset, endOffset);
+		}
+		
 		if(pe == null)
 		{
 			return null;
@@ -447,7 +458,7 @@ public class VFlow
 	 * This method handles RTL and LTR text.
 	 */
 	protected void createSelectionHighlight(FxPathBuilder b, Marker startMarker, Marker endMarker)
-	{		
+	{
 		if((startMarker == null) || (endMarker == null))
 		{
 			return;
@@ -456,9 +467,7 @@ public class VFlow
 		// make sure startMarker < endMarker
 		if(startMarker.compareTo(endMarker) > 0)
 		{
-			Marker tmp = startMarker;
-			startMarker = endMarker;
-			endMarker = tmp;
+			throw new Error(startMarker + "<" + endMarker);
 		}
 		
 		if(endMarker.getLine() < topLineIndex)
@@ -480,18 +489,18 @@ public class VFlow
 		PathElement[] bottom;
 		if(startMarker.getLine() == endMarker.getLine())
 		{
-			top = getRange(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset());
+			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset(), true);
 			bottom = null;
 		}
 		else
 		{
-			top = getRange(startMarker.getLine(), startMarker.getLineOffset(), -1);
+			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), -1, true);
 			if(top == null)
 			{
 				top = getRangeTop();
 			}
 			
-			bottom = getRange(endMarker.getLine(), 0, endMarker.getLineOffset());
+			bottom = getRangeShape(endMarker.getLine(), 0, endMarker.getLineOffset(), false);
 			if(bottom == null)
 			{
 				bottom = getRangeBottom();

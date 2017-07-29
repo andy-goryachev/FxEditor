@@ -144,10 +144,15 @@ public class EditorTools
 	}
 
 
-	@Deprecated // for debugging only
-	public static void dump(PathElement[] elements)
+	/** debugging tool */
+	public static String dump(PathElement[] elements)
 	{
-		DecimalFormat f = new DecimalFormat("#0.0");
+		if(elements == null)
+		{
+			return "null";
+		}
+		
+		DecimalFormat f = new DecimalFormat("#0.#");
 		boolean sp = false;
 
 		SB sb = new SB();
@@ -185,6 +190,6 @@ public class EditorTools
 				sb.a(em);
 			}
 		}
-		System.err.println(sb);
+		return sb.toString();
 	}
 }
