@@ -19,22 +19,22 @@ file with a concurrent change log that enables editing of a very large files.
 
 ## Try It Out ##
 
-The project is at a very early stage: less than 24% of all 
+The project is at a very early stage: less than 29% of all 
 [identified features](https://github.com/andy-goryachev/FxEditor/blob/master/FxEditor%20Feature%20Matrix.xlsx)
 is currently implemented. 
 
 To see how little is implemented, launch 
 [FxEditorDemoApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/FxEditorDemoApp.java)
 or
-[DemoStylingApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/fx/FxDemoApp.java).
+[FxDemoApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/fx/FxDemoApp.java).
 
 
 ## Example
 
 ```java
-public class DemoWindow extends FxWindow
+public class MainWindow extends FxWindow
 {
-	public DemoWindow()
+	public MainWindow()
 	{
 		super("TestFxEditorWindow");
 		setTitle("FxEditor Demo");
@@ -51,7 +51,7 @@ public class DemoWindow extends FxWindow
 }
 ```
 
-See [DemoWindow.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/DemoWindow.java)
+See [MainWindow.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/MainWindow.java)
 
 
 ## Similar Projects
