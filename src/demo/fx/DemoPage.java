@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package demo.style;
+package demo.fx;
 import goryachev.common.util.Log;
 import javafx.scene.Node;
 
@@ -7,13 +7,13 @@ import javafx.scene.Node;
 /**
  * Demo Page.
  */
-public class Page
+public class DemoPage
 {
 	public final String text;
 	public final Class<? extends Node> type;
 	
 	
-	public Page(String text, Class<? extends Node> c)
+	public DemoPage(String text, Class<? extends Node> c)
 	{
 		this.text = text;
 		this.type = c;

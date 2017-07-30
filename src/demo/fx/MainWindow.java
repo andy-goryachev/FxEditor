@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package demo.style;
+package demo.fx;
 import goryachev.fx.CAction;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
@@ -11,18 +11,18 @@ import goryachev.fx.FxWindow;
 /**
  * Demo Window.
  */
-public class DemoStylingMainWindow
+public class MainWindow
 	extends FxWindow
 {
 	public final CAction prefsAction = new CAction(this::preferences);
-	public final DemoPane pane;
+	public final MainPane pane;
 	
 	
-	public DemoStylingMainWindow()
+	public MainWindow()
 	{
 		super("MainWindow");
 		
-		pane = new DemoPane();
+		pane = new MainPane();
 
 		setTitle("FX Demo");
 		setTop(createMenu());
@@ -37,8 +37,8 @@ public class DemoStylingMainWindow
 	protected CMenuBar createMenu()
 	{
 		CMenuBar b = new CMenuBar();
-		// file
-		CMenu m = b.addMenu("File");
+		// app
+		CMenu m = b.addMenu("FxDemo");
 		m.add("Preferences", prefsAction);
 		m.separator();
 		m.add("Exit", FX.exitAction());

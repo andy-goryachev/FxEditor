@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package demo.style;
+package demo.fx;
 import goryachev.common.util.CKit;
 import goryachev.fx.CPane;
 import goryachev.fx.table.FxTable;

@@ -26,7 +26,7 @@ is currently implemented.
 To see how little is implemented, launch 
 [FxEditorDemoApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/FxEditorDemoApp.java)
 or
-[DemoStylingApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/style/DemoStylingApp.java).
+[DemoStylingApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/fx/FxDemoApp.java).
 
 
 ## Example

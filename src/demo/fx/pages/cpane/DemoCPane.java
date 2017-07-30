@@ -1,10 +1,11 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package demo.style;
+package demo.fx.pages.cpane;
 import goryachev.common.util.Parsers;
 import goryachev.fx.CComboBox;
 import goryachev.fx.CInsets;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
+import demo.fx.DemoTools;
 import javafx.beans.binding.Bindings;
 import javafx.scene.Node;
 import javafx.scene.control.Label;

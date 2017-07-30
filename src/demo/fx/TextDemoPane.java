@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package demo.style;
+package demo.fx;
 import goryachev.fx.CComboBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;

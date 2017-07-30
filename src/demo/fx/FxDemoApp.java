@@ -1,5 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package demo.style;
+package demo.fx;
 import goryachev.common.util.FileSettingsProvider;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
@@ -10,9 +10,9 @@ import javafx.stage.Stage;
 
 
 /**
- * Styling Demo App.
+ * Demo App.
  */
-public class DemoStylingApp
+public class FxDemoApp
 	extends Application
 {
 	public static void main(String[] args)
@@ -38,7 +38,7 @@ public class DemoStylingApp
 
 	public void start(Stage stage) throws Exception
 	{
-		new DemoStylingMainWindow().open();
+		new MainWindow().open();
 		// init styles
 		CssLoader.setStyles(() -> new Styles());
 	}
