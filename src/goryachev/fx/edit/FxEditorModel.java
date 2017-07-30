@@ -206,10 +206,6 @@ public abstract class FxEditorModel
 		}
 	}
 	
-	
-	@Deprecated // TODO remove
-	protected final void copyOtherFormats(CMap<DataFormat,Object> clipboardData, EditorSelection sel) { }
-	
 
 	/** plain text copy, expecting ordered selection ranges */
 	public void getPlainText(EditorSelection sel, Writer wr) throws Exception
