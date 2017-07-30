@@ -187,7 +187,7 @@ public class VFlow
 	{			
 		double h = Math.max(1.0, c.prefHeight(-1));
 		int lineCount = (int)(getHeight() / h);
-		int ix = topLineIndex + lineCount + 1;
+		int ix = Math.max(999, topLineIndex + lineCount);
 		
 		setLineNumber(c, ix);
 		
