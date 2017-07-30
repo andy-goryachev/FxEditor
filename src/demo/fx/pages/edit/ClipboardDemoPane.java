@@ -91,13 +91,10 @@ public class ClipboardDemoPane
 			byte[] bytes = new byte[b.remaining()];
 			b.get(bytes);
 			
-			for(int i=0; i<bytes.length; )
+			String[] ss = Hex.toHexStringsAscii(bytes);
+			for(String s: ss)
 			{
-				int sz = Math.min(16, bytes.length - i);
-				String s = Hex.toHexString(bytes, i, sz);
-				rv.add(new LineSegment(LineType.BYTES, s));
-				
-				i += sz;
+				rv.add(new LineSegment(LineType.BYTES, s.trim()));
 			}
 		}
 		else
