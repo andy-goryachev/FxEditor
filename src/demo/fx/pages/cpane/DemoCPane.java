@@ -5,7 +5,7 @@ import goryachev.fx.CComboBox;
 import goryachev.fx.CInsets;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
-import demo.fx.DemoTools;
+import demo.fx.util.DemoTools;
 import javafx.beans.binding.Bindings;
 import javafx.scene.Node;
 import javafx.scene.control.Label;

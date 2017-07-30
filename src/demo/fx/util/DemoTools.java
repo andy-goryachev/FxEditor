@@ -1,5 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package demo.fx;
+package demo.fx.util;
 import goryachev.fx.FX;
 import goryachev.fx.HPane;
 import java.text.DecimalFormat;

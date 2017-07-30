@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package demo.fx;
+package demo.fx.pages;
 import goryachev.fx.CButton;
 import goryachev.fx.CCheckBox;
 import goryachev.fx.CPane;

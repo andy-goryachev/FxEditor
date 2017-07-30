@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package demo.fx;
+package demo.fx.pages;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
