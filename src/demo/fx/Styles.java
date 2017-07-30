@@ -3,6 +3,7 @@ package demo.fx;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FxStyleSheet;
 import goryachev.fx.Theme;
+import demo.fx.pages.edit.SegmentTextEditorModel;
 
 
 /**
@@ -18,7 +19,13 @@ public class Styles
 		add
 		(
 			// common fx styles
-			new CommonStyles()
+			new CommonStyles(),
+			
+			selector(SegmentTextEditorModel.HEADING).defines
+			(
+				fontSize("150%"),
+				fontWeight("bold")
+			)
 		);
 	}
 }

@@ -6,12 +6,12 @@ import javafx.scene.text.TextFlow;
 
 
 /**
- * Plain Text FxEditor Model.
+ * Plain Text FxEditor Model Base Class.
  */
-public abstract class FxPlainEditorModel
+public abstract class AbstractPlainTextEditorModel
 	extends FxEditorModel
 {
-	public FxPlainEditorModel()
+	public AbstractPlainTextEditorModel()
 	{
 	}
 	

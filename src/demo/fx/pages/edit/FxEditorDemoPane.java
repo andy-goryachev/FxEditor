@@ -1,5 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
-package demo.fx.pages;
+package demo.fx.pages.edit;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
@@ -26,7 +26,7 @@ public class FxEditorDemoPane
 		
 		FxEditor edit = new FxEditor(new EditablePlainTextEditorModel());
 		edit.setContentPadding(new Insets(2, 5, 2, 5));
-		ed.setMultipleSelectionEnabled(true);
+		edit.setMultipleSelectionEnabled(true);
 		
 		setGaps(10, 5);
 		addColumns

@@ -3,7 +3,7 @@ package demo.edit;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
 import goryachev.fx.edit.Edit;
-import goryachev.fx.edit.FxPlainEditorModel;
+import goryachev.fx.edit.AbstractPlainTextEditorModel;
 import goryachev.fx.edit.LineBox;
 import java.text.NumberFormat;
 import javafx.scene.paint.Color;
@@ -14,7 +14,7 @@ import javafx.scene.text.Text;
  * test plain text model with up to 2 billion rows
  */
 public class TestFxColorEditorModel
-	extends FxPlainEditorModel
+	extends AbstractPlainTextEditorModel
 {
 	private NumberFormat format = NumberFormat.getInstance();
 	private int lineCount;

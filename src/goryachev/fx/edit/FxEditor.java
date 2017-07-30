@@ -223,10 +223,11 @@ public class FxEditor
 			m.addListener(this);
 		}
 		
-//		Marker ma = new Marker(0, 0, true);
-//		selector.setSelection(ma, ma);
-//		selector.commitSelection();
-		
+		selector.clear();
+		if(vflow != null)
+		{
+			vflow.invalidateLayout();
+		}
 		updateLayout();
 	}
 	

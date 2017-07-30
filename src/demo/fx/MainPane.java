@@ -5,10 +5,11 @@ import goryachev.fx.CPane;
 import goryachev.fx.table.FxTable;
 import demo.fx.pages.ButtonDemoPane;
 import demo.fx.pages.DemoLoginPane;
-import demo.fx.pages.FxEditorDemoPane;
 import demo.fx.pages.TableDemoPane;
 import demo.fx.pages.TextDemoPane;
 import demo.fx.pages.cpane.DemoCPane;
+import demo.fx.pages.edit.ClipboardDemoPane;
+import demo.fx.pages.edit.FxEditorDemoPane;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
@@ -37,6 +38,7 @@ public class MainPane
 		table.getItems().setAll
 		(
 			new DemoPage("FxEditor", FxEditorDemoPane.class),
+			new DemoPage("Clipboard", ClipboardDemoPane.class),
 			new DemoPage("Buttons", ButtonDemoPane.class),
 			new DemoPage("FxTable", TableDemoPane.class),
 			new DemoPage("Text Components", TextDemoPane.class),

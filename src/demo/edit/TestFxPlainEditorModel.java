@@ -2,7 +2,7 @@
 package demo.edit;
 import goryachev.common.util.SB;
 import goryachev.fx.edit.Edit;
-import goryachev.fx.edit.FxPlainEditorModel;
+import goryachev.fx.edit.AbstractPlainTextEditorModel;
 import goryachev.fx.edit.LineBox;
 import javafx.scene.text.Text;
 
@@ -11,7 +11,7 @@ import javafx.scene.text.Text;
  * test plain text model with 2 billion rows
  */
 public class TestFxPlainEditorModel
-	extends FxPlainEditorModel
+	extends AbstractPlainTextEditorModel
 {
 	public TestFxPlainEditorModel()
 	{
