@@ -108,7 +108,7 @@ public class FxEditor
 		selector.segments.addListener((Observable src) -> vflow.updateCaretAndSelection());
 
 		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
-		Binder.onChange(this::updateLayout, widthProperty(), heightProperty());
+		Binder.onChange(this::updateLayout, widthProperty(), heightProperty(), showLineNumbersProperty);
 		
 		keymap = createKeyMap();
 		
@@ -487,6 +487,12 @@ public class FxEditor
 	public boolean isShowLineNumbers()
 	{
 		return showLineNumbersProperty.get();
+	}
+	
+	
+	public BooleanProperty showLineNumbersProperty()
+	{
+		return showLineNumbersProperty;
 	}
 	
 	

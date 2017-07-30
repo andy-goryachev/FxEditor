@@ -40,6 +40,7 @@ public class MainWindow
 		
 		// props
 		bind("WRAP_TEXT", editor.wrapTextProperty());
+		bind("SHOW_LINE_NUMBERS", editor.showLineNumbersProperty());
 		
 		// debug
 		FxDump.attach(this);
@@ -63,6 +64,7 @@ public class MainWindow
 		m.add("Select All", editor.selectAllAction);
 		// view
 		m = b.addMenu("View");
+		m.add("Show Line Numbers", editor.showLineNumbersProperty());
 		m.add("Wrap Text", editor.wrapTextProperty());
 		// help
 		m = b.addMenu("Help");
