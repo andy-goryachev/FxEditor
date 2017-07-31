@@ -17,6 +17,13 @@ The data model then can be made as simple as a contiguous in-memory byte array, 
 file with a concurrent change log that enables editing of a very large files.
 
 
+## Features
+
+* supports up to 2^31 lines of text
+* multiple selection and carets
+* supports syntax highlight
+ 
+
 ## Try It Out ##
 
 The project is at a very early stage: less than 29% of all 
