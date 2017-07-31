@@ -4,13 +4,11 @@ import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
 import goryachev.fx.util.FxPathBuilder;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Labeled;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
 
 /**
@@ -33,6 +31,12 @@ public class LineBox
 	public LineBox(Region center)
 	{
 		setCenter(center);
+	}
+	
+	
+	public static LineBox createTextBox()
+	{
+		return new LineBox(new CTextFlow());
 	}
 	
 	

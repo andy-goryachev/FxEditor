@@ -1,0 +1,14 @@
+In statistical mechanics, entropy (usual symbol S) is related to the number of microscopic configurations Ω that a thermodynamic system can have when in a state as specified by some macroscopic variables. Specifically, assuming for simplicity that each of the microscopic configurations is equally probable, the entropy of the system is the natural logarithm of that number of configurations, multiplied by the Boltzmann constant kB.
+Энтропи́я (от др.-греч. ἐντροπία «поворот», «превращение») — широко используемый в естественных и точных науках термин. Впервые введён в рамках термодинамики как функция состояния термодинамической системы, определяющая меру необратимого рассеивания энергии.
+בפיזיקה, אֶנְטְרוֹפּיה (מסומנת לרוב באות S) היא אחד הגדלים המאפיינים מערכת רבת חלקיקים, והיא מתארת את המידה בה מתקיים הכלל שאומר שלא ניתן להמיר את כל אנרגיית החום של מערכת סגורה לאנרגיה מכנית (החוק השני של התרמודינמיקה).
+エントロピー（英: entropy）は、熱力学および統計力学において定義される示量性の状態量である。熱力学において断熱条件下での不可逆性を表す指標として導入され、統計力学において系の微視的な「乱雑さ」[注 1]を表す物理量という意味付けがなされた。
+واژهٔ آنتروپی یا اِنتروپی یا درگاشت (به انگلیسی: Entropy) در رشته‌های گوناگون علمی، معانی متفاوت پیدا کرده است که اساسی‌ترین آنها در زیر آورده شده‌اند.
+1
+22
+333
+4444
+55555
+666666
+7777777
+88888888
+

@@ -19,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -546,6 +547,27 @@ public final class CKit
 		finally
 		{
 			close(in);
+		}
+	}
+	
+	
+	public static String[] readLines(Class cs, String resource) throws Exception
+	{
+		String text = readString(cs, resource);
+		BufferedReader rd = new BufferedReader(new StringReader(text));
+		try
+		{
+			CList<String> lines = new CList();
+			String s;
+			while((s = rd.readLine()) != null)
+			{
+				lines.add(s);
+			}
+			return toArray(lines);
+		}
+		finally
+		{
+			close(rd);
 		}
 	}
 
