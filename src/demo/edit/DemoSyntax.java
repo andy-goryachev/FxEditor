@@ -26,23 +26,27 @@ public class DemoSyntax
 		for(int i=0; i<text.length(); i++)
 		{
 			char c = text.charAt(i);
-			int ix = getClosingSymbolIndex(text, i);
-			if(ix >= 0)
+			
+			int close = getClosingChar(c);
+			if(close >= 0)
 			{
-				addSegment(i);
-				i = ix;
-				
-				addSegment(i);
-				continue;
-			}
-			else
-			{
-				Color col = getColor(c);
-				if(!col.equals(color))
+				int ix = text.indexOf(close, i);
+				if(ix >= 0)
 				{
 					addSegment(i);
-					color = col;
+					color = Color.BLUE;
+					i = ix;
+					
+					addSegment(i);
+					continue;
 				}
+			}
+			
+			Color col = getColor(c);
+			if(!col.equals(color))
+			{
+				addSegment(i);
+				color = col;
 			}
 		}
 		
@@ -52,8 +56,17 @@ public class DemoSyntax
 	}
 	
 	
-	protected int getClosingSymbolIndex(String text2, int i)
+	protected int getClosingChar(char c)
 	{
+		switch(c)
+		{
+		case '(':
+			return ')';
+		case '[':
+			return ']';
+		case '{':
+			return '}';
+		}
 		return -1;
 	}
 

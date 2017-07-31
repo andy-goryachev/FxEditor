@@ -26,7 +26,7 @@ public class MainWindow
 	{
 		super("MainWindow");
 
-		FxEditorModel m = new TestFxColorEditorModel(Conf.LINE_COUNT);
+		FxEditorModel m = new TestFxColorEditorModel(2_000_000_000);
 		
 		editor = new FxEditor(m);
 		editor.setContentPadding(new CInsets(2, 4));
