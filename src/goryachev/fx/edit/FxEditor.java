@@ -228,7 +228,9 @@ public class FxEditor
 		{
 			vflow.invalidateLayout();
 		}
-		updateLayout();
+		
+		eventAllChanged();
+//		updateLayout();
 	}
 	
 	
@@ -435,11 +437,22 @@ public class FxEditor
 	protected void eventAllChanged()
 	{
 		clearSelection();
-		vflow.invalidateLayout();
-		vflow.reset();
 		
-		vscroll.setValue(0);
-		hscroll.setValue(0);
+		if(vflow != null)
+		{
+			vflow.invalidateLayout();
+			vflow.reset();
+		}
+		
+		if(vscroll != null)
+		{
+			vscroll.setValue(0);
+		}
+		
+		if(hscroll != null)
+		{
+			hscroll.setValue(0);
+		}
 		
 		updateLayout();
 	}
