@@ -70,6 +70,11 @@ public class FxEditorLayout
 		}
 		
 		LineBox line = lines.getLast();
+		if(line == null)
+		{
+			return Marker.ZERO;
+		}
+		
 		Region box = line.getCenter();
 		int len = 0;
 		if(box instanceof CTextFlow)
