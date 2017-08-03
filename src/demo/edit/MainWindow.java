@@ -33,7 +33,7 @@ public class MainWindow
 		editor.setBlinkRate(Duration.millis(600));
 		editor.setMultipleSelectionEnabled(true);
 		
-		setTitle("FxEditor Demo");
+		setTitle("FxEditor");
 		setTop(createMenu());
 		setCenter(editor);
 		setSize(600, 700);
