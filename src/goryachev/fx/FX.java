@@ -422,6 +422,22 @@ public final class FX
 		}
 		return false;
 	}
+	
+	
+	/** returns true if (x,y) point in eventSource coordinates is contained by eventTarget node */
+	public static boolean contains(Node eventSource, Node eventTarget, double x, double y)
+	{
+		Point2D p = eventSource.localToScreen(x, y);
+		if(p != null)
+		{
+			p = eventTarget.screenToLocal(p);
+			if(p != null)
+			{
+				return eventTarget.contains(p);
+			}
+		}
+		return false;
+	}
 
 
 	public static boolean isParent(Node parent, Node child)

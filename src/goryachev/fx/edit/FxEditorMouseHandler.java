@@ -13,8 +13,6 @@ public class FxEditorMouseHandler
 {
 	protected final FxEditor editor;
 	protected final SelectionController selector;
-	protected boolean dragging;
-	protected boolean draggingScroll;
 
 
 	public FxEditorMouseHandler(FxEditor ed, SelectionController sel)
@@ -24,28 +22,8 @@ public class FxEditorMouseHandler
 	}
 	
 	
-	protected boolean isOverScrollBars(double x, double y)
-	{
-		// might use getPickResult() to see if over VFlow or any other node
-		if(x >= editor.vscroll.getLayoutX())
-		{
-			return true;
-		}
-		else if(editor.hscroll.isVisible() && (y >= editor.hscroll.getLayoutY()))
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	
 	protected void handleScroll(ScrollEvent ev)
 	{
-		if(isOverScrollBars(ev.getX(), ev.getY()))
-		{
-			return;
-		}
-		
 		if(ev.isShiftDown())
 		{
 			// TODO horizontal scroll perhaps?
@@ -79,27 +57,6 @@ public class FxEditorMouseHandler
 	}
 	
 	
-	public void handleMouseClicked(MouseEvent ev)
-	{
-		if(ev.getButton() != MouseButton.PRIMARY)
-		{
-			return;
-		}
-		
-		int clicks = ev.getClickCount();
-		switch(clicks)
-		{
-		case 2:
-			D.print("double click"); // FIX
-			break;
-		case 3:
-			selectLine(getTextPos(ev));
-			ev.consume();
-			break;
-		}
-	}
-	
-	
 	protected void selectLine(Marker m)
 	{
 		if(m != null)
@@ -127,13 +84,29 @@ public class FxEditorMouseHandler
 	}
 	
 	
-	public void handleMousePressed(MouseEvent ev)
+	public void handleMouseClicked(MouseEvent ev)
 	{
-		if(isOverScrollBars(ev.getX(), ev.getY()))
+		if(ev.getButton() != MouseButton.PRIMARY)
 		{
 			return;
 		}
-			
+		
+		int clicks = ev.getClickCount();
+		switch(clicks)
+		{
+		case 2:
+			D.print("double click"); // FIX
+			break;
+		case 3:
+			selectLine(getTextPos(ev));
+			ev.consume();
+			break;
+		}
+	}
+	
+	
+	public void handleMousePressed(MouseEvent ev)
+	{
 		Marker pos = getTextPos(ev);
 		editor.setSuppressBlink(true);
 				
@@ -169,21 +142,7 @@ public class FxEditorMouseHandler
 	
 	
 	public void handleMouseDragged(MouseEvent ev)
-	{
-		if(draggingScroll)
-		{
-			return;
-		}
-		
-		if(isOverScrollBars(ev.getX(), ev.getY()))
-		{
-			dragging = false;
-			draggingScroll = true;
-			return;
-		}
-		
-		dragging = true;
-		
+	{		
 		Marker pos = getTextPos(ev);
 		selector.extendLastSegment(pos);
 	}
@@ -191,15 +150,7 @@ public class FxEditorMouseHandler
 	
 	public void handleMouseReleased(MouseEvent ev)
 	{
-		dragging = false;
-		draggingScroll = false;
 		editor.setSuppressBlink(false);
-
-		if(isOverScrollBars(ev.getX(), ev.getY()))
-		{
-			return;
-		}
-		
 		selector.commitSelection();
 	}
 }
