@@ -181,7 +181,7 @@ public class FxEditorLayout
 				b.init(ix);
 				
 				double h = editor.vflow.addAndComputePreferredHeight(b.getCenter());
-				b.setLineHeight(h);
+				b.setHeight(h);
 			}
 			
 			if(newLines == null)
@@ -191,6 +191,6 @@ public class FxEditorLayout
 			newLines.put(ix, b);
 		}
 			
-		return b.getLineHeight();
+		return b.getHeight();
 	}
 }

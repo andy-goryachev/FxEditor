@@ -1,9 +1,13 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.D;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.util.Duration;
 
 
 /**
@@ -13,12 +17,22 @@ public class FxEditorMouseHandler
 {
 	protected final FxEditor editor;
 	protected final SelectionController selector;
+	protected final Timeline autoScrollTimer;
+	private boolean fastAutoScroll;
+	private Duration autoScrollPeriod = Duration.millis(100); // arbitrary number
+	private double fastScrollThreshold = 100; // arbitrary number
+	private double autoScrollStepFast = 200; // arbitrary
+	private double autoScrollStepSlow = 20; // arbitrary
+	private boolean autoScrollUp;
 
 
 	public FxEditorMouseHandler(FxEditor ed, SelectionController sel)
 	{
 		this.editor = ed;
 		this.selector = sel;
+		
+		autoScrollTimer = new Timeline(new KeyFrame(autoScrollPeriod, (ev) -> autoScroll()));
+		autoScrollTimer.setCycleCount(Timeline.INDEFINITE);
 	}
 	
 	
@@ -142,7 +156,25 @@ public class FxEditorMouseHandler
 	
 	
 	public void handleMouseDragged(MouseEvent ev)
-	{		
+	{
+		double y = ev.getY();
+		if(y < 0)
+		{
+			// above vflow
+			autoScroll(y);
+			return;
+		}
+		else if(y > editor.vflow.getHeight())
+		{
+			// below vflow
+			autoScroll(y - editor.vflow.getHeight());
+			return;
+		}
+		else
+		{
+			stopAutoScroll();
+		}
+		
 		Marker pos = getTextPos(ev);
 		selector.extendLastSegment(pos);
 	}
@@ -150,7 +182,45 @@ public class FxEditorMouseHandler
 	
 	public void handleMouseReleased(MouseEvent ev)
 	{
+		stopAutoScroll();
 		editor.setSuppressBlink(false);
 		selector.commitSelection();
+	}
+	
+	
+	protected void autoScroll(double delta)
+	{
+		autoScrollUp = delta < 0;
+		fastAutoScroll = Math.abs(delta) > fastScrollThreshold;
+		autoScrollTimer.play();
+	}
+	
+	
+	protected void stopAutoScroll()
+	{
+		autoScrollTimer.stop();
+	}
+	
+	
+	protected void autoScroll()
+	{
+		double delta = fastAutoScroll ? autoScrollStepFast : autoScrollStepSlow;
+		editor.blockScroll(delta, autoScrollUp);
+		
+		Point2D p;
+		if(autoScrollUp)
+		{
+			p = editor.vflow.localToScreen(0, 0);
+		}
+		else
+		{
+			p = editor.vflow.localToScreen(0, editor.vflow.getHeight());
+		}
+		
+		// TODO this could be done on mouse released!
+		editor.scrollToVisible(p);
+		
+		Marker pos = editor.getTextPos(p.getX(), p.getY());
+		selector.extendLastSegment(pos);
 	}
 }

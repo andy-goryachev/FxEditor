@@ -44,7 +44,7 @@ public class VFlow
 	// TODO line decorations/line numbers
 	protected FxEditorLayout layout;
 	/** index of the topmost visible line */
-	protected int topLineIndex;
+	protected int topLine;
 	/** horizontal shift in pixels */
 	protected double offsetx;
 	/** vertical offset or the viewport relative to the topmost line.  always positive */
@@ -96,7 +96,7 @@ public class VFlow
 	
 	public void setOrigin(int top, double offy)
 	{
-		topLineIndex = top;
+		topLine = top;
 		offsety = offy;
 		
 		layoutChildren();
@@ -108,11 +108,47 @@ public class VFlow
 		editor.vscroll.setValue(v);
 		editor.setHandleScrollEvents(true);
 	}
+	
+	
+	/** adjusts the origin to maximize the visibility of the specified line */
+	public void scrollToVisible(int ix)
+	{
+		// TODO all this could be smarter and actually compute the new origin
+		if(ix <= topLine)
+		{
+			setOrigin(topLine, 0);
+		}
+		else
+		{
+			LineBox b = layout.getLineBox(ix);
+			if(b != null)
+			{
+				double y = b.getY() + b.getHeight();
+				double dy = y - getHeight();
+				if(y > 0)
+				{
+					blockScroll(dy, true);
+				}
+			}
+		}
+	}
 
 
 	public void setTopLineIndex(int ix)
 	{
-		topLineIndex = ix;
+		topLine = ix;
+	}
+	
+	
+	public int getTopLine()
+	{
+		return topLine;
+	}
+	
+	
+	public int getVisibleLineCount()
+	{
+		return layout.getVisibleLineCount();
 	}
 	
 	
@@ -137,7 +173,7 @@ public class VFlow
 	{
 		offsetx = 0;
 		offsety = 0;
-		topLineIndex = 0;
+		topLine = 0;
 	}
 	
 	
@@ -187,7 +223,7 @@ public class VFlow
 	{			
 		double h = Math.max(1.0, c.prefHeight(-1));
 		int lineCount = (int)(getHeight() / h);
-		int ix = Math.max(999, topLineIndex + lineCount);
+		int ix = Math.max(999, topLine + lineCount);
 		
 		setLineNumber(c, ix);
 		
@@ -225,7 +261,7 @@ public class VFlow
 		// TODO is loaded?
 		FxEditorModel model = editor.getTextModel();
 		int lines = model.getLineCount();
-		FxEditorLayout la = new FxEditorLayout(editor, topLineIndex);
+		FxEditorLayout la = new FxEditorLayout(editor, topLine);
 		
 		Insets pad = getInsets();
 		double ymax = height - pad.getBottom();
@@ -239,7 +275,7 @@ public class VFlow
 		double lnw = 0;
 		
 		// from top to bottom
-		for(int ix=topLineIndex; ix<lines; ix++)
+		for(int ix=topLine; ix<lines; ix++)
 		{
 			LineBox b = (prev == null ? null : prev.getLineBox(ix));
 			if(b == null)
@@ -283,14 +319,15 @@ public class VFlow
 				nc.applyCss();
 				
 				h = Math.max(h, nc.prefHeight(lnw));
-				b.setLineHeight(h);
+				b.setHeight(h);
+				b.setY(y);
 				
 				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
 			}
 			else
 			{
-				b.setLineHeight(h);
+				b.setHeight(h);
 				
 				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			}
@@ -385,7 +422,7 @@ public class VFlow
 	{
 		if(layout == null)
 		{
-			layout = new FxEditorLayout(editor, topLineIndex);
+			layout = new FxEditorLayout(editor, topLine);
 		}
 		return layout;
 	}
@@ -420,19 +457,19 @@ public class VFlow
 	}
 	
 	
-	protected void blockScroll(double delta, boolean up)
+	public void blockScroll(double delta, boolean up)
 	{
 		if(up)
 		{
 			if(delta <= offsety)
 			{
 				// no need to query the model
-				setOrigin(topLineIndex, offsety -= delta);
+				setOrigin(topLine, offsety -= delta);
 				return;
 			}
 			else
 			{
-				int ix = topLineIndex;
+				int ix = topLine;
 				double targetY = -delta;
 				double y = -offsety;
 					
@@ -460,7 +497,7 @@ public class VFlow
 		}
 		else
 		{
-			int ix = topLineIndex;
+			int ix = topLine;
 			double targetY = delta;
 			double y = -offsety;
 			
@@ -570,12 +607,12 @@ public class VFlow
 			throw new Error(startMarker + "<" + endMarker);
 		}
 		
-		if(endMarker.getLine() < topLineIndex)
+		if(endMarker.getLine() < topLine)
 		{
 			// selection is above visible area
 			return;
 		}
-		else if(startMarker.getLine() >= (topLineIndex + layout.getVisibleLineCount()))
+		else if(startMarker.getLine() >= (topLine + layout.getVisibleLineCount()))
 		{
 			// selection is below visible area
 			return;

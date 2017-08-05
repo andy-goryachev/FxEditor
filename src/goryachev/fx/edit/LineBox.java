@@ -20,6 +20,7 @@ public class LineBox
 	private Labeled lineNumberComponent;
 	private Region center;
 	private double height;
+	private double y;
 	private static Insets PADDING = new Insets(0, 7, 0, 0);
 	
 	
@@ -68,15 +69,27 @@ public class LineBox
 	{
 		return lineNumber;
 	}
+	
+	
+	public double getY()
+	{
+		return y;
+	}
+	
+	
+	public void setY(double y)
+	{
+		this.y = y;
+	}
 
 
-	public void setLineHeight(double h)
+	public void setHeight(double h)
 	{
 		height = h;
 	}
 	
 	
-	public double getLineHeight()
+	public double getHeight()
 	{
 		return height;
 	}

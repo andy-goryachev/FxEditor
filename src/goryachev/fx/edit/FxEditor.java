@@ -25,6 +25,7 @@ import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.input.DataFormat;
@@ -555,6 +556,12 @@ public class FxEditor
 	}
 	
 	
+	public void blockScroll(double delta, boolean up)
+	{
+		vflow.blockScroll(delta, up);
+	}
+	
+	
 	/** copies all supported formats */
 	public void copy()
 	{
@@ -597,7 +604,27 @@ public class FxEditor
 		if((ix >= 0) && (ix < getLineCount()))
 		{
 			// FIX smarter positioning so the target line is somewhere at 25% of the height
-			vflow.setOrigin(ix, 0);
+			vflow.scrollToVisible(ix);
+		}
+	}
+	
+	
+	public void scrollToVisible(Point2D screenPoint)
+	{
+		Point2D p = vflow.screenToLocal(screenPoint);
+		double y = p.getY();
+		if(y < 0)
+		{
+			// above
+			// FIX for now, just show the upper portion of the top line
+			vflow.scrollToVisible(vflow.getTopLine());
+		}
+		else if(y > vflow.getHeight())
+		{
+			// below
+			// FIX for now, just show the lower portion of the bottom line
+			int ix = vflow.getTopLine() + Math.max(0, vflow.getVisibleLineCount() - 1);
+			vflow.scrollToVisible(ix);
 		}
 	}
 	
