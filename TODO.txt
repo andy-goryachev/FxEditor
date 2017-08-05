@@ -1,64 +1,36 @@
+FIX
+===
+- indented (tab) lines selection is wrong
+- empty line caret is wrong
+
+
+
 TODO
 ====
-- highlight current line
-- line numbers
+- editable
+- line number colum width in layout
 - layout: skip resizing if same width
-- double click handler 
+- double click handler
+- click handler
 - horizontal scrolling
-- vertical scroll bar shows percentage of the view area
+- scroll bar thumb sizing
 - temporarily set editable to false and do copy() in a background thread (with an error handler) if the model is large
 - focused border
 - model: highlighters
 - model: get side bar highlights
+- model: allows background access
+- javadoc how model get text and decorated must be consistent
+- find feature (log viewer)
+- is visible marker
+- side bar highlights in model
+- popup menu
+- get word at position
+- get text line at position
+- split selection into lines
+- split selection into words
+- next word next word in camel case
+- to uppercase lowercase
+- replace
 
 
-FIX
-===
 
-
-
-THINGS
-======
-get side bar highlights in model
-allows background access
-scrollbar thumb sizing
-selection segment assert min le max
-
-pluggable handlers:
-highlight matching words
-popup menu
-
-doc: how it works model vflow
-
-dbl click selects word
-triple click selects line
-
-get word at position
-get text line at position
-
-split selection into lines
-split selection into words
-
-next word next word in camel case
-to uppercase lowercase
-
-highlight occurrences on cursor
-even selection
-
-little popup in thr corner or status line
-line numbers
-
-paste to model
-undo redo
-syntax highlight
-navigation subword word line page doc
-line numbers
-find
-replace
-matching element highlight braces words
-io through model
-indent
-editing
-delete line
-auto completion
-auto close braces
