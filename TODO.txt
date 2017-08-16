@@ -1,7 +1,5 @@
 FIX
 ===
-- indented (tab) lines selection is wrong
-- empty line caret is wrong
 
 
 

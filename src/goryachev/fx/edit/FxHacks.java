@@ -39,7 +39,7 @@ public abstract class FxHacks
 	{
 		if(instance == null)
 		{
-			// supply Java9 when it comes
+			// TODO supply Java9 when it comes
 			instance = new FxHacksJava8();
 		}
 		return instance;
