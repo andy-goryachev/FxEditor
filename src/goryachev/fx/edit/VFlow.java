@@ -1,6 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.common.util.D;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.EditorTools;
@@ -272,7 +271,7 @@ public class VFlow
 		boolean showLineNumbers = editor.isShowLineNumbers();
 		boolean estimateLineNumberWidth = showLineNumbers;
 		double wid = width - x1 - pad.getRight();
-		double lnw = 0;
+		double lineNumbersColumnWidth = 0;
 		
 		// from top to bottom
 		for(int ix=topLine; ix<lines; ix++)
@@ -286,10 +285,10 @@ public class VFlow
 			
 			if(estimateLineNumberWidth)
 			{
-				lnw = estimateLineNumberColumnWidth(b.getLineNumberComponent());
+				lineNumbersColumnWidth = estimateLineNumberColumnWidth(b.getLineNumberComponent());
 				
-				x1 += lnw;
-				wid -= lnw;
+				x1 += lineNumbersColumnWidth;
+				wid -= lineNumbersColumnWidth;
 				if(wid < 0)
 				{
 					wid = 0;
@@ -318,12 +317,12 @@ public class VFlow
 				getChildren().add(nc);
 				nc.applyCss();
 				
-				h = Math.max(h, nc.prefHeight(lnw));
+				h = Math.max(h, nc.prefHeight(lineNumbersColumnWidth));
 				b.setHeight(h);
 				b.setY(y);
 				
 				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
-				layoutInArea(nc, x0, y, lnw, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
+				layoutInArea(nc, x0, y, lineNumbersColumnWidth, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
 			}
 			else
 			{
@@ -340,6 +339,8 @@ public class VFlow
 				break;
 			}
 		}
+		
+		la.setLineNumbersColumnWidth(lineNumbersColumnWidth);
 		
 		return la;
 	}
@@ -645,8 +646,8 @@ public class VFlow
 		}
 		
 		// generate shapes
-		double left = 0.0;
-		double right = getWidth() - left;
+		double left = layout.getLineNumbersColumnWidth();
+		double right = getWidth();
 		SelectionHelper h = new SelectionHelper(b, left, right);
 		
 		h.process(top);

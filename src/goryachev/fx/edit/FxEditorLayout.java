@@ -23,6 +23,7 @@ public class FxEditorLayout
 	private final int topLine;
 	private final CList<LineBox> lines = new CList<>();
 	private CMap<Integer,LineBox> newLines;
+	private double lineNumbersColumnWidth;
 	
 
 	public FxEditorLayout(FxEditor ed, int topLine)
@@ -192,5 +193,17 @@ public class FxEditorLayout
 		}
 			
 		return b.getHeight();
+	}
+
+
+	public void setLineNumbersColumnWidth(double w)
+	{
+		lineNumbersColumnWidth = w;
+	}
+	
+	
+	public double getLineNumbersColumnWidth()
+	{
+		return lineNumbersColumnWidth;
 	}
 }
