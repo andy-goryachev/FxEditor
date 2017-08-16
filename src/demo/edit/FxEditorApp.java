@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 /**
  * Test FxEditor app.
  */
-public class FxEditorDemoApp
+public class FxEditorApp
 	extends Application
 {
 	public static void main(String[] args)
