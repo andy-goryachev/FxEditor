@@ -33,7 +33,7 @@ public class SimpleWordSelector
 				return i;
 			}
 		}
-		return -1;
+		return len;
 	}
 	
 	
@@ -49,11 +49,10 @@ public class SimpleWordSelector
 				return i;
 			}
 		}
-		return -1;
+		return len;
 	}
 	
 	
-	// FIX out of bounds error when dbl-clicking end of line
 	protected int skipWordCharsBackward(String text, int start)
 	{
 		for(int i=start; i>=0; i--)
@@ -65,11 +64,27 @@ public class SimpleWordSelector
 				return i;
 			}
 		}
-		// FIX -1 is legitimate: [word]
-		return 0;
+		// this is legitimate offset
+		return -1;
 	}
 	
 	
+	protected int skipNonWordCharsBackward(String text, int start)
+	{
+		for(int i=start; i>=0; i--)
+		{
+			// TODO surrogate
+			char c = text.charAt(i);
+			if(isWordChar(c))
+			{
+				return i;
+			}
+		}
+		// this is legitimate offset
+		return -1;
+	}
+	
+
 	public void accept(FxEditor ed, Marker m)
 	{
 		D.p(m);
@@ -81,63 +96,55 @@ public class SimpleWordSelector
 			return;
 		}
 		
-		int pos = m.getLineOffset();
 		int len = ed.getTextLength(line);
-		
+		if(len == 0)
+		{
+			return;
+		}
+
+		int pos = m.getCharIndex();
+
 		int start;
 		int end;
 		
-		if(pos == len)
+		if(isWordChar(text.charAt(pos)))
 		{
-			end = skipNonWordCharsForward(text, pos);
-			if(end < 0)
-			{
-				return;
-			}
-			
-			start = skipWordCharsBackward(text, end);
-			if(start < 0)
-			{
-				return;
-			}
+			start = skipWordCharsBackward(text, pos) + 1;
+			end = skipWordCharsForward(text, pos) - 1;
 		}
 		else
 		{
-			start = skipWordCharsBackward(text, pos);
-			if(start < 0)
+			// hit whitespace.  let's try going forward first
+			// TODO we might try selecting the closest word instead
+			start = skipNonWordCharsForward(text, pos);
+			if(start == len)
 			{
-				start = skipNonWordCharsForward(text, pos);
-				end = skipWordCharsForward(text, start);
+				// nothing to the right.  let's go backwards
+				end = skipNonWordCharsBackward(text, pos);
 				if(end < 0)
 				{
-					end = len;
+					// nothing to select
+					return;
+				}
+				else
+				{
+					start = skipWordCharsBackward(text, end);
+					if(start == end)
+					{
+						return;
+					}
+					start++;
 				}
 			}
 			else
 			{
-				if(start == pos)
+				end = skipWordCharsForward(text, start);
+				if(end == start)
 				{
-					// nothing to select from the left
-					start = skipNonWordCharsForward(text, start);
-					if(start < 0)
-					{
-						return;
-					}
-				}
-				else
-				{
-					start++;
+					return;
 				}
 				
-				end = skipWordCharsForward(text, Math.max(pos, start));
-				if(end < 0)
-				{
-					end = len;
-				}
-				else
-				{
-					end--;
-				}
+				end--;
 			}
 		}
 		
