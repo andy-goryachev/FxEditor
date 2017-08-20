@@ -1,6 +1,5 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.common.util.D;
 import java.util.function.BiConsumer;
 
 
@@ -87,8 +86,6 @@ public class SimpleWordSelector
 
 	public void accept(FxEditor ed, Marker m)
 	{
-		D.p(m);
-		
 		int line = m.getLine();
 		String text = ed.getTextOnLine(line);
 		if(text == null)
