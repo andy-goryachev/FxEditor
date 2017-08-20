@@ -1,6 +1,9 @@
 FIX
 ===
-- caret is in the wrong position when dbl-clicking leading whitespace??
+- improper selection on the first word: [s*election]
+- wrong selection when dbl-clickon on space
+- wrong caret: [(tab)*(tab)(tab)]
+- wrong selection: [word(tab)(tab)*(tab)]
 
 
 

@@ -112,9 +112,21 @@ public class SimpleWordSelector
 			}
 			else
 			{
-				start++;
+				if(start == pos)
+				{
+					// nothing to select from the left
+					start = skipNonWordCharsForward(text, start);
+					if(start < 0)
+					{
+						return;
+					}
+				}
+				else
+				{
+					start++;
+				}
 				
-				end = skipWordCharsForward(text, pos);
+				end = skipWordCharsForward(text, Math.max(pos, start));
 				if(end < 0)
 				{
 					end = len;
