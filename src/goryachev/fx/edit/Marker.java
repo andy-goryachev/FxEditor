@@ -46,14 +46,14 @@ public class Marker
 	}
 
 
-	/** returns the line number corresponding to this text position */
+	/** returns the line index */
 	public int getLine()
 	{
 		return line;
 	}
 	
 	
-	/** returns the position within the line */
+	/** returns the effective caret position */
 	public int getLineOffset()
 	{
 		return leading ? charIndex : charIndex + 1;
@@ -77,16 +77,17 @@ public class Marker
 		SB sb = new SB(16);
 		sb.a(line);
 		sb.a(':');
-//		if(leading)
-//		{
-//			sb.a('*');
-//		}
-//		sb.a(charIndex);
-//		if(!leading)
-//		{
-//			sb.a('*');
-//		}
 		sb.a(getCharIndex());
+		if(leading)
+		{
+			sb.a('L');
+		}
+		else
+		{
+			sb.a('T');
+		}
+		sb.a(':');
+		sb.a(getLineOffset());
 		return sb.toString();
 	}
 

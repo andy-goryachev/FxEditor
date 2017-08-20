@@ -1,6 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.common.util.CKit;
+import goryachev.common.util.D;
 import java.util.function.BiConsumer;
 
 
@@ -65,12 +65,15 @@ public class SimpleWordSelector
 				return i;
 			}
 		}
-		return -1;
+		// FIX -1 is legitimate: [word]
+		return 0;
 	}
 	
 	
 	public void accept(FxEditor ed, Marker m)
 	{
+		D.p(m);
+		
 		int line = m.getLine();
 		String text = ed.getTextOnLine(line);
 		if(text == null)
