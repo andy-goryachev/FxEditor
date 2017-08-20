@@ -7,7 +7,6 @@ import goryachev.fx.FxCtl;
 import goryachev.fx.edit.EditablePlainTextEditorModel;
 import goryachev.fx.edit.FxEditor;
 import demo.edit.Conf;
-import demo.edit.TestFxColorEditorModel;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 

@@ -1,5 +1,5 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package demo.edit;
+package demo.fx.pages.edit;
 import goryachev.common.util.SB;
 import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.AbstractPlainTextEditorModel;

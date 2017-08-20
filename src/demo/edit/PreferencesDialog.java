@@ -4,6 +4,7 @@ import goryachev.fx.CCheckBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.edit.FxEditor;
+import demo.fx.pages.edit.TestFxColorEditorModel;
 import javafx.geometry.Pos;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;

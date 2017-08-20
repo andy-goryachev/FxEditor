@@ -1,3 +1,5 @@
+		word,word53,trailing whitespace					
+			
 Entropy
 																			19 tabs
 In statistical mechanics, entropy (usual symbol S) is related to the number of microscopic configurations Ω that a thermodynamic system can have when in a state as specified by some macroscopic variables. Specifically, assuming for simplicity that each of the microscopic configurations is equally probable, the entropy of the system is the natural logarithm of that number of configurations, multiplied by the Boltzmann constant kB.

@@ -9,6 +9,7 @@ import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import goryachev.fx.edit.FxEditor;
 import goryachev.fx.edit.FxEditorModel;
+import demo.fx.pages.edit.TestFxColorEditorModel;
 import javafx.util.Duration;
 
 

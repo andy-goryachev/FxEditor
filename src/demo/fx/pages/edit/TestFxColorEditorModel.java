@@ -1,10 +1,12 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package demo.edit;
+package demo.fx.pages.edit;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.fx.edit.AbstractPlainTextEditorModel;
 import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.LineBox;
+import demo.edit.DemoSyntax;
+import demo.edit.Segment;
 import javafx.scene.text.Text;
 
 

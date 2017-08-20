@@ -1,6 +1,5 @@
 FIX
 ===
-- exception when double clicking end of line
 - caret is in the wrong position when dbl-clicking leading whitespace??
 
 

@@ -81,30 +81,48 @@ public class SimpleWordSelector
 		int pos = m.getLineOffset();
 		int len = ed.getTextLength(line);
 		
-		// FIX if pos==len
-		int start = skipWordCharsBackward(text, pos);
+		int start;
 		int end;
-		if(start < 0)
+		
+		if(pos == len)
 		{
-			start = skipNonWordCharsForward(text, pos);
-			end = skipWordCharsForward(text, start);
+			end = skipNonWordCharsForward(text, pos);
 			if(end < 0)
 			{
-				end = len;
+				return;
+			}
+			
+			start = skipWordCharsBackward(text, end);
+			if(start < 0)
+			{
+				return;
 			}
 		}
 		else
 		{
-			start++;
-			
-			end = skipWordCharsForward(text, pos);
-			if(end < 0)
+			start = skipWordCharsBackward(text, pos);
+			if(start < 0)
 			{
-				end = len;
+				start = skipNonWordCharsForward(text, pos);
+				end = skipWordCharsForward(text, start);
+				if(end < 0)
+				{
+					end = len;
+				}
 			}
 			else
 			{
-				end--;
+				start++;
+				
+				end = skipWordCharsForward(text, pos);
+				if(end < 0)
+				{
+					end = len;
+				}
+				else
+				{
+					end--;
+				}
 			}
 		}
 		
