@@ -1,5 +1,7 @@
 FIX
 ===
+- exception when double clicking end of line
+- caret is in the wrong position when dbl-clicking leading whitespace??
 
 
 
@@ -8,7 +10,6 @@ TODO
 - editable
 - line number colum width in layout
 - layout: skip resizing if same width
-- double click handler
 - click handler
 - horizontal scrolling
 - scroll bar thumb sizing

@@ -53,6 +53,7 @@ public class SimpleWordSelector
 	}
 	
 	
+	// FIX out of bounds error when dbl-clicking end of line
 	protected int skipWordCharsBackward(String text, int start)
 	{
 		for(int i=start; i>=0; i--)

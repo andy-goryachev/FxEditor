@@ -1,6 +1,7 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package demo.fx.pages.edit;
 import goryachev.fx.CPane;
+import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
 import goryachev.fx.edit.EditablePlainTextEditorModel;
@@ -17,8 +18,13 @@ import javafx.scene.control.Label;
 public class FxEditorDemoPane
 	extends CPane
 {
+	public static CssStyle EDITOR = new CssStyle("FxEditorDemoPane_EDITOR");
+
+	
 	public FxEditorDemoPane()
 	{
+		FX.style(this, EDITOR);
+		
 		FxEditor ed = new FxEditor(new TestFxColorEditorModel(Conf.LINE_COUNT));
 		ed.setContentPadding(new Insets(2, 5, 2, 5));
 		ed.setMultipleSelectionEnabled(true);
