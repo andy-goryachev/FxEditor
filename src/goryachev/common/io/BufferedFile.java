@@ -1,6 +1,7 @@
 // Copyright © 2009-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.io;
 import goryachev.common.util.CKit;
+import goryachev.common.util.CList;
 import goryachev.common.util.SB;
 import java.io.File;
 import java.io.IOException;
@@ -16,21 +17,33 @@ import java.util.Random;
 public class BufferedFile
 	extends RandomAccessFile
 {
+	public enum Mode
+	{
+		/** "r" Open for reading only */  
+		READ,
+		/** "rw" Open for reading and writing. If the file does not already exist then an attempt will be made to create it. */  
+		READ_WRITE,
+		/** "rws" Open for reading and writing, and also require that every update to the file's <b>content or metadata</b> be written synchronously to the underlying storage device. */
+		READ_WRITE_CONTENT_METADATA,
+		/** "rwd" Open for reading and writing, and also require that every update to the file's <b>content</b> be written synchronously to the underlying storage device. */
+		READ_WRITE_CONTENT,
+	}
+	
 	private Buffer[] buffers;
 	private int blockSize;
-	private ArrayList<Buffer> free;
+	private CList<Buffer> free;
 	private long marker;
 	private Random random = new Random();
 
 
-	public BufferedFile(File f, String mode, int bufferSize, int bufferCount) throws Exception
+	public BufferedFile(File f, BufferedFile.Mode mode, int bufferSize, int bufferCount) throws Exception
 	{
-		super(f, mode);
+		super(f, modeToString(mode));
 		
 		this.blockSize = bufferSize;
 		
 		buffers = new Buffer[bufferCount];
-		free = new ArrayList<>(bufferCount);
+		free = new CList<>(bufferCount);
 		for(int i=0; i<bufferCount; i++)
 		{
 			Buffer b = new Buffer(bufferSize);
@@ -40,9 +53,27 @@ public class BufferedFile
 	}
 
 
-	public BufferedFile(File f, String mode) throws Exception
+	public BufferedFile(File f, BufferedFile.Mode mode) throws Exception
 	{
 		this(f, mode, 4096, 4);
+	}
+	
+	
+	protected static String modeToString(Mode m)
+	{
+		switch(m)
+		{
+		case READ:
+			return "r";
+		case READ_WRITE:
+			return "rw";
+		case READ_WRITE_CONTENT:
+			return "rwd";
+		case READ_WRITE_CONTENT_METADATA:
+			return "rws";
+		default:
+			throw new Error("?" + m);
+		}
 	}
 
 

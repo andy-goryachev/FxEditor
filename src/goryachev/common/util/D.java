@@ -397,6 +397,16 @@ public class D
 	}
 	
 	
+	/** when running in eclipse, prints frmatted string to stderr */
+	public static void pf(String fmt, Object ... args)
+	{
+		if(CKit.isEclipse())
+		{
+			System.err.println(String.format(fmt, args));
+		}
+	}
+	
+	
 	public static void simpleName(Object x)
 	{
 		if(CKit.isEclipse())

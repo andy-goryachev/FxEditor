@@ -12,6 +12,7 @@ import goryachev.fx.FxFormatter;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.Markers;
 import java.io.StringWriter;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
@@ -79,6 +80,7 @@ public class FxEditor
 	protected final SelectionController selector;
 	protected final KeyMap keymap;
 	protected boolean handleScrollEvents = true;
+	protected BiConsumer<FxEditor,Marker> wordSelector = new SimpleWordSelector();
 
 	
 	public FxEditor()
@@ -211,7 +213,7 @@ public class FxEditor
 	{
 		markers.clear();
 		
-		FxEditorModel old = getTextModel();
+		FxEditorModel old = getModel();
 		if(old != null)
 		{
 			old.removeListener(this);
@@ -235,7 +237,7 @@ public class FxEditor
 	}
 	
 	
-	public FxEditorModel getTextModel()
+	public FxEditorModel getModel()
 	{
 		return modelProperty.get();
 	}
@@ -243,7 +245,7 @@ public class FxEditor
 	
 	public int getLineCount()
 	{
-		return getTextModel().getLineCount();
+		return getModel().getLineCount();
 	}
 	
 	
@@ -278,7 +280,7 @@ public class FxEditor
 		if(handleScrollEvents)
 		{
 			// TODO account for visible line count
-			int start = FX.round(getTextModel().getLineCount() * pos);
+			int start = FX.round(getModel().getLineCount() * pos);
 			setTopLineIndex(start);
 		}
 	}
@@ -389,6 +391,12 @@ public class FxEditor
 	public Marker getTextPos(double screenx, double screeny)
 	{
 		return vflow.layout.getTextPos(screenx, screeny, markers);
+	}
+	
+	
+	public Marker newMarker(int lineNumber, int charIndex, boolean leading)
+	{
+		return markers.newMarker(lineNumber, charIndex, leading);
 	}
 	
 	
@@ -525,7 +533,7 @@ public class FxEditor
 	/** returns plain text on the specified line */
 	public String getTextOnLine(int line)
 	{
-		return getTextModel().getPlainText(line);
+		return getModel().getPlainText(line);
 	}
 
 
@@ -533,7 +541,7 @@ public class FxEditor
 	public String getSelectedText() throws Exception
 	{
 		StringWriter wr = new StringWriter();
-		getTextModel().getPlainText(getSelection(), wr);
+		getModel().getPlainText(getSelection(), wr);
 		return wr.toString();
 	}
 	
@@ -565,14 +573,14 @@ public class FxEditor
 	/** copies all supported formats */
 	public void copy()
 	{
-		copy(null, getTextModel().getSupportedFormats());
+		copy(null, getModel().getSupportedFormats());
 	}
 	
 	
 	/** copies specified formats to clipboard, using an error handler */
 	public void copy(Consumer<Throwable> errorHandler, DataFormat ... formats)
 	{
-		getTextModel().copy(getSelection(), errorHandler, formats);
+		getModel().copy(getSelection(), errorHandler, formats);
 	}
 	
 	
@@ -583,13 +591,20 @@ public class FxEditor
 		{
 			--ix;
 			
-			String s = getTextModel().getPlainText(ix);
+			String s = getModel().getPlainText(ix);
 			Marker beg = markers.newMarker(0, 0, true);
 			Marker end = markers.newMarker(ix, Math.max(0, s.length() - 1), false);
 			
 			selector.setSelection(beg, end);
 			selector.commitSelection();
 		}
+	}
+	
+	
+	public void select(Marker start, Marker end)
+	{
+		selector.setSelection(start, end);
+		selector.commitSelection();
 	}
 	
 	
@@ -669,7 +684,7 @@ public class FxEditor
 	
 	protected void handleKeyTyped(KeyEvent ev)
 	{
-		FxEditorModel m = getTextModel();
+		FxEditorModel m = getModel();
 		if(m.isEditable())
 		{
 			String ch = ev.getCharacter();
@@ -722,5 +737,44 @@ public class FxEditor
 		default:
 			return true;
 		}
+	}
+
+
+	public void selectLine(Marker m)
+	{
+		if(m != null)
+		{
+			int line = m.getLine();
+			Marker start = markers.newMarker(line, 0, true);
+			
+			int len = getModel().getTextLength(line);
+			Marker end = markers.newMarker(line, len, false);
+			
+			selector.setSelection(start, end);
+		}
+	}
+	
+	
+	public void selectWord(Marker m)
+	{
+		if(m != null)
+		{
+			if(wordSelector != null)
+			{
+				wordSelector.accept(this, m);
+			}
+		}
+	}
+	
+	
+	public void setWordSelector(BiConsumer<FxEditor,Marker> s)
+	{
+		wordSelector = s;
+	}
+	
+	
+	public int getTextLength(int line)
+	{
+		return getModel().getTextLength(line);
 	}
 }

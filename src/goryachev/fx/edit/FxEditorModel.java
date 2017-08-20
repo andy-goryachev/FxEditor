@@ -255,4 +255,11 @@ public abstract class FxEditorModel
 			wr.write(s);
 		}
 	}
+
+	
+	public int getTextLength(int line)
+	{
+		String s = getPlainText(line);
+		return s == null ? 0 : s.length();
+	}
 }

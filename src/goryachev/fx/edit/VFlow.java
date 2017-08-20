@@ -258,7 +258,7 @@ public class VFlow
 		clip.setHeight(height);
 		
 		// TODO is loaded?
-		FxEditorModel model = editor.getTextModel();
+		FxEditorModel model = editor.getModel();
 		int lines = model.getLineCount();
 		FxEditorLayout la = new FxEditorLayout(editor, topLine);
 		

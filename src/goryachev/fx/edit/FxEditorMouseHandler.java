@@ -71,33 +71,6 @@ public class FxEditorMouseHandler
 	}
 	
 	
-	protected void selectLine(Marker m)
-	{
-		if(m != null)
-		{
-			FxEditorModel model = editor.getTextModel(); 
-			int lines = model.getLineCount();
-			int line = m.getLine();
-
-			Marker start = editor.markers.newMarker(line, 0, true);
-			line++;
-			
-			Marker end;
-			if(line >= lines)
-			{
-				--line;
-				int ix = Math.max(0, model.getPlainText(line).length() - 1);
-				end = editor.markers.newMarker(line, ix, false);
-			}
-			else
-			{
-				end = editor.markers.newMarker(line, 0, true);
-			}
-			selector.setSelection(start, end);
-		}
-	}
-	
-	
 	public void handleMouseClicked(MouseEvent ev)
 	{
 		if(ev.getButton() != MouseButton.PRIMARY)
@@ -109,10 +82,10 @@ public class FxEditorMouseHandler
 		switch(clicks)
 		{
 		case 2:
-			D.print("double click"); // FIX
+			editor.selectWord(getTextPos(ev));
 			break;
 		case 3:
-			selectLine(getTextPos(ev));
+			editor.selectLine(getTextPos(ev));
 			ev.consume();
 			break;
 		}
