@@ -2,38 +2,55 @@
 package research.fx;
 import goryachev.common.util.CList;
 import goryachev.common.util.D;
+import goryachev.fx.CssStyle;
+import goryachev.fx.FX;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 
 
 /**
  * Split Pane Alternative without all this skin nonsense.
+ * 
+ * TODO background
  */
 public class CSplitPane
 	extends Pane
 {
+	public static CssStyle PANE = new CssStyle("CSplitPane_PANE");
+	public static CssStyle DIVIDER = new CssStyle("CSplitPane_DIVIDER");
+	
 	public static final double DEFAULT_TARGET_RADIUS = 5.0;
 	private final boolean horizontal;
 	private double targetRadius = DEFAULT_TARGET_RADIUS;
 	private Region target;
+	private double dividerWidth = 1;
+	private final ObservableList<Node> items = FXCollections.observableArrayList();
 	private final CList<Divider> dividers = new CList();
+	private final CList<Region> dividerBars = new CList();
 	
 	
 	public CSplitPane(boolean horizontal, Node ... nodes)
 	{
 		this(horizontal);
-		addAll(nodes);
+		addItems(nodes);
 	}
 	
 	
 	public CSplitPane(boolean horizontal)
 	{
 		this.horizontal = horizontal;
+		
+		FX.style(this, PANE);
+		
 		addEventFilter(MouseEvent.MOUSE_ENTERED, (ev) -> handleMouseEntered(ev));
 		addEventFilter(MouseEvent.MOUSE_MOVED, (ev) -> handleMouseMoved(ev));
 		addEventFilter(MouseEvent.MOUSE_CLICKED, (ev) -> handleMouseClicked(ev));
@@ -41,17 +58,23 @@ public class CSplitPane
 		addEventFilter(MouseEvent.MOUSE_EXITED, (ev) -> handleMouseExited(ev));
 	}
 	
-	
-	public void add(Node nd)
+
+	public ObservableList<Node> getItems()
 	{
-		getChildren().add(nd);
+		return items;
+	}
+
+	
+	public void addItem(Node nd)
+	{
+		getItems().add(nd);
 		requestLayout();
 	}
 	
 	
-	public void addAll(Node ... nodes)
+	public void addItems(Node ... nodes)
 	{
-		getChildren().addAll(nodes);
+		getItems().addAll(nodes);
 		requestLayout();
 	}
 	
@@ -62,44 +85,47 @@ public class CSplitPane
 	}
 	
 	
-	protected void layoutChildren()
+	protected void attach(Node n)
 	{
-		Insets m = getInsets();
-			
-		ObservableList<Node> cs = getChildren();
-		int sz = cs.size();
-		
-		if(horizontal)
+		if(n.getParent() != this)
 		{
-			double min = m.getLeft();
-			double max = getWidth() - m.getRight();
-			double wid = max - min;
-			
-			for(int i=0; i<sz; i++)
-			{
-				Node n = cs.get(i);
-				Divider d = getDivider(i);
-				double w = d.constraint * wid;
-			}
-		}
-		else
-		{
-			
+			getChildren().add(n);
+			n.applyCss();
 		}
 	}
 	
 	
 	protected Divider getDivider(int ix)
 	{
-		Divider d = new Divider();
-		d.constraint = 0.33;
-		return d;
+		while(dividers.size() <= ix)
+		{
+			dividers.add(new Divider());
+		}
+		
+		return dividers.get(ix);
+	}
+	
+	
+	protected Region getDividerBar(int ix)
+	{
+		while(dividerBars.size() <= ix)
+		{
+			Region r = new Region();
+			r.setBackground(FX.background(Color.BLACK));
+			FX.style(this, DIVIDER);
+			r.setManaged(false);
+			getChildren().add(r);
+			r.applyCss();
+			
+			dividerBars.add(r);
+		}
+		
+		return dividerBars.get(ix);
 	}
 	
 	
 	protected void handleMouseEntered(MouseEvent ev)
 	{
-		D.print(ev);
 		armTarget(ev);
 	}
 	
@@ -112,21 +138,18 @@ public class CSplitPane
 	
 	protected void handleMouseDragged(MouseEvent ev)
 	{
-		D.print(ev);
 		armTarget(ev);
 	}
 	
 	
 	protected void handleMouseExited(MouseEvent ev)
 	{
-		D.print(ev);
 		releaseTarget();
 	}
 	
 	
 	protected void handleMouseMoved(MouseEvent ev)
 	{
-		D.print(ev);
 		armTarget(ev);
 	}
 	
@@ -140,6 +163,7 @@ public class CSplitPane
 			{
 				double sz = targetRadius + targetRadius;
 				target = new Region();
+				target.setManaged(false);
 				target.resize(sz, sz);
 				
 				getChildren().add(target);
@@ -168,10 +192,86 @@ public class CSplitPane
 	
 	protected Divider getDividerUnder(MouseEvent ev)
 	{
-		ObservableList<Node> cs = getChildren();
-		int sz = cs.size() - 1;
+		double pos = horizontal ? ev.getX() : ev.getY();
 		
-		return getDivider(0); // FIX
+		ObservableList<Node> cs = getItems();
+		int sz = cs.size() - 1;
+		for(int i=0; i<sz; i++)
+		{
+			Divider d = getDivider(i);
+			if(Math.abs(d.position - pos) < targetRadius)
+			{
+				return d;
+			}
+		}
+		
+		return null;
+	}
+	
+	
+	protected void layoutChildren()
+	{
+		Insets m = getInsets();
+		double left = m.getLeft();
+		double right = getWidth() - m.getRight();
+		double top = m.getTop();
+		double bot = getHeight() - m.getBottom();
+		
+		ObservableList<Node> cs = getItems();
+		int sz = cs.size();
+		
+		if(horizontal)
+		{
+			// FIX if one item
+			double width = right - left - ((sz - 1) * dividerWidth);
+			double height = bot - top;
+			
+			// TODO min, max, pref
+			
+			for(int i=0; i<sz; i++)
+			{
+				Node n = cs.get(i);
+				attach(n);
+				
+				// FIX last item
+				Divider d = getDivider(i);
+				double constraint = d.constraint;
+				if(constraint == 0.0)
+				{
+					constraint = 1.0 / sz;
+				}
+				d.span = constraint * width;
+			}
+			
+			double x = left;
+			for(int i=0; i<sz; i++)
+			{
+				Node n = cs.get(i);
+				Divider d = getDivider(i);
+				n.resize(d.span, height);
+				positionInArea(n, x, top, d.span, height, 0, null, HPos.CENTER, VPos.CENTER, isSnapToPixel());
+				
+				x += d.span;
+				
+				Region bar = getDividerBar(i);
+				bar.resize(dividerWidth, height);
+//				attach(bar);
+				positionInArea(bar, x, top, dividerWidth, height, 0, null, HPos.CENTER, VPos.CENTER, isSnapToPixel());
+				
+				x += dividerWidth; 
+				d.position = x;
+			}
+		}
+		else
+		{
+			
+		}
+		
+		while(dividerBars.size() > sz)
+		{
+			Region r = dividerBars.remove(sz);
+			getChildren().remove(r);
+		}
 	}
 	
 	
@@ -182,5 +282,8 @@ public class CSplitPane
 	{
 		/** 0 ... 1.0 specifies percent, > 1.0 specifies fixed location */
 		public double constraint;
+		
+		public transient double span;
+		public transient double position;
 	}
 }
