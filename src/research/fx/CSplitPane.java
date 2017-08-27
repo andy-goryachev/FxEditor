@@ -1,7 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package research.fx;
 import goryachev.common.util.CList;
-import goryachev.common.util.D;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import javafx.collections.FXCollections;
@@ -132,13 +131,16 @@ public class CSplitPane
 	
 	protected void handleMouseClicked(MouseEvent ev)
 	{
-		D.print(ev);
 	}
 	
 	
 	protected void handleMouseDragged(MouseEvent ev)
 	{
-		armTarget(ev);
+		Divider d = armTarget(ev);
+		if(d != null)
+		{
+			moveDivider(d, horizontal ? ev.getX() : ev.getY());
+		}
 	}
 	
 	
@@ -154,10 +156,14 @@ public class CSplitPane
 	}
 	
 	
-	protected void armTarget(MouseEvent ev)
+	protected Divider armTarget(MouseEvent ev)
 	{
 		Divider d = getDividerUnder(ev);
-		if(d != null)
+		if(d == null)
+		{
+			releaseTarget();
+		}
+		else
 		{
 			if(target == null)
 			{
@@ -173,10 +179,7 @@ public class CSplitPane
 			// TODO change cursor when can't move
 			target.setCursor(horizontal ? Cursor.H_RESIZE : Cursor.V_RESIZE);
 		}
-		else
-		{
-			releaseTarget();
-		}
+		return d;
 	}
 	
 	
@@ -187,6 +190,13 @@ public class CSplitPane
 			getChildren().remove(target);
 			target = null;
 		}
+	}
+	
+	
+	protected void moveDivider(Divider d, double pos)
+	{
+		d.override = pos;
+		requestLayout();
 	}
 	
 	
@@ -209,6 +219,7 @@ public class CSplitPane
 	}
 	
 	
+	// TODO fix jumping splits when resizing (accumulates rounding errors)
 	protected void layoutChildren()
 	{
 		Insets m = getInsets();
@@ -240,7 +251,7 @@ public class CSplitPane
 				{
 					constraint = 1.0 / sz;
 				}
-				d.span = constraint * width;
+				d.span = snapSize(constraint * width);
 			}
 			
 			double x = left;
@@ -255,7 +266,6 @@ public class CSplitPane
 				
 				Region bar = getDividerBar(i);
 				bar.resize(dividerWidth, height);
-//				attach(bar);
 				positionInArea(bar, x, top, dividerWidth, height, 0, null, HPos.CENTER, VPos.CENTER, isSnapToPixel());
 				
 				x += dividerWidth; 
@@ -264,7 +274,44 @@ public class CSplitPane
 		}
 		else
 		{
+			// FIX if one item
+			double width = right - left;
+			double height = bot - top  - ((sz - 1) * dividerWidth);
 			
+			// TODO min, max, pref
+			
+			for(int i=0; i<sz; i++)
+			{
+				Node n = cs.get(i);
+				attach(n);
+				
+				// FIX last item
+				Divider d = getDivider(i);
+				double constraint = d.constraint;
+				if(constraint == 0.0)
+				{
+					constraint = 1.0 / sz;
+				}
+				d.span = snapSize(constraint * height);
+			}
+			
+			double y = top;
+			for(int i=0; i<sz; i++)
+			{
+				Node n = cs.get(i);
+				Divider d = getDivider(i);
+				n.resize(width, d.span);
+				positionInArea(n, left, y, width, d.span, 0, null, HPos.CENTER, VPos.CENTER, isSnapToPixel());
+				
+				y += d.span;
+				
+				Region bar = getDividerBar(i);
+				bar.resize(width, dividerWidth);
+				positionInArea(bar, left, y, width, dividerWidth, 0, null, HPos.CENTER, VPos.CENTER, isSnapToPixel());
+				
+				y += dividerWidth; 
+				d.position = y;
+			}
 		}
 		
 		while(dividerBars.size() > sz)
@@ -283,7 +330,8 @@ public class CSplitPane
 		/** 0 ... 1.0 specifies percent, > 1.0 specifies fixed location */
 		public double constraint;
 		
-		public transient double span;
-		public transient double position;
+		public double span;
+		public double position;
+		public double override;
 	}
 }
