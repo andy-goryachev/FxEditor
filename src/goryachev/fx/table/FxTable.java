@@ -1,5 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
+import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
 import goryachev.fx.internal.CssTools;
 import java.util.Collection;
@@ -218,5 +219,12 @@ public class FxTable<T>
 	public void setCellSelectionEnabled(boolean on)
 	{
 		table.getSelectionModel().setCellSelectionEnabled(on);
+	}
+	
+	
+	public void setAlternateRowsColoring(boolean on)
+	{
+		// https://stackoverflow.com/questions/38680711/javafx-tableview-remove-default-alternate-row-color
+		FX.setStyle(table, CommonStyles.ALTERNATE_ROWS_OFF, !on);
 	}
 }

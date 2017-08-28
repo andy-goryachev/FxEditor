@@ -85,6 +85,8 @@ public class StandardFxProperties
 	public static FxCssProp opacity(double x) { return new FxCssProp("-fx-opacity", x); }
 	// P
 	public static FxCssProp padding(Object x) { return new FxCssProp("-fx-padding", CssTools.toValue(x)); }
+	public static FxCssProp padding(int top, int right, int bottom, int left) { return new FxCssProp("-fx-padding", spaces(top, right, bottom, left)); }
+	public static FxCssProp padding(double top, double right, double bottom, double left) { return new FxCssProp("-fx-padding", spaces(top, right, bottom, left)); }
 	public static FxCssProp prefHeight(double x) { return new FxCssProp("-fx-pref-height", x); }
 	public static FxCssProp prefWidth(double x) { return new FxCssProp("-fx-pref-width", x); }
 	// R

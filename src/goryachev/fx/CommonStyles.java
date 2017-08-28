@@ -1,7 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.fx.edit.FxEditor;
-import goryachev.fx.internal.CssTools;
+import goryachev.fx.internal.FxCssProp;
 import javafx.scene.paint.Color;
 
 
@@ -11,6 +11,8 @@ import javafx.scene.paint.Color;
 public class CommonStyles
 	extends FxStyleSheet
 {
+	/** suppresses alternate rows styling */
+	public static final CssStyle ALTERNATE_ROWS_OFF = new CssStyle("CommonStyles_ALTERNATE_ROWS_OFF");
 	/** bold type face */
 	public static final CssStyle BOLD = new CssStyle("CommonStyles_BOLD");
 	/** disables horizontal scroll bar */
@@ -51,12 +53,17 @@ public class CommonStyles
 						
 			// andy's hacks
 			
+			selector(ALTERNATE_ROWS_OFF).defines
+			(
+				new FxCssProp("-fx-control-inner-background-alt", "-fx-control-inner-background")
+			),
+
 			// FX.style() bold 
 			selector(BOLD).defines
 			(
 				fontWeight("bold")
 			),
-
+			
 			// disables horizontal scroll bar
 			// FIX does not disable completely
 			selector(NO_HORIZONTAL_SCROLL_BAR).defines
