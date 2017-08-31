@@ -55,11 +55,13 @@ public class FxEditor
 	/** caret line highlight */
 	public static final CssStyle CARET_LINE_HIGHLIGHT = new CssStyle("FxEditor_CARET_LINE_HIGHLIGHT");
 	/** selection highlight */
-	public static final CssStyle HIGHLIGHT = new CssStyle("FxEditor_HIGHLIGHT");
+	public static final CssStyle SELECTION_HIGHLIGHT = new CssStyle("FxEditor_SELECTION_HIGHLIGHT");
 	/** panel style */
 	public static final CssStyle PANEL = new CssStyle("FxEditor_PANEL");
 	/** line number component */
 	public static final CssStyle LINE_NUMBER = new CssStyle("FxEditor_LINE_NUMBER");
+	/** vflow */
+	public static final CssStyle VFLOW = new CssStyle("FxEditor_VFLOW");
 	
 	public final CAction copyAction = new CAction(this::copy);
 	public final CAction selectAllAction = new CAction(this::selectAll);

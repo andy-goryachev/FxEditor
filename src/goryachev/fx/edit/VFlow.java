@@ -54,6 +54,8 @@ public class VFlow
 	{
 		this.editor = ed;
 		
+		FX.style(this, FxEditor.VFLOW);
+		
 		clip = new Rectangle();
 		
 		caretPath = new Path();
@@ -68,7 +70,7 @@ public class VFlow
 		caretLineHighlight.setFill(Color.rgb(255, 0, 255, 0.02));
 
 		selectionHighlight = new Path();
-		FX.style(selectionHighlight, FxEditor.HIGHLIGHT);
+		FX.style(selectionHighlight, FxEditor.SELECTION_HIGHLIGHT);
 		selectionHighlight.setManaged(false);
 		selectionHighlight.setStroke(null);
 		selectionHighlight.setFill(Color.rgb(255, 255, 0, 0.25));
