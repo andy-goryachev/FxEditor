@@ -158,4 +158,64 @@ public class TStyle
 			flags &= (~flag);
 		}
 	}
+	
+	
+	public Color getForeground()
+	{
+		return fg;
+	}
+	
+	
+	public void setForeground(Color c)
+	{
+		fg = c;
+	}
+	
+	
+	public Color getBackground()
+	{
+		return bg;
+	}
+	
+	
+	public void setBackground(Color c)
+	{
+		bg = c;
+	}
+	
+	
+	public String getStyle()
+	{
+		return style;
+	}
+	
+	
+	public void setStyle(String s)
+	{
+		style = s;
+	}
+	
+	
+	public Font getFont()
+	{
+		return font;
+	}
+	
+	
+	public void setFont(Font f)
+	{
+		font = f;
+	}
+
+	
+	public Node getNode()
+	{
+		return node;
+	}
+	
+	
+	public void setNode(Node n)
+	{
+		node = n;
+	}
 }
