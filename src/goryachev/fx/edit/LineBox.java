@@ -55,6 +55,10 @@ public class LineBox
 
 	public Region getCenter()
 	{
+		if(center == null)
+		{
+			center = new CTextFlow();
+		}
 		return center;
 	}
 	

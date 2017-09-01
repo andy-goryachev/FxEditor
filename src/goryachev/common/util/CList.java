@@ -208,4 +208,10 @@ public class CList<T>
 		}
 		return null;
 	}
+
+
+	public boolean isValidIndex(int ix)
+	{
+		return (ix >= 0) && (ix < size());
+	}
 }

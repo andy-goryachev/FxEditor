@@ -11,6 +11,7 @@ import demo.fx.pages.cpane.DemoCPane;
 import demo.fx.pages.edit.ClipboardDemoPane;
 import demo.fx.pages.edit.FxEditorDemoPane;
 import demo.fx.pages.edit.FxEditorEditableDemoPane;
+import demo.fx.pages.edit.FxEditorStyledModelDemoPane;
 import demo.fx.pages.split.SplitPaneDemoPage;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -39,6 +40,7 @@ public class MainPane
 		
 		table.getItems().setAll
 		(
+			new DemoPage("FxEditor, Styled", FxEditorStyledModelDemoPane.class),
 			new DemoPage("FxEditor", FxEditorDemoPane.class),
 			new DemoPage("FxEditor, Editable", FxEditorEditableDemoPane.class),
 			new DemoPage("Split Pane", SplitPaneDemoPage.class),

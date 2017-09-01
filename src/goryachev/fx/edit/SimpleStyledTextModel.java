@@ -1,57 +1,54 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.CList;
 
-import javafx.scene.text.Text;
 
 /**
  * Simple Styled Text Model.
+ * 
+ * TODO insert, delete, allAll, setAll etc.
  */
-public abstract class SimpleStyledTextModel
-	extends FxEditorModel
+public class SimpleStyledTextModel
+	extends AbstractStyledTextModel
 {
-	protected abstract TSegments getSegments(int line);
+	private CList<TSegments> lines = new CList();
 	
-	//
 	
 	public SimpleStyledTextModel()
 	{
 	}
 
 
-	public String getPlainText(int line)
+	protected TSegments getSegments(int line)
 	{
-		TSegments ss = getSegments(line);
-		return ss.getPlainText();
+		if(lines.isValidIndex(line))
+		{
+			return lines.get(line);
+		}
+		return null;
 	}
 
 
-	public LineBox getDecoratedLine(int line)
+	public LoadInfo getLoadInfo()
 	{
-		LineBox b = new LineBox();
-		for(TSegment s: getSegments(line))
-		{
-			b.addText(constructText(s));
-		}
-		return b;
+		return null;
 	}
 
 
-	protected Text constructText(TSegment seg)
+	public int getLineCount()
 	{
-		Text t = new Text(seg.getText());
-		TStyle s = seg.getStyle();
-		
-		if(s.isBold())
-		{
-			// TODO
-		}
-		
-		String style = s.getStyle(); 
-		if(style != null)
-		{
-			t.getStyleClass().add(style);
-		}
-		
-		return t;
+		return lines.size();
+	}
+
+
+	public Edit edit(Edit ed) throws Exception
+	{
+		throw new Error();
+	}
+	
+	
+	public void add(TSegments s)
+	{
+		lines.add(s);
 	}
 }

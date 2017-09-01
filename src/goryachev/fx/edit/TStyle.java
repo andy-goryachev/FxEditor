@@ -9,6 +9,8 @@ import javafx.scene.text.Font;
 
 /**
  * Text Segment Style.
+ * 
+ * TODO relative font size? font family?
  */
 public class TStyle
 {

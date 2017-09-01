@@ -4,6 +4,7 @@ import goryachev.fx.CommonStyles;
 import goryachev.fx.FxStyleSheet;
 import goryachev.fx.Theme;
 import demo.fx.pages.edit.FxEditorDemoPane;
+import demo.fx.pages.edit.FxEditorStyledModelDemoPane;
 import demo.fx.pages.edit.SegmentTextEditorModel;
 
 
@@ -29,6 +30,11 @@ public class Styles
 			),
 			
 			selector(FxEditorDemoPane.EDITOR).defines
+			(
+				fontSize("170%")
+			),
+			
+			selector(FxEditorStyledModelDemoPane.EDITOR).defines
 			(
 				fontSize("170%")
 			)
