@@ -36,7 +36,7 @@ public class MainPane
 		detailPane = new CPane();
 		
 		table = new FxTable();
-		table.addColumn("Component");
+		table.addColumn("Example");
 		table.setResizePolicyConstrained();
 		
 		table.getItems().setAll

@@ -44,7 +44,7 @@ public class TestFxColorEditorModel
 	
 	public LineBox getLineBox(int line)
 	{
-		String text = getPlainText(line);
+		String text = getText(line);
 		CList<Segment> ss = new DemoSyntax(text).generateSegments();
 		
 		LineBox box = new LineBox();
@@ -56,6 +56,13 @@ public class TestFxColorEditorModel
 			box.addText(t);
 		}
 		return box;
+	}
+	
+	
+	public String getText(int line)
+	{
+		int ix = line % lines.length;
+		return lines[ix];
 	}
 	
 
