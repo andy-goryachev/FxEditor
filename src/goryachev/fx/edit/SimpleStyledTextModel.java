@@ -9,17 +9,17 @@ import goryachev.common.util.CList;
  * TODO insert, delete, allAll, setAll etc.
  */
 public class SimpleStyledTextModel
-	extends AbstractStyledTextModel
+	extends FxEditorModel
 {
-	private CList<TSegments> lines = new CList();
+	private CList<LineBox> lines = new CList();
 	
 	
 	public SimpleStyledTextModel()
 	{
 	}
-
-
-	protected TSegments getSegments(int line)
+	
+	
+	public LineBox getDecoratedLine(int line)
 	{
 		if(lines.isValidIndex(line))
 		{
@@ -47,8 +47,23 @@ public class SimpleStyledTextModel
 	}
 	
 	
-	public void add(TSegments s)
+	public void add(TStyle s, String text)
 	{
-		lines.add(s);
+		LineBox b = new LineBox();
+		b.addText(s, text);
+		lines.add(b);
+	}
+	
+	
+	public void add(Object ... styleTextPairs)
+	{
+		LineBox b = new LineBox();
+		for(int i=0; i<styleTextPairs.length; )
+		{
+			TStyle s = (TStyle)styleTextPairs[i++];
+			String text = (String)styleTextPairs[i++];
+			b.addText(s, text);
+		}
+		lines.add(b);
 	}
 }

@@ -6,7 +6,6 @@ import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
 import goryachev.fx.edit.FxEditor;
 import goryachev.fx.edit.SimpleStyledTextModel;
-import goryachev.fx.edit.TSegments;
 import goryachev.fx.edit.TStyle;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -48,59 +47,21 @@ public class FxEditorStyledModelDemoPane
 	
 	protected void populate()
 	{
-		TSegments ss;
-		TStyle s;
-		
-		ss = new TSegments();
-		s = new TStyle();
-		ss.add(s, "Normal");
-		model.add(ss);
-		
-		ss = new TSegments();
-		s = new TStyle();
-		s.setBold(true);
-		ss.add(s, "Bold");
-		model.add(ss);
-		
-		ss = new TSegments();
-		s = new TStyle();
-		s.setItalic(true);
-		ss.add(s, "Italic");
-		model.add(ss);
-		
-		ss = new TSegments();
-		s = new TStyle();
-		s.setUnderline(true);
-		ss.add(s, "Underline");
-		model.add(ss);
-		
-		ss = new TSegments();
-		s = new TStyle();
-		s.setItalic(true);
-		s.setBold(true);
-		ss.add(s, "Bold Italic");
-		model.add(ss);
-		
-		ss = new TSegments();
-		s = new TStyle();
-		s.setItalic(true);
-		s.setBold(true);
-		s.setUnderline(true);
-		ss.add(s, "Bold Italic Underline");
-		model.add(ss);
-		
-		ss = new TSegments();
-		ss.add(new TStyle().strikeThrough(), "Strike through");
-		model.add(ss);
-		
-		ss = new TSegments();
-		ss.add(new TStyle().underline(), "Underline");
-		ss.add(new TStyle(), " ");
-		ss.add(new TStyle().foreground(Color.RED), "Red Foreground ");
-		ss.add(new TStyle().background(Color.GREEN), "Green Background");
-		
-		ss = new TSegments();
-		ss.add(new TStyle().style(""), "LARGE");
-		model.add(ss);
+		model.add(null, "Normal");
+		model.add(new TStyle().bold(), "Bold");
+		model.add(new TStyle().italic(), "Italic");
+		model.add(new TStyle().underline(), "Underline");
+		model.add(new TStyle().bold().italic(), "Bold Italic");
+		model.add(new TStyle().bold().italic().underline(), "Bold Italic Underline");
+		model.add(new TStyle().strikeThrough(), "Strike through");
+		model.add
+		(
+			new TStyle().underline(), "Underline",
+			null, " ",
+			new TStyle().foreground(Color.RED), "Red Foreground ",
+			new TStyle().background(Color.GREEN), "Green Background"
+		);
+		// TODO font size
+		model.add(new TStyle().style(""), "LARGE");
 	}
 }

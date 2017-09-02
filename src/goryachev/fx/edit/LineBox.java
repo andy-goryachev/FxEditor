@@ -255,16 +255,19 @@ public class LineBox
 	{
 		Text t = new Text(text);
 		
-		String css = createCss(st);
-		if(css != null)
+		if(st != null)
 		{
-			t.setStyle(css);
-		}
-		
-		String style = st.getStyle(); 
-		if(style != null)
-		{
-			t.getStyleClass().add(style);
+			String css = createCss(st);
+			if(css != null)
+			{
+				t.setStyle(css);
+			}
+			
+			String style = st.getStyle(); 
+			if(style != null)
+			{
+				t.getStyleClass().add(style);
+			}
 		}
 		
 		return t;
