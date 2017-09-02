@@ -49,7 +49,7 @@ public abstract class FxEditorModel
 	/** 
 	 * returns a non-null LineBox containing components that represent a logical line.
 	 */
-	public abstract LineBox getDecoratedLine(int line);
+	public abstract LineBox getLineBox(int line);
 	
 	/**
 	 * Applies modification to the model.  The model makes necessary changes to its internal state, 
@@ -116,7 +116,7 @@ public abstract class FxEditorModel
 					return new LoadInfo(1.0, 0, t, t); 
 				}
 				public int getLineCount() { return 0; }
-				public LineBox getDecoratedLine(int line) { return box; }
+				public LineBox getLineBox(int line) { return box; }
 				public Edit edit(Edit ed) throws Exception { throw new Exception(); }
 			};
 		}
@@ -263,10 +263,9 @@ public abstract class FxEditorModel
 	
 	
 	/** returns plain text at the specified line, or null if unknown */
-	// TODO remove final
-	public final String getPlainText(int line)
+	public String getPlainText(int line)
 	{
-		LineBox b = getDecoratedLine(line);
+		LineBox b = getLineBox(line);
 		return b.getText();
 	}
 }

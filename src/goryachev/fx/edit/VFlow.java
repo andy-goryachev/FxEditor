@@ -281,7 +281,7 @@ public class VFlow
 			LineBox b = (prev == null ? null : prev.getLineBox(ix));
 			if(b == null)
 			{
-				b = model.getDecoratedLine(ix);
+				b = model.getLineBox(ix);
 				b.init(ix);
 			}
 			

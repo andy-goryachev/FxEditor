@@ -26,7 +26,7 @@ public class TestFxColorEditorModel_OLD
 	}
 	
 	
-	public LineBox getDecoratedLine(int line)
+	public LineBox getLineBox(int line)
 	{
 		CList<Segment> ss = getSegments(line, true);
 		

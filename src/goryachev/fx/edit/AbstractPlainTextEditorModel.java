@@ -14,7 +14,7 @@ public abstract class AbstractPlainTextEditorModel
 	}
 	
 	
-	public LineBox getDecoratedLine(int line)
+	public LineBox getLineBox(int line)
 	{
 		LineBox b = new LineBox();
 		String s = getPlainText(line);

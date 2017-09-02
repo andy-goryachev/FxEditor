@@ -26,7 +26,7 @@ public class SegmentTextEditorModel
 	}
 	
 	
-	public LineBox getDecoratedLine(int line)
+	public LineBox getLineBox(int line)
 	{
 		LineSegment seg = lines.get(line);
 		Text t = toText(seg);

@@ -18,7 +18,7 @@ public class TestFxPlainEditorModel
 	}
 	
 	
-	public LineBox getDecoratedLine(int line)
+	public LineBox getLineBox(int line)
 	{
 		LineBox box = new LineBox();
 		String s = getText(line);

@@ -178,7 +178,7 @@ public class FxEditorLayout
 			b = getLineBox(ix);
 			if(b == null)
 			{
-				b = editor.getModel().getDecoratedLine(ix);
+				b = editor.getModel().getLineBox(ix);
 				b.init(ix);
 				
 				double h = editor.vflow.addAndComputePreferredHeight(b.getCenter());

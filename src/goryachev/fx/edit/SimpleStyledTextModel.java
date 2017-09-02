@@ -19,7 +19,7 @@ public class SimpleStyledTextModel
 	}
 	
 	
-	public LineBox getDecoratedLine(int line)
+	public LineBox getLineBox(int line)
 	{
 		if(lines.isValidIndex(line))
 		{
