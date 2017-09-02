@@ -6,6 +6,7 @@ import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.util.FxPathBuilder;
+import javafx.beans.Observable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Labeled;
 import javafx.scene.layout.Region;

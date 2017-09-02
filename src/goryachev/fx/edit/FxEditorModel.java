@@ -130,7 +130,7 @@ public abstract class FxEditorModel
 	}
 	
 	
-	protected void fireEvent(Consumer<FxEditor> f)
+	public void fireEvent(Consumer<FxEditor> f)
 	{
 		for(FxEditor li: listeners)
 		{
