@@ -4,6 +4,7 @@ import goryachev.fx.CAction;
 import goryachev.fx.CPane;
 import goryachev.fx.table.FxTable;
 import demo.fx.pages.ButtonDemoPane;
+import demo.fx.pages.ColorsDemoPane;
 import demo.fx.pages.DemoLoginPane;
 import demo.fx.pages.TableDemoPane;
 import demo.fx.pages.TextDemoPane;
@@ -49,7 +50,8 @@ public class MainPane
 			new DemoPage("FxTable", TableDemoPane.class),
 			new DemoPage("Text Components", TextDemoPane.class),
 			new DemoPage("Login Panel", DemoLoginPane.class),
-			new DemoPage("CPane", DemoCPane.class)
+			new DemoPage("CPane", DemoCPane.class),
+			new DemoPage("Colors", ColorsDemoPane.class)
 		);
 		table.selectedItemProperty().addListener((s) -> updateSelection());
 		
