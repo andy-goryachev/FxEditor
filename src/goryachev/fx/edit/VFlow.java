@@ -121,14 +121,17 @@ public class VFlow
 		}
 		else
 		{
-			LineBox b = layout.getLineBox(ix);
-			if(b != null)
+			if(layout != null)
 			{
-				double y = b.getY() + b.getHeight();
-				double dy = y - getHeight();
-				if(y > 0)
+				LineBox b = layout.getLineBox(ix);
+				if(b != null)
 				{
-					blockScroll(dy, true);
+					double y = b.getY() + b.getHeight();
+					double dy = y - getHeight();
+					if(y > 0)
+					{
+						blockScroll(dy, true);
+					}
 				}
 			}
 		}
