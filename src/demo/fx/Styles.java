@@ -36,7 +36,11 @@ public class Styles
 			
 			selector(FxEditorStyledModelDemoPane.EDITOR).defines
 			(
-				fontSize("170%")
+				fontSize("170%"),
+				selector(".text").defines
+				(
+					fontStyle("italic")
+				)
 			)
 		);
 	}

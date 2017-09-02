@@ -12,7 +12,9 @@ import javafx.scene.text.Text;
 
 
 /**
- * Represents a box enclosing a single line of text.
+ * Represents a box enclosing a logical line of text.
+ * Typically, it contains a CTextFlow which may be rendered on several rows in the view,
+ * or it may contain a single Region representing a non-text component.
  */
 public class LineBox
 {
@@ -21,7 +23,7 @@ public class LineBox
 	private Region center;
 	private double height;
 	private double y;
-	private static Insets PADDING = new Insets(0, 7, 0, 0);
+	private static Insets LINE_NUMBERS_PADDING = new Insets(0, 7, 0, 0);
 	
 	
 	public LineBox()
@@ -192,7 +194,7 @@ public class LineBox
 
 	protected Labeled createLineNumberComponent()
 	{
-		return FX.label(FxEditor.LINE_NUMBER, Color.LIGHTGRAY, PADDING,  FxCtl.FORCE_MIN_WIDTH);
+		return FX.label(FxEditor.LINE_NUMBER, Color.LIGHTGRAY, LINE_NUMBERS_PADDING,  FxCtl.FORCE_MIN_WIDTH);
 	}
 
 

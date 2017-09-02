@@ -2,7 +2,6 @@
 package goryachev.fx.edit;
 import goryachev.common.util.CKit;
 import goryachev.common.util.FH;
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -24,9 +23,11 @@ public class TStyle
 	private int flags;
 	private Color bg;
 	private Color fg;
+	
+	// TODO or CssStyle ?
 	private String style;
+	// TODO or family-style-size ?
 	private Font font;
-	private Node node;
 	
 	
 	public TStyle()
@@ -48,8 +49,7 @@ public class TStyle
 				CKit.equals(fg, z.fg) &&
 				CKit.equals(bg, z.bg) &&
 				CKit.equals(style, z.style) &&
-				CKit.equals(font, z.font) &&
-				(node == z.node);
+				CKit.equals(font, z.font);
 		}
 		else
 		{
@@ -66,7 +66,6 @@ public class TStyle
 		h = FH.hash(h, fg);
 		h = FH.hash(h, style);
 		h = FH.hash(h, font);
-		h = FH.hash(h, node);
 		return h;
 	}
 	
@@ -276,25 +275,6 @@ public class TStyle
 	public TStyle font(Font f)
 	{
 		setFont(f);
-		return this;
-	}
-	
-	
-	public Node getNode()
-	{
-		return node;
-	}
-	
-	
-	public void setNode(Node n)
-	{
-		node = n;
-	}
-	
-	
-	public TStyle node(Node n)
-	{
-		setNode(n);
 		return this;
 	}
 }

@@ -10,6 +10,7 @@ import goryachev.fx.edit.TSegments;
 import goryachev.fx.edit.TStyle;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -86,6 +87,20 @@ public class FxEditorStyledModelDemoPane
 		s.setBold(true);
 		s.setUnderline(true);
 		ss.add(s, "Bold Italic Underline");
+		model.add(ss);
+		
+		ss = new TSegments();
+		ss.add(new TStyle().strikeThrough(), "Strike through");
+		model.add(ss);
+		
+		ss = new TSegments();
+		ss.add(new TStyle().underline(), "Underline");
+		ss.add(new TStyle(), " ");
+		ss.add(new TStyle().foreground(Color.RED), "Red Foreground ");
+		ss.add(new TStyle().background(Color.GREEN), "Green Background");
+		
+		ss = new TSegments();
+		ss.add(new TStyle().style(""), "LARGE");
 		model.add(ss);
 	}
 }

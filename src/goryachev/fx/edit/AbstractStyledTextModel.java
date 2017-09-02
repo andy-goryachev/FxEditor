@@ -3,6 +3,7 @@ package goryachev.fx.edit;
 import goryachev.common.util.SB;
 import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
+import goryachev.fx.internal.CssTools;
 import javafx.scene.text.Text;
 
 
@@ -67,14 +68,17 @@ public abstract class AbstractStyledTextModel
 	protected String createCss(TStyle s)
 	{
 		SB sb = new SB();
+		
 		if(s.isBold())
 		{
 			sb.append("-fx-font-weight:bold;");
 		}
+		
 		if(s.isItalic())
 		{
 			sb.append("-fx-font-style:italic;");
 		}
+		
 		if(s.isStrikeThrough())
 		{
 			sb.append("-fx-strikethrough:true;");
@@ -94,6 +98,17 @@ public abstract class AbstractStyledTextModel
 		{
 			sb.append("-fx-underline:true;");
 		}
+		
+		if(s.getForeground() != null)
+		{
+			sb.append("-fx-fill:").append(CssTools.toColor(s.getForeground())).append(";");
+		}
+		
+//		if(s.getBackground() != null)
+//		{
+//			// TODO perhaps add a shape in the shape of text run
+//			sb.append("-fx-background-color:").append(CssTools.toColor(s.getBackground())).append(";");
+//		}
 
 		return sb.toString();
 	}
