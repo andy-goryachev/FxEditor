@@ -1,7 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CList;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 
 
@@ -61,12 +60,6 @@ public class EditablePlainTextEditorModel
 		return lines.size();
 	}
 	
-	
-	public String getPlainText(int line)
-	{
-		return lines.get(line);
-	}
-
 	
 	public Edit edit(Edit ed) throws Exception
 	{

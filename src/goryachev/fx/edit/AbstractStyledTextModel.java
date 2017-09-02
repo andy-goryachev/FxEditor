@@ -1,8 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.SB;
-import goryachev.fx.FX;
-import goryachev.fx.FxCtl;
 import goryachev.fx.internal.CssTools;
 import javafx.scene.text.Text;
 
@@ -10,6 +8,7 @@ import javafx.scene.text.Text;
 /**
  * Styled Text Model Base Class.
  */
+@Deprecated
 public abstract class AbstractStyledTextModel
 	extends FxEditorModel
 {
@@ -19,13 +18,6 @@ public abstract class AbstractStyledTextModel
 	
 	public AbstractStyledTextModel()
 	{
-	}
-
-
-	public String getPlainText(int line)
-	{
-		TSegments ss = getSegments(line);
-		return ss.getPlainText();
 	}
 
 

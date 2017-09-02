@@ -1,7 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package demo.fx.pages.edit;
 import goryachev.common.util.CList;
-import goryachev.common.util.SB;
 import goryachev.fx.edit.AbstractPlainTextEditorModel;
 import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.LineBox;
@@ -42,18 +41,6 @@ public class TestFxColorEditorModel_OLD
 		return box;
 	}
 	
-	
-	public String getPlainText(int line)
-	{
-		CList<Segment> ss = getSegments(line, false);
-		SB sb = new SB();
-		for(Segment s: ss)
-		{
-			sb.a(s.text);
-		}
-		return sb.toString();
-	}
-
 
 	public LoadInfo getLoadInfo()
 	{

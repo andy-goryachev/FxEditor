@@ -1,8 +1,8 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package demo.fx.pages.edit;
 import goryachev.common.util.SB;
-import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.AbstractPlainTextEditorModel;
+import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.LineBox;
 import javafx.scene.text.Text;
 
@@ -21,7 +21,7 @@ public class TestFxPlainEditorModel
 	public LineBox getDecoratedLine(int line)
 	{
 		LineBox box = new LineBox();
-		String s = getPlainText(line);
+		String s = getText(line);
 		if(s != null)
 		{
 			Text t = new Text(s);
@@ -49,7 +49,7 @@ public class TestFxPlainEditorModel
 	}
 	
 	
-	public String getPlainText(int line)
+	public String getText(int line)
 	{
 		return getPlainText_0(line) + "   " + line + "   " + getPlainText_0(line);
 	}

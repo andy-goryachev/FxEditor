@@ -8,6 +8,7 @@ import java.util.Iterator;
 /**
  * Convenient List of Text Model Segments.
  */
+@Deprecated // FIX remove
 public class TSegments
 	implements Iterable<TSegment>
 {

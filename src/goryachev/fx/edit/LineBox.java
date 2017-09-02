@@ -1,12 +1,17 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.HasText;
+import goryachev.common.util.SB;
 import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
+import goryachev.fx.internal.CssTools;
 import goryachev.fx.util.FxPathBuilder;
 import javafx.geometry.Insets;
 import javafx.scene.control.Labeled;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.Text;
 
@@ -17,29 +22,61 @@ import javafx.scene.text.Text;
  * or it may contain a single Region representing a non-text component.
  */
 public class LineBox
+	implements HasText
 {
 	private int lineNumber;
 	private Labeled lineNumberComponent;
-	private Region center;
+	private final Region center;
 	private double height;
 	private double y;
 	private static Insets LINE_NUMBERS_PADDING = new Insets(0, 7, 0, 0);
 	
 	
+	/** creates a text flow based line box */
 	public LineBox()
 	{
+		this(new CTextFlow());
 	}
 	
 	
+	/** creates a full width line box with the specified component */
 	public LineBox(Region center)
 	{
-		setCenter(center);
+		this.center = center;
 	}
 	
 	
-	public static LineBox createTextBox()
+	public String getText()
 	{
-		return new LineBox(new CTextFlow());
+		if(center instanceof CTextFlow)
+		{
+			CTextFlow f = (CTextFlow)center;
+			return f.getText();
+		}
+		else if(center instanceof HasText)
+		{
+			return ((HasText)center).getText();
+		}
+		return null;
+	}
+	
+	
+	public int getTextLength()
+	{
+		if(center instanceof CTextFlow)
+		{
+			CTextFlow t = (CTextFlow)center;
+			return t.getText().length();
+		}
+		else if(center instanceof HasText)
+		{
+			String s = ((HasText)center).getText();
+			if(s != null)
+			{
+				return s.length();
+			}
+		}
+		return 0;
 	}
 	
 	
@@ -48,19 +85,9 @@ public class LineBox
 		return "LineBox:" + lineNumber;
 	}
 	
-	
-	public void setCenter(Region n)
-	{
-		center = n;
-	}
-
 
 	public Region getCenter()
 	{
-		if(center == null)
-		{
-			center = new CTextFlow();
-		}
 		return center;
 	}
 	
@@ -101,17 +128,6 @@ public class LineBox
 	}
 	
 	
-	public int getTextLength()
-	{
-		if(center instanceof CTextFlow)
-		{
-			CTextFlow t = (CTextFlow)center;
-			return t.getText().length();
-		}
-		return 0;
-	}
-	
-	
 	/** returns selection shape for a given range */
 	public PathElement[] getRange(int start, int end)
 	{
@@ -120,7 +136,20 @@ public class LineBox
 			CTextFlow t = (CTextFlow)center;
 			return t.getRange(start, end);
 		}
-		return null;
+		else
+		{
+			double w = center.getWidth();
+			double h = center.getHeight();
+			
+			return new PathElement[]
+			{
+				new MoveTo(0, 0),
+				new LineTo(w, 0),
+				new LineTo(w, h),
+				new LineTo(0, h),
+				new LineTo(0, 0)
+			};
+		}
 	}
 	
 	
@@ -132,26 +161,30 @@ public class LineBox
 			CTextFlow t = (CTextFlow)center;
 			return t.getCaretShape(index, leading);
 		}
-		return null;
+		else
+		{
+			double x = leading ? 0 : center.getWidth();
+			double h = center.getHeight();
+			
+			return new PathElement[]
+			{
+				new MoveTo(x, 0),
+				new LineTo(x, h)
+			};
+		}
 	}
 	
 	
 	/** returns the text flow node, creating it as necessary */
 	public CTextFlow text()
 	{
-		if(center == null)
-		{
-			CTextFlow t = new CTextFlow();
-			center = t;
-			return t;
-		}
-		else if(center instanceof CTextFlow)
+		if(center instanceof CTextFlow)
 		{
 			return (CTextFlow)center;
 		}
 		else
 		{
-			throw new Error("not a text row: " + center);
+			throw new Error("not a CTextFlow: " + center);
 		}
 	}
 	
@@ -169,7 +202,7 @@ public class LineBox
 		return this;
 	}
 	
-	
+
 	public void setLineNumberComponent(Labeled c)
 	{
 		lineNumberComponent = c;
@@ -208,5 +241,83 @@ public class LineBox
 		b.lineto(w, y1);
 		b.lineto(0, y1);
 		b.lineto(0, y0);
+	}
+	
+	
+	public void addText(TStyle s, String text)
+	{
+		Text t = constructText(s, text);
+		text().getChildren().add(t);
+	}
+	
+
+	protected Text constructText(TStyle st, String text)
+	{
+		Text t = new Text(text);
+		
+		String css = createCss(st);
+		if(css != null)
+		{
+			t.setStyle(css);
+		}
+		
+		String style = st.getStyle(); 
+		if(style != null)
+		{
+			t.getStyleClass().add(style);
+		}
+		
+		return t;
+	}
+	
+	
+	protected String createCss(TStyle s)
+	{
+		SB sb = new SB();
+		
+		if(s.isBold())
+		{
+			// FIX does not work on Mac!!
+			sb.append("-fx-font-weight:bold;");
+		}
+		
+		if(s.isItalic())
+		{
+			// FIX does not work on Windows!!
+			sb.append("-fx-font-style:italic;");
+		}
+		
+		if(s.isStrikeThrough())
+		{
+			sb.append("-fx-strikethrough:true;");
+		}
+		
+		// these are not easily supported in javafx
+//		if(s.isSubScript())
+//		{
+//			// TODO use scaling + border? 
+//		}
+//		if(s.isSuperScript())
+//		{
+//			// TODO use scaling + border? 
+//		}
+		
+		if(s.isUnderline())
+		{
+			sb.append("-fx-underline:true;");
+		}
+		
+		if(s.getForeground() != null)
+		{
+			sb.append("-fx-fill:").append(CssTools.toColor(s.getForeground())).append(";");
+		}
+		
+//		if(s.getBackground() != null)
+//		{
+//			// TODO perhaps add a shape in the shape of text run
+//			sb.append("-fx-background-color:").append(CssTools.toColor(s.getBackground())).append(";");
+//		}
+
+		return sb.toString();
 	}
 }

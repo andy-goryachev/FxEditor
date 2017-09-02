@@ -62,13 +62,6 @@ public class SegmentTextEditorModel
 	}
 
 
-	public String getPlainText(int line)
-	{
-		LineSegment seg = lines.get(line);
-		return seg.text;
-	}
-
-
 	public LoadInfo getLoadInfo()
 	{
 		return null; 
