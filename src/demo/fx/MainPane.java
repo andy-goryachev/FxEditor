@@ -3,17 +3,6 @@ package demo.fx;
 import goryachev.fx.CAction;
 import goryachev.fx.CPane;
 import goryachev.fx.table.FxTable;
-import demo.fx.pages.ButtonDemoPane;
-import demo.fx.pages.ColorsDemoPane;
-import demo.fx.pages.DemoLoginPane;
-import demo.fx.pages.TableDemoPane;
-import demo.fx.pages.TextDemoPane;
-import demo.fx.pages.cpane.DemoCPane;
-import demo.fx.pages.edit.ClipboardDemoPane;
-import demo.fx.pages.edit.FxEditorDemoPane;
-import demo.fx.pages.edit.FxEditorEditableDemoPane;
-import demo.fx.pages.edit.FxEditorStyledModelDemoPane;
-import demo.fx.pages.split.SplitPaneDemoPage;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
@@ -39,20 +28,7 @@ public class MainPane
 		table.addColumn("Example");
 		table.setResizePolicyConstrained();
 		
-		table.getItems().setAll
-		(
-			new DemoPage("FxEditor, Styled", FxEditorStyledModelDemoPane.class),
-			new DemoPage("FxEditor", FxEditorDemoPane.class),
-			new DemoPage("FxEditor, Editable", FxEditorEditableDemoPane.class),
-			new DemoPage("Split Pane", SplitPaneDemoPage.class),
-			new DemoPage("Clipboard", ClipboardDemoPane.class),
-			new DemoPage("Buttons", ButtonDemoPane.class),
-			new DemoPage("FxTable", TableDemoPane.class),
-			new DemoPage("Text Components", TextDemoPane.class),
-			new DemoPage("Login Panel", DemoLoginPane.class),
-			new DemoPage("CPane", DemoCPane.class),
-			new DemoPage("Colors", ColorsDemoPane.class)
-		);
+		table.getItems().setAll(AllPages.get());
 		table.selectedItemProperty().addListener((s) -> updateSelection());
 		
 		split = new SplitPane(table, detailPane);
