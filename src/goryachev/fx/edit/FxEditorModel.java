@@ -233,11 +233,11 @@ public abstract class FxEditorModel
 			{
 				if(i == last)
 				{
-					s = s.substring(m0.getLineOffset(), m1.getLineOffset());
+					s = s.substring(m0.getOffset(), m1.getOffset());
 				}
 				else
 				{
-					s = s.substring(m0.getLineOffset());
+					s = s.substring(m0.getOffset());
 				}
 			}
 			else
@@ -246,7 +246,7 @@ public abstract class FxEditorModel
 				
 				if(i == last)
 				{
-					s = s.substring(0, m1.getLineOffset());
+					s = s.substring(0, m1.getOffset());
 				}
 			}
 			

@@ -641,18 +641,18 @@ public class VFlow
 		PathElement[] bottom;
 		if(startMarker.getLine() == endMarker.getLine())
 		{
-			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset());
+			top = getRangeShape(startMarker.getLine(), startMarker.getOffset(), endMarker.getOffset());
 			bottom = null;
 		}
 		else
 		{
-			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), -1);
+			top = getRangeShape(startMarker.getLine(), startMarker.getOffset(), -1);
 			if(top == null)
 			{
 				top = getRangeTop();
 			}
 			
-			bottom = getRangeShape(endMarker.getLine(), 0, endMarker.getLineOffset());
+			bottom = getRangeShape(endMarker.getLine(), 0, endMarker.getOffset());
 			if(bottom == null)
 			{
 				bottom = getRangeBottom();

@@ -2,6 +2,7 @@
 package goryachev.fx.edit;
 import goryachev.common.util.CList;
 import goryachev.fx.edit.internal.EditorTools;
+import java.util.List;
 import javafx.scene.text.Text;
 
 
@@ -80,7 +81,7 @@ public class SimpleEditablePlainTextEditorModel
 		for(Edit.Part p: ed)
 		{
 			SelectionSegment sel = p.sel;
-			Object text = applyEdit(sel, p.replaceText);
+			List<String> text = applyEdit(sel, p.replaceText);
 			undo.addPart(p.sel, text);
 		}
 		
@@ -88,41 +89,133 @@ public class SimpleEditablePlainTextEditorModel
 	}
 
 
-	/** applies edit and returns removed text: either a String or a String[] */
-	protected Object applyEdit(SelectionSegment sel, Object replaceText)
+	/** applies edit and returns removed text. */
+	protected List<String> applyEdit(SelectionSegment sel, List<String> replaceText)
 	{
 		Marker min = sel.getMin();
 		Marker max = sel.getMax();
 		
-		if(sel.isOneLine())
+		List<String> removed = getTextRange(min, max);
+		removeRange(min, max);
+		insert(max, replaceText);
+		fireEvent((ed) -> ed.eventLinesModified(min, max, replaceText));
+		
+		return removed;
+	}
+	
+	
+	protected List<String> getTextRange(Marker min, Marker max)
+	{
+		int sz = max.getLine() - min.getLine() + 1;
+		int ix = min.getLine();
+		CList<String> rv = new CList(sz);
+		
+		if(sz == 1)
 		{
-			int line = min.getLine();
-			String text = lines.get(line);
-			
-			String old = EditorTools.substring(text, min.getLineOffset(), max.getLineOffset());
-			
-			if(replaceText instanceof String)
-			{
-				String repl = (String)replaceText;
-				String upd = EditorTools.replace(text, min.getLineOffset(), max.getLineOffset(), repl);
-				
-				lines.set(line, upd);
-				fireEvent((ed) -> ed.eventLineModified(line, min.getLineOffset(), max.getLineOffset(), repl.length()));
-				
-				return old;
-			}
-			else
-			{
-				// TODO multiple lines
-				throw new Error();
-			}
+			String s = getText(ix);
+			s = EditorTools.substring(s, min.getOffset(), max.getOffset());
+			rv.add(s);
 		}
 		else
 		{
-			// TODO multiple lines
-			throw new Error();
+			for(int i=0; i<=sz; i++)
+			{
+				String s = getText(ix);
+				ix++;
+				
+				if(i == 0)
+				{
+					s = EditorTools.substring(s, min.getOffset(), s.length());
+				}
+				else if(i == sz)
+				{
+					s = EditorTools.substring(s, 0, max.getOffset());
+				}
+				else
+				{
+					// full length
+				}
+				
+				rv.add(s);
+			}
 		}
-		// TODO apply and fire events
-		// TODO add to undo		
+		return rv;
+	}
+	
+	
+	protected void removeRange(Marker min, Marker max)
+	{
+		int sz = max.getLine() - min.getLine() + 1;
+		int ix = min.getLine();
+		
+		if(sz == 1)
+		{
+			String s = getText(ix);
+			s = EditorTools.removeRange(s, min.getOffset(), max.getOffset());
+			lines.set(ix, s);
+		}
+		else
+		{
+			for(int i=sz; i>=0; i--)
+			{
+				String s = getText(ix);
+				ix--;
+				
+				if(i == 0)
+				{
+					s = EditorTools.substring(s, 0, min.getOffset());
+					lines.set(ix, s);
+				}
+				else if(i == sz)
+				{
+					s = EditorTools.substring(s, max.getOffset(), s.length());
+					lines.set(ix, s);
+				}
+				else
+				{
+					lines.remove(ix);
+				}
+			}
+		}
+	}
+	
+	
+	protected void insert(Marker m, List<String> inserted)
+	{
+		int line = m.getLine();
+		int sz = inserted.size();
+		String s = getText(line);
+		
+		if(sz == 1)
+		{
+			s = EditorTools.insert(s, m.getOffset(), inserted.get(0));
+			lines.set(line, s);
+		}
+		else
+		{
+			String left = s.substring(0, m.getOffset());
+			String right = s.substring(m.getOffset());
+
+			for(int i=0; i<=sz; i++)
+			{
+				if(i == 0)
+				{
+					s = left + inserted.get(i);
+					lines.set(line, s);
+				}
+				else if(i == sz)
+				{
+					s = inserted.get(i) + right;
+					lines.set(line, s);
+				}
+				else
+				{
+					s = inserted.get(i);
+					lines.add(line, s);
+				}
+				
+				line++;
+			}
+		}
 	}
 }

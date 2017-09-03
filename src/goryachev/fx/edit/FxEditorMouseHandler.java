@@ -95,6 +95,7 @@ public class FxEditorMouseHandler
 	public void handleMousePressed(MouseEvent ev)
 	{
 		Marker pos = getTextPos(ev);
+		D.p(pos); // FIX
 		editor.setSuppressBlink(true);
 				
 		if(ev.isShiftDown())

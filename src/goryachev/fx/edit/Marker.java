@@ -36,41 +36,6 @@ public class Marker
 		this.leading = true;	
 	}
 	
-
-	public int hashCode()
-	{
-		int h = FH.hash(Marker.class);
-		h = FH.hash(h, line);
-		h = FH.hash(h, charIndex);
-		return FH.hash(h, leading);
-	}
-
-
-	/** returns the line index */
-	public int getLine()
-	{
-		return line;
-	}
-	
-	
-	/** returns the effective caret position */
-	public int getLineOffset()
-	{
-		return leading ? charIndex : charIndex + 1;
-	}
-	
-	
-	public int getCharIndex()
-	{
-		return charIndex;
-	}
-	
-	
-	public boolean isLeading()
-	{
-		return leading;
-	}
-	
 	
 	public String toString()
 	{
@@ -87,28 +52,19 @@ public class Marker
 			sb.a('T');
 		}
 		sb.a(':');
-		sb.a(getLineOffset());
+		sb.a(getOffset());
 		return sb.toString();
 	}
 
-	
-	public int compareTo(Marker m)
+
+	public int hashCode()
 	{
-		int d = line - m.line;
-		if(d == 0)
-		{
-			d = getLineOffset() - m.getLineOffset();
-			if(d == 0)
-			{
-				if(leading != m.leading)
-				{
-					return leading ? -1 : 1;
-				}
-			}
-		}
-		return d;
+		int h = FH.hash(Marker.class);
+		h = FH.hash(h, line);
+		h = FH.hash(h, charIndex);
+		return FH.hash(h, leading);
 	}
-	
+
 	
 	public boolean equals(Object x)
 	{
@@ -127,6 +83,50 @@ public class Marker
 		}
 	}
 
+
+	/** returns the line index */
+	public int getLine()
+	{
+		return line;
+	}
+	
+	
+	/** returns the effective caret position (insert point) */
+	public int getOffset()
+	{
+		return leading ? charIndex : charIndex + 1;
+	}
+	
+	
+	public int getCharIndex()
+	{
+		return charIndex;
+	}
+	
+	
+	public boolean isLeading()
+	{
+		return leading;
+	}
+	
+	
+	public int compareTo(Marker m)
+	{
+		int d = line - m.line;
+		if(d == 0)
+		{
+			d = getOffset() - m.getOffset();
+			if(d == 0)
+			{
+				if(leading != m.leading)
+				{
+					return leading ? -1 : 1;
+				}
+			}
+		}
+		return d;
+	}
+	
 
 	public boolean isBefore(Marker m)
 	{
@@ -161,7 +161,7 @@ public class Marker
 		}
 		else if(this.line == line)
 		{
-			if(getLineOffset() < startOffset)
+			if(getOffset() < startOffset)
 			{
 				return true;
 			}
@@ -179,7 +179,7 @@ public class Marker
 		}
 		else if(this.line == line)
 		{
-			if(getLineOffset() > startOffset)
+			if(getOffset() > startOffset)
 			{
 				return true;
 			}
@@ -194,5 +194,25 @@ public class Marker
 		this.line = line;
 		this.charIndex = index;
 		this.leading = leading;
+	}
+	
+	
+	public void set(Marker m)
+	{
+		this.line = m.getLine();
+		this.charIndex = m.getCharIndex();
+		this.leading = m.isLeading();
+	}
+
+
+	public void addLine(int delta)
+	{
+		line += delta;
+	}
+	
+	
+	public void addOffset(int delta)
+	{
+		charIndex += delta;
 	}
 }

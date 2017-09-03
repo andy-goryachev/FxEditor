@@ -1,5 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.CList;
 import goryachev.common.util.D;
 import goryachev.common.util.Log;
 import goryachev.fx.Binder;
@@ -12,6 +13,7 @@ import goryachev.fx.FxFormatter;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.Markers;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javafx.beans.Observable;
@@ -483,10 +485,14 @@ public class FxEditor
 	}
 
 
-	protected void eventLineModified(int line, int startOffset, int endOffset, int inserted)
+	protected void eventLinesModified(Marker min, Marker max, List<String> inserted)
 	{
-		markers.update(line, startOffset, endOffset, inserted);
-		vflow.invalidateLine(line);
+		markers.update(min, max, inserted);
+		
+		for(int i=min.getLine(); i<=max.getLine(); i++)
+		{
+			vflow.invalidateLine(i);
+		}
 		requestLayout();
 	}
 	
@@ -695,7 +701,7 @@ public class FxEditor
 			String ch = ev.getCharacter();
 			if(isTypedCharacter(ch))
 			{
-				Edit ed = new Edit(getSelection(), ch);
+				Edit ed = new Edit(getSelection(), new CList<String>(ch));
 				try
 				{
 					Edit undo = m.edit(ed);

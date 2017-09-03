@@ -3,6 +3,7 @@ package goryachev.fx.edit;
 import goryachev.common.util.CList;
 import goryachev.fx.edit.Edit.Part;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -14,7 +15,8 @@ public class Edit
 	public static class Part
 	{
 		public SelectionSegment sel;
-		public Object replaceText;
+		public List<String> replaceText;
+		
 		
 		public String toString()
 		{
@@ -27,7 +29,7 @@ public class Edit
 	private final CList<Part> parts = new CList();
 	
 	
-	public Edit(EditorSelection sel, Object replaceText)
+	public Edit(EditorSelection sel, List<String> replaceText)
 	{
 		for(SelectionSegment ss: sel.getSegments())
 		{
@@ -41,7 +43,7 @@ public class Edit
 	}
 	
 	
-	public void addPart(SelectionSegment sel, Object replaceText)
+	public void addPart(SelectionSegment sel, List<String> replaceText)
 	{
 		Part p = new Part();
 		p.sel = sel;
