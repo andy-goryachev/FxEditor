@@ -190,4 +190,49 @@ public class EditorTools
 		}
 		return sb.toString();
 	}
+	
+	
+	public static String replace(String text, int start, int end, String replace)
+	{
+		int sz = start + replace.length() + text.length() - end;
+		
+		SB sb = new SB(sz);
+		if(start > 0)
+		{
+			sb.append(text.substring(0, start));
+		}
+		sb.append(replace);
+		if(end < text.length())
+		{
+			sb.append(text.substring(end));
+		}
+		return sb.toString();
+	}
+
+
+	public static String substring(String text, int start, int end)
+	{
+		if(start == 0)
+		{
+			if(end < text.length())
+			{
+				return text.substring(start, end);
+			}
+			else
+			{
+				return text;
+			}
+		}
+		else
+		{
+			if(end < text.length())
+			{
+				return text.substring(start, end);
+			}
+			else
+			{
+				return text.substring(start);
+			}
+		}
+	}
 }

@@ -139,13 +139,7 @@ public class FxEditorLayout
 		ObservableList<Node> cs = p.getChildren();
 		for(LineBox b: lines)
 		{
-			cs.remove(b.getCenter());
-			
-			Node ln = b.getLineNumberComponentRaw();
-			if(ln != null)
-			{
-				cs.remove(ln);
-			}
+			remove(p, b);
 		}
 		
 		if(newLines != null)
@@ -153,6 +147,22 @@ public class FxEditorLayout
 			for(LineBox b: newLines.values())
 			{
 				cs.remove(b.getCenter());
+			}
+		}
+	}
+	
+	
+	protected void remove(Pane p, LineBox b)
+	{
+		if(b != null)
+		{
+			ObservableList<Node> cs = p.getChildren();
+			cs.remove(b.getCenter());
+			
+			Node ln = b.getLineNumberComponentRaw();
+			if(ln != null)
+			{
+				cs.remove(ln);
 			}
 		}
 	}
@@ -205,5 +215,15 @@ public class FxEditorLayout
 	public double getLineNumbersColumnWidth()
 	{
 		return lineNumbersColumnWidth;
+	}
+
+
+	public void invalidateLine(Pane p, int ix)
+	{
+		if((ix >= 0) && (ix < lines.size()))
+		{
+			LineBox b = lines.set(ix, null);
+			remove(p, b);
+		}
 	}
 }

@@ -173,6 +173,15 @@ public class VFlow
 	}
 	
 	
+	public void invalidateLine(int ix)
+	{
+		if(layout != null)
+		{
+			layout.invalidateLine(this, ix);
+		}
+	}
+	
+	
 	public void reset()
 	{
 		offsetx = 0;

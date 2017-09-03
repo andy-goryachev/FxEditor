@@ -14,7 +14,7 @@ public class Edit
 	public static class Part
 	{
 		public SelectionSegment sel;
-		public String replaceText;
+		public Object replaceText;
 		
 		public String toString()
 		{
@@ -27,7 +27,7 @@ public class Edit
 	private final CList<Part> parts = new CList();
 	
 	
-	public Edit(EditorSelection sel, String replaceText)
+	public Edit(EditorSelection sel, Object replaceText)
 	{
 		for(SelectionSegment ss: sel.getSegments())
 		{
@@ -41,7 +41,7 @@ public class Edit
 	}
 	
 	
-	public void addPart(SelectionSegment sel, String replaceText)
+	public void addPart(SelectionSegment sel, Object replaceText)
 	{
 		Part p = new Part();
 		p.sel = sel;

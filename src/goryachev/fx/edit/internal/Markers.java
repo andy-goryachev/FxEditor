@@ -2,6 +2,7 @@
 package goryachev.fx.edit.internal;
 import goryachev.common.util.WeakList;
 import goryachev.fx.edit.Marker;
+import java.lang.ref.WeakReference;
 
 
 /**
@@ -36,5 +37,36 @@ public class Markers
 	public void clear()
 	{
 		markers.clear();
+	}
+
+
+	public void update(int line, int startOffset, int endOffset, int inserted)
+	{
+		int sz = markers.size();
+		for(int i=sz-1; i>=0; i--)
+		{
+			WeakReference<Marker> ref = markers.getRef(i);
+			Marker m =ref.get(); 
+			if(m == null)
+			{
+				markers.remove(i);
+			}
+			else
+			{
+				if(m.isBefore(line, startOffset))
+				{
+					// unchanged
+				}
+				else if(m.isAfter(line, endOffset))
+				{
+					// unchanged
+				}
+				else
+				{
+					// move to end position
+					m.set(line, endOffset, false);
+				}
+			}
+		}
 	}
 }

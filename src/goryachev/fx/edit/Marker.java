@@ -151,4 +151,48 @@ public class Marker
 			return false;
 		}
 	}
+
+
+	public boolean isBefore(int line, int startOffset)
+	{
+		if(this.line < line)
+		{
+			return true;
+		}
+		else if(this.line == line)
+		{
+			if(getLineOffset() < startOffset)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	public boolean isAfter(int line, int startOffset)
+	{
+		if(this.line > line)
+		{
+			return true;
+		}
+		else if(this.line == line)
+		{
+			if(getLineOffset() > startOffset)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	public void set(int line, int index, boolean leading)
+	{
+		this.line = line;
+		this.charIndex = index;
+		this.leading = leading;
+	}
 }

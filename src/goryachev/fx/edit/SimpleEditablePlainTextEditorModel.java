@@ -1,7 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CList;
-import goryachev.common.util.D;
+import goryachev.fx.edit.internal.EditorTools;
 import javafx.scene.text.Text;
 
 
@@ -75,15 +75,54 @@ public class SimpleEditablePlainTextEditorModel
 	
 	public Edit edit(Edit ed) throws Exception
 	{
-		D.print(ed);
 		Edit undo = new Edit();
 
 		for(Edit.Part p: ed)
 		{
-			// TODO apply and fire events
-			// TODO add to undo
+			SelectionSegment sel = p.sel;
+			Object text = applyEdit(sel, p.replaceText);
+			undo.addPart(p.sel, text);
 		}
 		
 		return undo;
+	}
+
+
+	/** applies edit and returns removed text: either a String or a String[] */
+	protected Object applyEdit(SelectionSegment sel, Object replaceText)
+	{
+		Marker min = sel.getMin();
+		Marker max = sel.getMax();
+		
+		if(sel.isOneLine())
+		{
+			int line = min.getLine();
+			String text = lines.get(line);
+			
+			String old = EditorTools.substring(text, min.getLineOffset(), max.getLineOffset());
+			
+			if(replaceText instanceof String)
+			{
+				String repl = (String)replaceText;
+				String upd = EditorTools.replace(text, min.getLineOffset(), max.getLineOffset(), repl);
+				
+				lines.set(line, upd);
+				fireEvent((ed) -> ed.eventLineModified(line, min.getLineOffset(), max.getLineOffset(), repl.length()));
+				
+				return old;
+			}
+			else
+			{
+				// TODO multiple lines
+				throw new Error();
+			}
+		}
+		else
+		{
+			// TODO multiple lines
+			throw new Error();
+		}
+		// TODO apply and fire events
+		// TODO add to undo		
 	}
 }

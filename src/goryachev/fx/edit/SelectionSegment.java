@@ -198,4 +198,10 @@ public class SelectionSegment
 	{
 		return contains(s.getMin()) || contains(s.getMax());
 	}
+	
+	
+	public boolean isOneLine()
+	{
+		return min.getLine() == max.getLine();
+	}
 }

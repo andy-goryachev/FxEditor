@@ -483,10 +483,11 @@ public class FxEditor
 	}
 
 
-	protected void eventLinesModified(int start, int count)
+	protected void eventLineModified(int line, int startOffset, int endOffset, int inserted)
 	{
-		// FIX
-		D.print(start, count);
+		markers.update(line, startOffset, endOffset, inserted);
+		vflow.invalidateLine(line);
+		requestLayout();
 	}
 	
 	
@@ -697,6 +698,7 @@ public class FxEditor
 				{
 					Edit undo = m.edit(ed);
 					// TODO add to undo manager
+					// TODO move caret(s)
 				}
 				catch(Exception e)
 				{
