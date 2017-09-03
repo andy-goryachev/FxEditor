@@ -677,11 +677,13 @@ public class FxEditor
 
 	protected void handleKeyPressed(KeyEvent ev)
 	{
+		setSuppressBlink(true);
 	}
 	
 	
 	protected void handleKeyReleased(KeyEvent ev)
 	{
+		setSuppressBlink(false);
 	}
 	
 	
