@@ -471,30 +471,51 @@ public class FxEditor
 	}
 
 
-	protected void eventLinesDeleted(int start, int count)
+//	protected void eventLinesDeleted(int start, int count)
+//	{
+//		// FIX
+//		D.print(start, count);
+//	}
+//
+//
+//	protected void eventLinesInserted(int start, int count)
+//	{
+//		// FIX
+//		D.print(start, count);
+//	}
+	
+	
+	protected void eventRangeRemoved(Marker min, Marker max)
 	{
-		// FIX
-		D.print(start, count);
-	}
-
-
-	protected void eventLinesInserted(int start, int count)
-	{
-		// FIX
-		D.print(start, count);
-	}
-
-
-	protected void eventLinesModified(Marker min, Marker max, List<String> inserted)
-	{
-		markers.update(min, max, inserted);
+		int line = min.getLine();
+		int count = max.getLine() - line;
 		
-		for(int i=min.getLine(); i<=max.getLine(); i++)
-		{
-			vflow.invalidateLine(i);
-		}
+		markers.removed(min, max);
+		vflow.removed(line, count);
 		requestLayout();
 	}
+	
+	
+	protected void eventRangeInserted(Marker m, List<String> inserted)
+	{
+		int line = m.getLine();
+		
+		markers.inserted(m, inserted.size());
+		vflow.inserted(line, inserted.size());
+		requestLayout();
+	}
+
+
+//	protected void eventLinesModified(Marker min, Marker max, List<String> inserted)
+//	{
+//		markers.update(min, max, inserted);
+//		
+//		for(int i=min.getLine(); i<=max.getLine(); i++)
+//		{
+//			vflow.invalidateLine(i);
+//		}
+//		requestLayout();
+//	}
 	
 	
 	public void setDisplayCaret(boolean on)
@@ -788,5 +809,11 @@ public class FxEditor
 	public int getTextLength(int line)
 	{
 		return getModel().getTextLength(line);
+	}
+
+
+	public void dumpState()
+	{
+		D.print(getSelection(), markers);
 	}
 }

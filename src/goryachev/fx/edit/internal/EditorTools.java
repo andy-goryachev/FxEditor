@@ -258,7 +258,7 @@ public class EditorTools
 		int sz = text.length() - (end - start); 
 		SB sb = new SB(sz);
 		
-		if(start > 0)
+		if((start > 0) && (start < text.length()))
 		{
 			sb.append(text.substring(0, start));
 		}
@@ -276,7 +276,7 @@ public class EditorTools
 	{
 		int sz = text.length() + insert.length(); 
 		SB sb = new SB(sz);
-		if(ix > 0)
+		if((ix > 0) && (ix < text.length()))
 		{
 			sb.append(text.substring(0, ix));
 		}

@@ -182,6 +182,37 @@ public class VFlow
 	}
 	
 	
+	public void removed(int start, int count)
+	{
+		if(layout == null)
+		{
+			return;
+		}
+		
+		for(int i=0; i<count; i++)
+		{
+			layout.remove(this, start);
+		}
+		layout.invalidateLine(this, start);
+	}
+	
+	
+	public void inserted(int start, int count)
+	{
+		if(layout == null)
+		{
+			return;
+		}
+		
+		layout.invalidateLine(this, start);
+		
+		for(int i=0; i<count; i++)
+		{
+			layout.add(start);
+		}
+	}
+	
+	
 	public void reset()
 	{
 		offsetx = 0;

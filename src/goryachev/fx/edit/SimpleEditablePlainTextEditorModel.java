@@ -97,8 +97,10 @@ public class SimpleEditablePlainTextEditorModel
 		
 		List<String> removed = getTextRange(min, max);
 		removeRange(min, max);
+		fireEvent((ed) -> ed.dumpState()); // FIX
+
 		insert(max, replaceText);
-		fireEvent((ed) -> ed.eventLinesModified(min, max, replaceText));
+		fireEvent((ed) -> ed.dumpState()); // FIX
 		
 		return removed;
 	}
@@ -177,6 +179,8 @@ public class SimpleEditablePlainTextEditorModel
 				}
 			}
 		}
+		
+		fireEvent((ed) -> ed.eventRangeRemoved(min, max));
 	}
 	
 	
@@ -217,5 +221,7 @@ public class SimpleEditablePlainTextEditorModel
 				line++;
 			}
 		}
+		
+		fireEvent((ed) -> ed.eventRangeInserted(m, inserted));
 	}
 }

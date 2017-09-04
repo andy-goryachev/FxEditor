@@ -226,4 +226,23 @@ public class FxEditorLayout
 			remove(p, b);
 		}
 	}
+	
+	
+	public void remove(Pane p, int ix)
+	{
+		if((ix >= 0) && (ix < lines.size()))
+		{
+			LineBox b = lines.remove(ix);
+			remove(p, b);
+		}
+	}
+	
+	
+	public void add(int ix)
+	{
+		if((ix >= 0) && (ix < lines.size()))
+		{
+			lines.add(ix, null);
+		}
+	}
 }

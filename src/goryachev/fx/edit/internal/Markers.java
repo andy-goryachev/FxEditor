@@ -1,5 +1,6 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit.internal;
+import goryachev.common.util.SB;
 import goryachev.common.util.WeakList;
 import goryachev.fx.edit.Marker;
 import java.lang.ref.WeakReference;
@@ -32,6 +33,28 @@ public class Markers
 		}
 		
 		return m;
+	}
+	
+	
+	public String toString()
+	{
+		SB sb = new SB(128);
+		sb.append("Markers(");
+		boolean comma = false;
+		for(Marker m: markers.asList())
+		{
+			if(comma)
+			{
+				sb.comma();
+			}
+			else
+			{
+				comma = true;
+			}
+			sb.append(m);
+		}
+		sb.append(")");
+		return sb.toString();
 	}
 	
 	
@@ -80,6 +103,7 @@ public class Markers
 	 * 4. markers after 'max' but on the same line has their offset shifted
 	 * 5. markers below 'max' have their lines shifted 
 	 */
+	@Deprecated // TODO remove
 	public void update(Marker min, Marker max, List<String> inserted)
 	{
 		// TODO verify this is the case
@@ -90,7 +114,7 @@ public class Markers
 		for(int i=sz-1; i>=0; i--)
 		{
 			WeakReference<Marker> ref = markers.getRef(i);
-			Marker m =ref.get(); 
+			Marker m = ref.get(); 
 			if(m == null)
 			{
 				markers.remove(i);
@@ -120,6 +144,90 @@ public class Markers
 				{
 					// move line
 					m.addLine(lineDelta);
+				}
+			}
+		}
+	}
+
+
+	public void removed(Marker min, Marker max)
+	{
+		int lineDelta = (max.getLine() - min.getLine());
+		
+		int sz = markers.size();
+		for(int i=sz-1; i>=0; i--)
+		{
+			WeakReference<Marker> ref = markers.getRef(i);
+			Marker m = ref.get(); 
+			if(m == null)
+			{
+				markers.remove(i);
+			}
+			else
+			{
+				if(m.isBefore(min))
+				{
+					// unchanged
+				}
+				else if(m.isBefore(max))
+				{
+					m.set(min);
+				}
+//				else if(m == max)
+//				{
+//					if(lineDelta == 0)
+//					{
+//						// same line
+//						m.addOffset(-(max.getOffset() - min.getOffset()));
+//					}
+//					else
+//					{
+//						// 
+//					}
+//					m.set(m.getLine(), m.getCharIndex() + offsetDelta, false);
+//				}
+				else if(m.getLine() == max.getLine())
+				{
+					// move offset
+					m.addOffset(-max.getOffset());
+				}
+				else
+				{
+					// move line
+					m.addLine(lineDelta);
+				}
+			}
+		}
+	}
+	
+	
+	public void inserted(Marker at, int lineCount)
+	{
+		int sz = markers.size();
+		for(int i=sz-1; i>=0; i--)
+		{
+			WeakReference<Marker> ref = markers.getRef(i);
+			Marker m = ref.get(); 
+			if(m == null)
+			{
+				markers.remove(i);
+			}
+			else
+			{
+				if(m.isBefore(at))
+				{
+					// unchanged
+				}
+				else if(m.getLine() == at.getLine())
+				{
+					// both line and offset are affected
+					m.addLine(lineCount);
+					m.addOffset(-at.getOffset());
+				}
+				else
+				{
+					// move line
+					m.addLine(lineCount);
 				}
 			}
 		}
