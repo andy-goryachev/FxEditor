@@ -153,7 +153,7 @@ public class FxEditor
 	/** override to provide your own selection model */
 	protected SelectionController createSelectionController()
 	{
-		return new SelectionController();
+		return new SelectionController(markers);
 	}
 	
 	
@@ -400,7 +400,7 @@ public class FxEditor
 	
 	public Marker newMarker(int lineNumber, int charIndex, boolean leading)
 	{
-		return markers.newMarker(lineNumber, charIndex, leading);
+		return markers.createMarker(lineNumber, charIndex, leading);
 	}
 	
 	
@@ -490,18 +490,18 @@ public class FxEditor
 		int line = min.getLine();
 		int count = max.getLine() - line;
 		
-		markers.removed(min, max);
+		markers.removeRange(min, max);
 		vflow.removed(line, count);
 		requestLayout();
 	}
 	
 	
-	protected void eventRangeInserted(Marker m, List<String> inserted)
+	protected void eventRangeInserted(Marker m, int lineDelta, int offsetDelta)
 	{
 		int line = m.getLine();
 		
-		markers.inserted(m, inserted.size());
-		vflow.inserted(line, inserted.size());
+		markers.insertRange(m, lineDelta, offsetDelta);
+		vflow.inserted(line, lineDelta);
 		requestLayout();
 	}
 
@@ -622,8 +622,8 @@ public class FxEditor
 			--ix;
 			
 			String s = getModel().getPlainText(ix);
-			Marker beg = markers.newMarker(0, 0, true);
-			Marker end = markers.newMarker(ix, Math.max(0, s.length() - 1), false);
+			Marker beg = markers.createMarker(0, 0, true);
+			Marker end = markers.createMarker(ix, Math.max(0, s.length() - 1), false);
 			
 			selector.setSelection(beg, end);
 			selector.commitSelection();
@@ -778,10 +778,10 @@ public class FxEditor
 		if(m != null)
 		{
 			int line = m.getLine();
-			Marker start = markers.newMarker(line, 0, true);
+			Marker start = markers.createMarker(line, 0, true);
 			
 			int len = getModel().getTextLength(line);
-			Marker end = markers.newMarker(line, len, false);
+			Marker end = markers.createMarker(line, len, false);
 			
 			selector.setSelection(start, end);
 		}
@@ -812,8 +812,8 @@ public class FxEditor
 	}
 
 
-	public void dumpState()
+	public void dumpState(String message)
 	{
-		D.print(getSelection(), markers);
+		D.print(message, getSelection(), markers);
 	}
 }

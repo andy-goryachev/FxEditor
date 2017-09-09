@@ -1,6 +1,7 @@
 // Copyright © 2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CList;
+import goryachev.fx.edit.internal.Markers;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -13,13 +14,14 @@ import javafx.collections.ObservableList;
 public class SelectionController
 {
 	public final ObservableList<SelectionSegment> segments = FXCollections.observableArrayList();
-	private final ReadOnlyObjectWrapper<EditorSelection> selectionProperty = new ReadOnlyObjectWrapper(EditorSelection.EMPTY);
+	private final ReadOnlyObjectWrapper<EditorSelection> selectionProperty;
 	private Marker anchor;
 	private CList<SelectionSegment> originalSelection;
 
 
-	public SelectionController()
+	public SelectionController(Markers markers)
 	{
+		selectionProperty = new ReadOnlyObjectWrapper(EditorSelection.empty(markers));
 	}
 	
 	

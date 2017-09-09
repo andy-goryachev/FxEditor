@@ -13,7 +13,6 @@ import goryachev.fx.edit.internal.Markers;
 public class Marker
 	implements Comparable<Marker>
 {
-	public static final Marker ZERO = new Marker();
 	private int line;
 	private int charIndex;
 	private boolean leading;
@@ -29,17 +28,10 @@ public class Marker
 	}
 	
 	
-	private Marker()
-	{
-		this.line = 0;
-		this.charIndex = 0;
-		this.leading = true;	
-	}
-	
-	
 	public String toString()
 	{
 		SB sb = new SB(16);
+		sb.a("M(");
 		sb.a(line);
 		sb.a(':');
 		sb.a(getCharIndex());
@@ -53,6 +45,7 @@ public class Marker
 		}
 		sb.a(':');
 		sb.a(getOffset());
+		sb.a(")");
 		return sb.toString();
 	}
 
@@ -136,20 +129,25 @@ public class Marker
 		}
 		else if(line == m.line)
 		{
-			// TODO or use insertion index?
-			if(charIndex < m.charIndex)
+			if(getOffset() < m.getOffset())
 			{
 				return true;
 			}
-			else
+			else if(getOffset() == m.getOffset())
 			{
-				return false;
+				if(leading == m.leading)
+				{
+					// same but not before
+					return false;
+				}
+				else
+				{
+					return leading;
+				}
 			}
 		}
-		else
-		{
-			return false;
-		}
+		
+		return false;
 	}
 
 
@@ -202,6 +200,24 @@ public class Marker
 		this.line = m.getLine();
 		this.charIndex = m.getCharIndex();
 		this.leading = m.isLeading();
+	}
+	
+	
+	public void setCharIndex(int ix)
+	{
+		charIndex = ix;
+	}
+	
+	
+	public void setLeading(boolean on)
+	{
+		leading = on;
+	}
+	
+	
+	public void setLine(int ix)
+	{
+		line = ix;
 	}
 
 

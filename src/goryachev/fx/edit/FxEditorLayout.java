@@ -42,24 +42,24 @@ public class FxEditorLayout
 	/** returns text position at the screen coordinates, or null */
 	public Marker getTextPos(double screenx, double screeny, Markers markers)
 	{
-		for(LineBox line: lines)
+		for(LineBox box: lines)
 		{
-			Region box = line.getCenter();
-			Point2D p = box.screenToLocal(screenx, screeny);
-			Insets pad = box.getPadding();
+			Region r = box.getCenter();
+			Point2D p = r.screenToLocal(screenx, screeny);
+			Insets pad = r.getPadding();
 			double x = p.getX() - pad.getLeft();
 			double y = p.getY() - pad.getTop();
 			
 			if(y >= 0)
 			{
-				if(y < box.getHeight())
+				if(y < r.getHeight())
 				{
-					if(box instanceof CTextFlow)
+					if(r instanceof CTextFlow)
 					{
-						CHitInfo hit = ((CTextFlow)box).getHit(x, y);
+						CHitInfo hit = ((CTextFlow)r).getHit(x, y);
 						if(hit != null)
 						{
-							return markers.newMarker(line.getLineNumber(), hit.getCharIndex(), hit.isLeading());
+							return markers.createMarker(box.getLineNumber(), hit.getCharIndex(), hit.isLeading());
 						}
 					}
 				}
@@ -73,16 +73,32 @@ public class FxEditorLayout
 		LineBox line = lines.getLast();
 		if(line == null)
 		{
-			return Marker.ZERO;
+			return markers.zero();
 		}
 		
-		Region box = line.getCenter();
-		int len = 0;
-		if(box instanceof CTextFlow)
+		int off;
+		boolean leading;
+		String s = line.getText();
+		if(s == null)
 		{
-			len = Math.max(0, ((CTextFlow)box).getText().length() - 1);
+			off = 0;
+			leading = true;
 		}
-		return markers.newMarker(line.getLineNumber(), len, false);
+		else
+		{
+			off = s.length();
+			if(off > 0)
+			{
+				off--;
+				leading = false;
+			}
+			else
+			{
+				leading = true;
+			}
+		}
+		
+		return markers.createMarker(line.getLineNumber(), off, leading);
 	}
 	
 	

@@ -97,10 +97,10 @@ public class SimpleEditablePlainTextEditorModel
 		
 		List<String> removed = getTextRange(min, max);
 		removeRange(min, max);
-		fireEvent((ed) -> ed.dumpState()); // FIX
+		fireEvent((ed) -> ed.dumpState("removed")); // FIX
 
 		insert(max, replaceText);
-		fireEvent((ed) -> ed.dumpState()); // FIX
+		fireEvent((ed) -> ed.dumpState("inserted")); // FIX
 		
 		return removed;
 	}
@@ -188,26 +188,30 @@ public class SimpleEditablePlainTextEditorModel
 	{
 		int line = m.getLine();
 		int sz = inserted.size();
+		int offsetDelta;
 		String s = getText(line);
 		
 		if(sz == 1)
 		{
-			s = EditorTools.insert(s, m.getOffset(), inserted.get(0));
+			String ins = inserted.get(0);
+			s = EditorTools.insert(s, m.getOffset(), ins);
 			lines.set(line, s);
+			offsetDelta = ins.length();
 		}
 		else
 		{
 			String left = s.substring(0, m.getOffset());
 			String right = s.substring(m.getOffset());
+			int last = sz - 1;
 
-			for(int i=0; i<=sz; i++)
+			for(int i=0; i<last; i++)
 			{
 				if(i == 0)
 				{
 					s = left + inserted.get(i);
 					lines.set(line, s);
 				}
-				else if(i == sz)
+				else if(i == last)
 				{
 					s = inserted.get(i) + right;
 					lines.set(line, s);
@@ -220,8 +224,10 @@ public class SimpleEditablePlainTextEditorModel
 				
 				line++;
 			}
+			
+			offsetDelta = inserted.get(last).length();
 		}
 		
-		fireEvent((ed) -> ed.eventRangeInserted(m, inserted));
+		fireEvent((ed) -> ed.eventRangeInserted(m, inserted.size(), offsetDelta));
 	}
 }

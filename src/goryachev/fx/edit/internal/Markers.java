@@ -8,8 +8,10 @@ import java.util.List;
 
 
 /**
- * Maintains weak list of Markers.
- * This editor-specific class is needed to allow for marker adjustment after an editing operation.
+ * Maintains a weak list of Markers.
+ * 
+ * This editor-specific class is needed to allow for proper marker adjustment 
+ * after editing operations.
  */
 public class Markers
 {
@@ -22,17 +24,24 @@ public class Markers
 	}
 
 
-	public Marker newMarker(int lineNumber, int charIndex, boolean leading)
+	public Marker createMarker(int lineNumber, int charIndex, boolean leading)
 	{
 		Marker m = new Marker(this, lineNumber, charIndex, leading);
 		markers.add(m);
 		
-		if(markers.size() > 1000000)
+		if(markers.size() > 1_000_000)
 		{
+			// this might be a design error
 			throw new Error("too many markers");
 		}
 		
 		return m;
+	}
+	
+	
+	public Marker zero()
+	{
+		return createMarker(0, 0, true);
 	}
 	
 	
@@ -150,7 +159,7 @@ public class Markers
 	}
 
 
-	public void removed(Marker min, Marker max)
+	public void removeRange(Marker min, Marker max)
 	{
 		int lineDelta = (max.getLine() - min.getLine());
 		
@@ -173,19 +182,20 @@ public class Markers
 				{
 					m.set(min);
 				}
-//				else if(m == max)
-//				{
-//					if(lineDelta == 0)
-//					{
-//						// same line
-//						m.addOffset(-(max.getOffset() - min.getOffset()));
-//					}
-//					else
-//					{
-//						// 
-//					}
-//					m.set(m.getLine(), m.getCharIndex() + offsetDelta, false);
-//				}
+				else if(m == max)
+				{
+					m.addLine(lineDelta);
+					if(lineDelta == 0)
+					{
+						m.setCharIndex(min.getOffset());
+						m.setLeading(true);
+					}
+					else
+					{
+						m.setCharIndex(0);
+						m.setLeading(true);
+					}
+				}
 				else if(m.getLine() == max.getLine())
 				{
 					// move offset
@@ -201,7 +211,7 @@ public class Markers
 	}
 	
 	
-	public void inserted(Marker at, int lineCount)
+	public void insertRange(Marker at, int lineDelta, int offsetDelta)
 	{
 		int sz = markers.size();
 		for(int i=sz-1; i>=0; i--)
@@ -221,13 +231,13 @@ public class Markers
 				else if(m.getLine() == at.getLine())
 				{
 					// both line and offset are affected
-					m.addLine(lineCount);
+					m.addLine(lineDelta);
 					m.addOffset(-at.getOffset());
 				}
 				else
 				{
 					// move line
-					m.addLine(lineCount);
+					m.addLine(lineDelta);
 				}
 			}
 		}
