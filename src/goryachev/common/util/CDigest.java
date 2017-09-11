@@ -1,5 +1,6 @@
 // Copyright © 2012-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import java.io.InputStream;
 import java.security.DigestException;
 import java.security.MessageDigest;
 
@@ -59,7 +60,19 @@ public class CDigest
 	}
 	
 	
-	public void update(Object x)
+	public void update(byte[] b)
+	{
+		md.update(b);
+	}
+	
+	
+	public void update(byte[] b, int offset, int len)
+	{
+		md.update(b, offset, len);
+	}
+	
+	
+	public void updateWithType(Object x)
 	{
 		if(x == null)
 		{
@@ -102,7 +115,7 @@ public class CDigest
 		}
 		else
 		{
-			throw new Rex("unsupported type: " + x.getClass());
+			throw new Error("unsupported type: " + x.getClass());
 		}
 	}
 	
@@ -179,6 +192,13 @@ public class CDigest
 	
 	public byte[] digest(Object x)
 	{
+		updateWithType(x);
+		return digest();
+	}
+	
+	
+	public byte[] digest(byte[] x)
+	{
 		update(x);
 		return digest();
 	}
@@ -193,6 +213,32 @@ public class CDigest
 	public static byte[] sha256(Object x)
 	{
 		return new SHA256().digest(x);
+	}
+	
+	
+	public static byte[] sha256(byte[] x)
+	{
+		return new SHA256().digest(x);
+	}
+	
+	
+	public static byte[] sha256(InputStream in) throws Exception
+	{
+		SHA256 d = new SHA256();
+		byte[] buf = new byte[4096];
+		for(;;)
+		{
+			int rd = in.read(buf);
+			if(rd < 0)
+			{
+				break;
+			}
+			else if(rd > 0)
+			{
+				d.update(buf, 0, rd);
+			}
+		}
+		return d.digest();
 	}
 	
 	

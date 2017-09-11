@@ -117,11 +117,11 @@ public class TimeUUID
 		// mix in enough location-specific information and random information to ensure 
 		// low probability of collision
 		CDigest d = new CDigest.SHA256();
-		d.update(time);
-		d.update(System.nanoTime());
-		d.update(System.getProperty("user.name"));
-		d.update(System.getProperty("user.home"));
-		d.update(sequence.incrementAndGet());
+		d.updateWithType(time);
+		d.updateWithType(System.nanoTime());
+		d.updateWithType(System.getProperty("user.name"));
+		d.updateWithType(System.getProperty("user.home"));
+		d.updateWithType(sequence.incrementAndGet());
 		d.update(b);
 		
 		b = d.digest();

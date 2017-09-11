@@ -26,9 +26,9 @@ public class GUID256
 	{
 		CDigest d = new CDigest.SHA256();
 		d.update(machineID());
-		d.update(System.currentTimeMillis());
-		d.update(System.nanoTime());
-		d.update(seq.incrementAndGet());
+		d.updateWithType(System.currentTimeMillis());
+		d.updateWithType(System.nanoTime());
+		d.updateWithType(seq.incrementAndGet());
 		return d.digest();
 	}
 	
@@ -60,24 +60,24 @@ public class GUID256
 			
 			// java runtime
 			Runtime r = Runtime.getRuntime();
-			d.update(r.availableProcessors());
-			d.update(r.freeMemory());
-			d.update(r.hashCode());
+			d.updateWithType(r.availableProcessors());
+			d.updateWithType(r.freeMemory());
+			d.updateWithType(r.hashCode());
 			
 			// machine-specific parameters
-			d.update(System.getProperty("java.runtime.version"));
-			d.update(System.getProperty("java.class.path"));
-			d.update(System.getProperty("os.arch"));
-			d.update(System.getProperty("os.name"));
-			d.update(System.getProperty("os.version"));
+			d.updateWithType(System.getProperty("java.runtime.version"));
+			d.updateWithType(System.getProperty("java.class.path"));
+			d.updateWithType(System.getProperty("os.arch"));
+			d.updateWithType(System.getProperty("os.name"));
+			d.updateWithType(System.getProperty("os.version"));
 			
 			// user-specific parameters
-			d.update(System.getProperty("user.country"));
-			d.update(System.getProperty("user.dir"));
-			d.update(System.getProperty("user.home"));
-			d.update(System.getProperty("user.language"));
-			d.update(System.getProperty("user.name"));
-			d.update(System.getProperty("user.timezone"));
+			d.updateWithType(System.getProperty("user.country"));
+			d.updateWithType(System.getProperty("user.dir"));
+			d.updateWithType(System.getProperty("user.home"));
+			d.updateWithType(System.getProperty("user.language"));
+			d.updateWithType(System.getProperty("user.name"));
+			d.updateWithType(System.getProperty("user.timezone"));
 			
 			machineID = d.digest();
 		}

@@ -920,4 +920,24 @@ public class FileTools
 		File parent = file.getParentFile();
 		return new File(parent, name);
 	}
+	
+	
+	/** returns file extension (after last period) or null */ 
+	public static String getExtension(String name)
+	{
+		if(name == null)
+		{
+			return null;
+		}
+		
+		int ix = name.lastIndexOf('.');
+		if(ix >= 0)
+		{
+			return name.substring(ix);
+		}
+		else
+		{
+			return null;
+		}
+	}
 }
