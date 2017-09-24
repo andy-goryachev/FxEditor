@@ -21,6 +21,12 @@ public class GUID256
 	}
 	
 	
+	public static SKey generateSKey()
+	{
+		return new SKey(generateHexString());
+	}
+	
+	
 	/** generates globally uniqueue byte array */
 	public static byte[] generateBytes()
 	{

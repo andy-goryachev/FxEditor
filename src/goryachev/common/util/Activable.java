@@ -2,6 +2,7 @@
 package goryachev.common.util;
 
 
+@Deprecated // bad idea
 public interface Activable
 {
 	public void activate();

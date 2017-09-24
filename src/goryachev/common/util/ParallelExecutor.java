@@ -33,7 +33,9 @@ public class ParallelExecutor
 	
 	public Thread newThread(Runnable r)
 	{
-		return new Thread(r, name + "." + number.getAndIncrement());
+		Thread t = new Thread(r, name + "." + number.getAndIncrement());
+		t.setDaemon(true);
+		return t;
 	}
 	
 	

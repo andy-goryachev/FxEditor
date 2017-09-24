@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -553,7 +554,20 @@ public final class CKit
 	
 	public static String[] readLines(Class cs, String resource) throws Exception
 	{
-		String text = readString(cs, resource);
+		String s = readString(cs, resource);
+		return readLines(s);
+	}
+	
+	
+	public static String[] readLines(File f) throws Exception
+	{
+		String s = readString(f);
+		return readLines(s);
+	}
+	
+	
+	private static String[] readLines(String text) throws Exception
+	{
 		BufferedReader rd = new BufferedReader(new StringReader(text));
 		try
 		{
@@ -2128,4 +2142,38 @@ public final class CKit
 		return new SB(count).sp(count).toString();
 	}
 
+	
+	public static <T> T[] addAndGrow(T[] items, T item)
+	{
+		int len = items.length;
+		T[] rv = Arrays.copyOf(items, len + 1);
+		rv[len] = item;
+		return rv;
+	}
+	
+	
+	public static <T> T[] removeAndShrink(T[] items, T item)
+	{
+		int ix = indexOf(items, item);
+		if(ix < 0)
+		{
+			return items;
+		}
+		else
+		{
+			int len = items.length;
+			T[] rv = (T[])Array.newInstance(items.getClass().getComponentType(), len - 1);
+			
+			if(ix > 0)
+			{
+				System.arraycopy(items, 0, rv, 0, ix);
+			}
+			
+			if(ix + 1 < len)
+			{
+				System.arraycopy(items, ix + 1, rv, ix, len - ix - 1);
+			}
+			return rv;
+		}
+	}
 }
