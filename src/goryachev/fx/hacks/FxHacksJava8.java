@@ -1,7 +1,8 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package goryachev.fx.edit;
+package goryachev.fx.hacks;
 import goryachev.common.util.CMethod;
 import goryachev.common.util.Reflector;
+import goryachev.fx.edit.CHitInfo;
 import com.sun.javafx.scene.text.HitInfo;
 import com.sun.javafx.scene.text.TextLayout;
 import javafx.scene.shape.PathElement;
