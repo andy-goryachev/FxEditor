@@ -1,4 +1,4 @@
-// Copyright © 2005-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2005-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.io;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -108,8 +108,8 @@ public class RandomAccessByteBuffer
 	}
 
 	
-	// same format as StringTools.writeAsciiString()
-	public void writeAsciiString(String s) throws IOException
+	// same format as StringTools.writeASCIIString()
+	public void writeASCIIString(String s) throws IOException
 	{
 		if(s == null)
 		{

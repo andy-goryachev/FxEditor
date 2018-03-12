@@ -1,4 +1,4 @@
-// Copyright © 2013-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2013-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,14 +63,40 @@ public class Assert
 			throw new IllegalArgumentException("must be true");
 		}
 	}
+	
+	
+	public static void assertFalse(boolean value)
+	{
+		if(value)
+		{
+			throw new IllegalArgumentException("must be false");
+		}
+	}
 
 
 	public static void assertEquals(Object a, Object b)
 	{
 		if(CKit.notEquals(a, b))
 		{
-			throw new IllegalArgumentException("must be equal");
+			throw new IllegalArgumentException("must be equal: " + a + " != " + b);
 		}
+	}
+	
+	
+	public static void assertEndsWith(String text, String suffix)
+	{
+		if(text != null)
+		{
+			if(suffix != null)
+			{
+				if(text.endsWith(suffix))
+				{
+					return;
+				}
+			}
+		}
+		
+		throw new IllegalArgumentException("[" + text + "] must end with [" + suffix + "]");
 	}
 
 

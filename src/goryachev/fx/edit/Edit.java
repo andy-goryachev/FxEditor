@@ -1,77 +1,31 @@
-// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.common.util.CList;
-import goryachev.fx.edit.Edit.Part;
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
  * An Edit.
  */
 public class Edit
-	implements Iterable<Part>
 {
-	public static class Part
+	private final EditorSelection selection;
+	private final CharSequence replaceText;
+	
+	
+	public Edit(EditorSelection sel, CharSequence replaceText)
 	{
-		public SelectionSegment sel;
-		public List<String> replaceText;
-		
-		
-		public String toString()
-		{
-			return "{" + sel + "," + replaceText + "}";
-		}
-	}
-	
-	//
-	
-	private final CList<Part> parts = new CList();
-	
-	
-	public Edit(EditorSelection sel, List<String> replaceText)
-	{
-		for(SelectionSegment ss: sel.getSegments())
-		{
-			addPart(ss, replaceText);
-		}
+		this.selection = sel;
+		this.replaceText = replaceText;
 	}
 	
 	
-	public Edit()
+	public EditorSelection getSelection()
 	{
+		return selection;
 	}
 	
 	
-	public void addPart(SelectionSegment sel, List<String> replaceText)
+	public CharSequence getReplaceText()
 	{
-		Part p = new Part();
-		p.sel = sel;
-		p.replaceText = replaceText;
-		parts.add(p);
-	}
-	
-	
-	public String toString()
-	{
-		return "Edit(" + parts + ")";
-	}
-	
-	
-	public int getPartCount()
-	{
-		return parts.size();
-	}
-	
-	
-	public Part getPart(int ix)
-	{
-		return parts.get(ix);
-	}
-
-
-	public Iterator<Part> iterator()
-	{
-		return parts.iterator();
+		return replaceText;
 	}
 }

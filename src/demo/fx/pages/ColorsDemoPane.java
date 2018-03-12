@@ -34,15 +34,18 @@ public class ColorsDemoPane
 			setPrefWidth(100);
 		table.setItems
 		(
-			c(71, 219, 0, "sRGB"),
-			c(63, 217, 0, "RGB"),
-			c(86, 215, 43, "natural"),
-			c(0x1990b8, "blue"),
-			c(0x2f9c0a, "green"),
-			c(0xc92c2c, "red"),
-			c(0xa67f59, "brown"),
-			c(253, 226, 135, "yellow"),
-			c(192, 246, 173, "green")
+			new Entry[]
+			{
+				c(71, 219, 0, "sRGB"),
+				c(63, 217, 0, "RGB"),
+				c(86, 215, 43, "natural"),
+				c(0x1990b8, "blue"),
+				c(0x2f9c0a, "green"),
+				c(0xc92c2c, "red"),
+				c(0xa67f59, "brown"),
+				c(253, 226, 135, "yellow"),
+				c(192, 246, 173, "green")
+			}
 		);
 		
 		setCenter(table);

@@ -1,4 +1,4 @@
-// Copyright © 2006-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2006-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -151,7 +151,7 @@ public class NetTools
 	}
 
 	
-	/** replaces non-ascii symbols with their UTF-8 byte representation and spaces with %20 */
+	/** replaces non-ASCII symbols with their UTF-8 byte representation and spaces with %20 */
 	public static String parseUrlString(String url)
 	{
 		byte[] bytes = url.getBytes(CKit.CHARSET_UTF8);

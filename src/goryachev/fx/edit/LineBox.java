@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.HasText;
 import goryachev.common.util.SB;
@@ -6,7 +6,6 @@ import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.util.FxPathBuilder;
-import javafx.beans.Observable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Labeled;
 import javafx.scene.layout.Region;

@@ -4,7 +4,7 @@ import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
-import goryachev.fx.edit.SimpleEditablePlainTextEditorModel;
+import goryachev.fx.edit.EditablePlainTextEditorModel;
 import goryachev.fx.edit.FxEditor;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -23,7 +23,7 @@ public class FxEditorEditableDemoPane
 	{
 		FX.style(this, EDITOR);
 		
-		FxEditor edit = new FxEditor(new SimpleEditablePlainTextEditorModel());
+		FxEditor edit = new FxEditor(new EditablePlainTextEditorModel());
 		edit.setContentPadding(new Insets(2, 5, 2, 5));
 		edit.setMultipleSelectionEnabled(true);
 		

@@ -1,6 +1,5 @@
-// Copyright © 2011-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.io;
-import goryachev.common.util.CKit;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,15 +28,7 @@ public class DWriter
 	
 	public void writeByteArray(byte[] b) throws IOException
 	{
-		if(b == null)
-		{
-			writeInt(-1);
-		}
-		else
-		{
-			writeInt(b.length);
-			write(b);
-		}
+		CIOTools.writeByteArray(out, b);
 	}
 
 
@@ -138,18 +129,7 @@ public class DWriter
 
 	public void writeString(String s) throws IOException
 	{
-		if(s == null)
-		{
-			writeInt(-1);
-		}
-		else
-		{
-			byte[] b = s.getBytes(CKit.CHARSET_UTF8);
-			int len = b.length;
-			
-			writeInt(len);
-			write(b);
-		}
+		CIOTools.writeString(out, s);
 	}
 
 

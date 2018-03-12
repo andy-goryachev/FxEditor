@@ -1,54 +1,71 @@
-// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
 
 /**
- * Common Task.
+ * Common Task eliminates the need to explicitly manage Threads.
+ * Tasks are run by the default ParallelExecutor.
  */
 public class CTask<T>
 	implements Runnable
 {
-	protected final ValueGenerator<T> generator;
+	protected ValueGenerator<? extends T> generator;
 	protected Consumer<T> onSuccess;
 	protected Consumer<Throwable> onError;
 	protected Runnable onFinish;
 	protected static ParallelExecutor exec = initExecutor();
 	
 	
-	public CTask(ValueGenerator<T> generator)
+	public CTask()
+	{
+	}
+	
+	
+	public CTask<T> setGenerator(ValueGenerator<? extends T> generator)
 	{
 		this.generator = generator;
+		return this;
 	}
 	
 
-	public CTask onError(Consumer<Throwable> onError)
+	public CTask<T> onError(Consumer<Throwable> onError)
 	{
 		this.onError = onError;
 		return this;
 	}
 	
 	
-	public CTask onSuccess(Consumer<T> onSuccess)
+	public CTask<T> onSuccess(Consumer<T> onSuccess)
 	{
 		this.onSuccess = onSuccess;
 		return this;
 	}
 	
 	
-	public CTask onFinish(Runnable onFinish)
+	public CTask<T> onFinish(Runnable onFinish)
 	{
 		this.onFinish = onFinish;
 		return this;
 	}
 	
 	
+	/** submits the task to be executed by the default executor */
 	public void submit()
 	{
 		submit(this);
 	}
 	
 	
+	/** submits the task to be executed by the specified executor */
+	public void submit(ExecutorService ex)
+	{
+		ex.submit(this);
+	}
+	
+	
+	/** submits a Runnable to be executed by the default executor */
 	public static void submit(Runnable r)
 	{
 		exec.submit(r);

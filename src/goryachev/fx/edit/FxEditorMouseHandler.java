@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.D;
 import javafx.animation.KeyFrame;
@@ -95,7 +95,6 @@ public class FxEditorMouseHandler
 	public void handleMousePressed(MouseEvent ev)
 	{
 		Marker pos = getTextPos(ev);
-		D.p(pos); // FIX
 		editor.setSuppressBlink(true);
 				
 		if(ev.isShiftDown())

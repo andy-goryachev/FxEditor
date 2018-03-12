@@ -1,6 +1,5 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
-import goryachev.common.util.CList;
 import goryachev.common.util.D;
 import goryachev.common.util.Log;
 import goryachev.fx.Binder;
@@ -13,7 +12,6 @@ import goryachev.fx.FxFormatter;
 import goryachev.fx.edit.internal.CaretLocation;
 import goryachev.fx.edit.internal.Markers;
 import java.io.StringWriter;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javafx.beans.Observable;
@@ -153,7 +151,7 @@ public class FxEditor
 	/** override to provide your own selection model */
 	protected SelectionController createSelectionController()
 	{
-		return new SelectionController(markers);
+		return new SelectionController();
 	}
 	
 	
@@ -400,7 +398,7 @@ public class FxEditor
 	
 	public Marker newMarker(int lineNumber, int charIndex, boolean leading)
 	{
-		return markers.createMarker(lineNumber, charIndex, leading);
+		return markers.newMarker(lineNumber, charIndex, leading);
 	}
 	
 	
@@ -471,51 +469,25 @@ public class FxEditor
 	}
 
 
-//	protected void eventLinesDeleted(int start, int count)
-//	{
-//		// FIX
-//		D.print(start, count);
-//	}
-//
-//
-//	protected void eventLinesInserted(int start, int count)
-//	{
-//		// FIX
-//		D.print(start, count);
-//	}
-	
-	
-	protected void eventRangeRemoved(Marker min, Marker max)
+	protected void eventLinesDeleted(int start, int count)
 	{
-		int line = min.getLine();
-		int count = max.getLine() - line;
-		
-		markers.removeRange(min, max);
-		vflow.removed(line, count);
-		requestLayout();
-	}
-	
-	
-	protected void eventRangeInserted(Marker m, int lineDelta, int offsetDelta)
-	{
-		int line = m.getLine();
-		
-		markers.insertRange(m, lineDelta, offsetDelta);
-		vflow.inserted(line, lineDelta);
-		requestLayout();
+		// FIX
+		D.print(start, count);
 	}
 
 
-//	protected void eventLinesModified(Marker min, Marker max, List<String> inserted)
-//	{
-//		markers.update(min, max, inserted);
-//		
-//		for(int i=min.getLine(); i<=max.getLine(); i++)
-//		{
-//			vflow.invalidateLine(i);
-//		}
-//		requestLayout();
-//	}
+	protected void eventLinesInserted(int start, int count)
+	{
+		// FIX
+		D.print(start, count);
+	}
+
+
+	protected void eventLinesModified(int start, int count)
+	{
+		// FIX
+		D.print(start, count);
+	}
 	
 	
 	public void setDisplayCaret(boolean on)
@@ -622,8 +594,8 @@ public class FxEditor
 			--ix;
 			
 			String s = getModel().getPlainText(ix);
-			Marker beg = markers.createMarker(0, 0, true);
-			Marker end = markers.createMarker(ix, Math.max(0, s.length() - 1), false);
+			Marker beg = markers.newMarker(0, 0, true);
+			Marker end = markers.newMarker(ix, Math.max(0, s.length() - 1), false);
 			
 			selector.setSelection(beg, end);
 			selector.commitSelection();
@@ -704,13 +676,11 @@ public class FxEditor
 
 	protected void handleKeyPressed(KeyEvent ev)
 	{
-		setSuppressBlink(true);
 	}
 	
 	
 	protected void handleKeyReleased(KeyEvent ev)
 	{
-		setSuppressBlink(false);
 	}
 	
 	
@@ -722,12 +692,11 @@ public class FxEditor
 			String ch = ev.getCharacter();
 			if(isTypedCharacter(ch))
 			{
-				Edit ed = new Edit(getSelection(), new CList<String>(ch));
+				Edit ed = new Edit(getSelection(), ch);
 				try
 				{
 					Edit undo = m.edit(ed);
 					// TODO add to undo manager
-					// TODO move caret(s)
 				}
 				catch(Exception e)
 				{
@@ -778,10 +747,10 @@ public class FxEditor
 		if(m != null)
 		{
 			int line = m.getLine();
-			Marker start = markers.createMarker(line, 0, true);
+			Marker start = markers.newMarker(line, 0, true);
 			
 			int len = getModel().getTextLength(line);
-			Marker end = markers.createMarker(line, len, false);
+			Marker end = markers.newMarker(line, len, false);
 			
 			selector.setSelection(start, end);
 		}
@@ -809,11 +778,5 @@ public class FxEditor
 	public int getTextLength(int line)
 	{
 		return getModel().getTextLength(line);
-	}
-
-
-	public void dumpState(String message)
-	{
-		D.print(message, getSelection(), markers);
 	}
 }

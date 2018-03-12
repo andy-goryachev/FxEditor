@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
@@ -42,24 +42,24 @@ public class FxEditorLayout
 	/** returns text position at the screen coordinates, or null */
 	public Marker getTextPos(double screenx, double screeny, Markers markers)
 	{
-		for(LineBox box: lines)
+		for(LineBox line: lines)
 		{
-			Region r = box.getCenter();
-			Point2D p = r.screenToLocal(screenx, screeny);
-			Insets pad = r.getPadding();
+			Region box = line.getCenter();
+			Point2D p = box.screenToLocal(screenx, screeny);
+			Insets pad = box.getPadding();
 			double x = p.getX() - pad.getLeft();
 			double y = p.getY() - pad.getTop();
 			
 			if(y >= 0)
 			{
-				if(y < r.getHeight())
+				if(y < box.getHeight())
 				{
-					if(r instanceof CTextFlow)
+					if(box instanceof CTextFlow)
 					{
-						CHitInfo hit = ((CTextFlow)r).getHit(x, y);
+						CHitInfo hit = ((CTextFlow)box).getHit(x, y);
 						if(hit != null)
 						{
-							return markers.createMarker(box.getLineNumber(), hit.getCharIndex(), hit.isLeading());
+							return markers.newMarker(line.getLineNumber(), hit.getCharIndex(), hit.isLeading());
 						}
 					}
 				}
@@ -73,32 +73,16 @@ public class FxEditorLayout
 		LineBox line = lines.getLast();
 		if(line == null)
 		{
-			return markers.zero();
+			return Marker.ZERO;
 		}
 		
-		int off;
-		boolean leading;
-		String s = line.getText();
-		if(s == null)
+		Region box = line.getCenter();
+		int len = 0;
+		if(box instanceof CTextFlow)
 		{
-			off = 0;
-			leading = true;
+			len = Math.max(0, ((CTextFlow)box).getText().length() - 1);
 		}
-		else
-		{
-			off = s.length();
-			if(off > 0)
-			{
-				off--;
-				leading = false;
-			}
-			else
-			{
-				leading = true;
-			}
-		}
-		
-		return markers.createMarker(line.getLineNumber(), off, leading);
+		return markers.newMarker(line.getLineNumber(), len, false);
 	}
 	
 	
@@ -155,7 +139,13 @@ public class FxEditorLayout
 		ObservableList<Node> cs = p.getChildren();
 		for(LineBox b: lines)
 		{
-			remove(p, b);
+			cs.remove(b.getCenter());
+			
+			Node ln = b.getLineNumberComponentRaw();
+			if(ln != null)
+			{
+				cs.remove(ln);
+			}
 		}
 		
 		if(newLines != null)
@@ -163,22 +153,6 @@ public class FxEditorLayout
 			for(LineBox b: newLines.values())
 			{
 				cs.remove(b.getCenter());
-			}
-		}
-	}
-	
-	
-	protected void remove(Pane p, LineBox b)
-	{
-		if(b != null)
-		{
-			ObservableList<Node> cs = p.getChildren();
-			cs.remove(b.getCenter());
-			
-			Node ln = b.getLineNumberComponentRaw();
-			if(ln != null)
-			{
-				cs.remove(ln);
 			}
 		}
 	}
@@ -231,34 +205,5 @@ public class FxEditorLayout
 	public double getLineNumbersColumnWidth()
 	{
 		return lineNumbersColumnWidth;
-	}
-
-
-	public void invalidateLine(Pane p, int ix)
-	{
-		if((ix >= 0) && (ix < lines.size()))
-		{
-			LineBox b = lines.set(ix, null);
-			remove(p, b);
-		}
-	}
-	
-	
-	public void remove(Pane p, int ix)
-	{
-		if((ix >= 0) && (ix < lines.size()))
-		{
-			LineBox b = lines.remove(ix);
-			remove(p, b);
-		}
-	}
-	
-	
-	public void add(int ix)
-	{
-		if((ix >= 0) && (ix < lines.size()))
-		{
-			lines.add(ix, null);
-		}
 	}
 }

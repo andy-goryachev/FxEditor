@@ -1,8 +1,8 @@
-// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
+import goryachev.common.util.CComparator;
 import goryachev.common.util.CKit;
 import goryachev.common.util.Rex;
-import goryachev.fx.edit.internal.Markers;
 
 
 /**
@@ -10,6 +10,7 @@ import goryachev.fx.edit.internal.Markers;
  */
 public class EditorSelection
 {
+	public static final EditorSelection EMPTY = createEmpty();
 	private final SelectionSegment[] segments;
 	
 	
@@ -19,15 +20,6 @@ public class EditorSelection
 		
 		// TODO remove this check later
 		check();
-	}
-	
-	
-	public static EditorSelection empty(Markers markers)
-	{
-		return new EditorSelection(new SelectionSegment[] 
-		{
-			new SelectionSegment(markers.zero(), markers.zero(), false) 
-		});
 	}
 	
 	
@@ -53,6 +45,12 @@ public class EditorSelection
 		}
 	}
 	
+	
+	private static EditorSelection createEmpty()
+	{
+		return new EditorSelection(new SelectionSegment[] { new SelectionSegment(Marker.ZERO, Marker.ZERO, false) });
+	}
+
 	
 	/** returns original segment array */
 	public SelectionSegment[] getSegments()

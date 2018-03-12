@@ -1,6 +1,5 @@
-// Copyright © 2011-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.io;
-import goryachev.common.util.CKit;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -38,54 +37,19 @@ public class DReader
 
 	public void readFully(byte[] b) throws IOException
 	{
-		readFully(b, 0, b.length);
+		CIOTools.readFully(in, b);
 	}
 
 
 	public void readFully(byte[] b, int off, int len) throws IOException
 	{
-		if(len < 0)
-		{
-			throw new IndexOutOfBoundsException();
-		}
-		
-		int n = 0;
-		while(n < len)
-		{
-			int count = in.read(b, off + n, len - n);
-			if(count < 0)
-			{
-				throw new EOFException();
-			}
-			n += count;
-		}
+		CIOTools.readFully(in, b, off, len);
 	}
 	
 	
 	public byte[] readByteArray(int max) throws IOException
 	{
-		int count = readInt();
-		if(count < 0)
-		{
-			if(count == -1)
-			{
-				return null;
-			}
-			else
-			{
-				throw new IOException("unexpected byte array size " + count);
-			}
-		}
-		else
-		{
-			if(count >= max)
-			{
-				throw new IOException("expecting no more than " + max + " bytes, received " + count);
-			}
-			byte[] b = new byte[count];
-			readFully(b);
-			return b;
-		}
+		return CIOTools.readByteArray(in, max);
 	}
 	
 
@@ -238,17 +202,7 @@ public class DReader
 
 	public String readString() throws IOException
 	{
-		int len = readInt();
-		if(len < 0)
-		{
-			return null;
-		}
-		else
-		{
-			byte[] b = new byte[len];
-			readFully(b);
-			return new String(b, CKit.CHARSET_UTF8);
-		}
+		return CIOTools.readString(in);
 	}
 	
 	

@@ -1,4 +1,4 @@
-// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
@@ -170,46 +170,6 @@ public class VFlow
 			layout.removeFrom(this);
 		}
 		layout = null;
-	}
-	
-	
-	public void invalidateLine(int ix)
-	{
-		if(layout != null)
-		{
-			layout.invalidateLine(this, ix);
-		}
-	}
-	
-	
-	public void removed(int start, int count)
-	{
-		if(layout == null)
-		{
-			return;
-		}
-		
-		for(int i=0; i<count; i++)
-		{
-			layout.remove(this, start);
-		}
-		layout.invalidateLine(this, start);
-	}
-	
-	
-	public void inserted(int start, int count)
-	{
-		if(layout == null)
-		{
-			return;
-		}
-		
-		layout.invalidateLine(this, start);
-		
-		for(int i=0; i<count; i++)
-		{
-			layout.add(start);
-		}
 	}
 	
 	
@@ -672,18 +632,18 @@ public class VFlow
 		PathElement[] bottom;
 		if(startMarker.getLine() == endMarker.getLine())
 		{
-			top = getRangeShape(startMarker.getLine(), startMarker.getOffset(), endMarker.getOffset());
+			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), endMarker.getLineOffset());
 			bottom = null;
 		}
 		else
 		{
-			top = getRangeShape(startMarker.getLine(), startMarker.getOffset(), -1);
+			top = getRangeShape(startMarker.getLine(), startMarker.getLineOffset(), -1);
 			if(top == null)
 			{
 				top = getRangeTop();
 			}
 			
-			bottom = getRangeShape(endMarker.getLine(), 0, endMarker.getOffset());
+			bottom = getRangeShape(endMarker.getLine(), 0, endMarker.getLineOffset());
 			if(bottom == null)
 			{
 				bottom = getRangeBottom();

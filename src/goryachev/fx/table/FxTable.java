@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
@@ -113,7 +113,7 @@ public class FxTable<T>
 	}
 	
 	
-	public void setItems(T ... items)
+	public void setItems(T[] items)
 	{
 		clearSelection();
 		if(items == null)

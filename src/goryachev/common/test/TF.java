@@ -1,4 +1,4 @@
-// Copyright © 2013-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2013-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.test;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
@@ -21,6 +21,37 @@ public class TF
 			throw new TestException
 			(
 				"Unexpected value=" + 
+				Dump.describe(value) + 
+				", expected=" + 
+				Dump.describe(expected)
+			);
+		}
+	}
+	
+	
+	/** checks if two arguments are not CKit.equals() and throws a meaningful exception if not */
+	public static void notEquals(Object value, Object expected)
+	{
+		if(CKit.equals(value, expected))
+		{
+			throw new TestException
+			(
+				"Values are not expected to be equals: " + 
+				Dump.describe(value) 
+			);
+		}
+	}
+	
+	
+	/** checks if two arguments are CKit.equals() and throws a meaningful exception if not */
+	public static void eq(Object value, Object expected, Object message)
+	{
+		if(CKit.notEquals(value, expected))
+		{
+			throw new TestException
+			(
+				message +
+				", unexpected value=" + 
 				Dump.describe(value) + 
 				", expected=" + 
 				Dump.describe(expected)
@@ -58,9 +89,24 @@ public class TF
 	}
 	
 	
+	public static void isFalse(boolean x)
+	{
+		if(x)
+		{
+			throw new TestException("expression is not false");
+		}
+	}
+	
+	
 	public static void fail()
 	{
 		throw new TestException("test failed");
+	}
+	
+	
+	public static void fail(String message)
+	{
+		throw new TestException(message);
 	}
 
 	

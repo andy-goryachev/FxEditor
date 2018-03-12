@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.Assert;
 import goryachev.common.util.FH;
@@ -197,11 +197,5 @@ public class SelectionSegment
 	public boolean overlaps(SelectionSegment s)
 	{
 		return contains(s.getMin()) || contains(s.getMax());
-	}
-	
-	
-	public boolean isOneLine()
-	{
-		return min.getLine() == max.getLine();
 	}
 }

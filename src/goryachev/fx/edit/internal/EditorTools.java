@@ -1,9 +1,8 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit.internal;
 import goryachev.common.util.SB;
 import goryachev.fx.FxSize;
 import java.text.DecimalFormat;
-import java.util.List;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -188,102 +187,6 @@ public class EditorTools
 			{
 				sb.a(em);
 			}
-		}
-		return sb.toString();
-	}
-	
-	
-	public static String replace(String text, int start, int end, String replace)
-	{
-		int sz = start + replace.length() + text.length() - end;
-		
-		SB sb = new SB(sz);
-		if(start > 0)
-		{
-			sb.append(text.substring(0, Math.min(start, text.length())));
-		}
-		sb.append(replace);
-		if(end < text.length())
-		{
-			sb.append(text.substring(end));
-		}
-		return sb.toString();
-	}
-
-
-	public static String substring(String text, int start, int end)
-	{
-		if(start == end)
-		{
-			return "";
-		}
-		else if(start == 0)
-		{
-			if(end < text.length())
-			{
-				return text.substring(start, end);
-			}
-			else
-			{
-				return text;
-			}
-		}
-		else
-		{
-			if(end < text.length())
-			{
-				return text.substring(start, end);
-			}
-			else
-			{
-				return text.substring(start);
-			}
-		}
-	}
-
-
-	public static int getLastLineLength(List<String> lines)
-	{
-		int sz = lines.size();
-		if(sz > 0)
-		{
-			return lines.get(sz - 1).length();
-		}
-		return 0;
-	}
-
-
-	public static String removeRange(String text, int start, int end)
-	{
-		int sz = text.length() - (end - start); 
-		SB sb = new SB(sz);
-		
-		if((start > 0) && (start < text.length()))
-		{
-			sb.append(text.substring(0, start));
-		}
-		
-		if(end < text.length())
-		{
-			sb.append(text.substring(end));
-		}
-		
-		return sb.toString();
-	}
-
-
-	public static String insert(String text, int ix, String insert)
-	{
-		int sz = text.length() + insert.length(); 
-		SB sb = new SB(sz);
-		if((ix > 0) && (ix < text.length()))
-		{
-			sb.append(text.substring(0, ix));
-		}
-		sb.append(insert);
-		if(ix < text.length())
-		{
-			sb.append(text.substring(ix));
 		}
 		return sb.toString();
 	}

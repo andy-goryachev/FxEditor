@@ -1,4 +1,4 @@
-// Copyright © 2011-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.io.ByteArrayOutputStream;
 
@@ -174,12 +174,12 @@ public class Hex
 	
 	
 	// dumps byte array into a nicely formatted String
-	// printing address first, then 16 bytes of hex then ascii representation then newline
+	// printing address first, then 16 bytes of hex then ASCII representation then newline
 	//     "0000  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................" or
 	// "00000000  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................" 
 	// depending on startAddress
 	// address starts with startAddress
-	public static String toHexStringAscii(byte[] bytes)
+	public static String toHexStringASCII(byte[] bytes)
 	{
 		long startAddress = 0;
 		boolean bigfile = ((startAddress + bytes.length) > 65535);
@@ -213,7 +213,7 @@ public class Hex
 			if(col >= 15)
 			{
 				sb.sp();
-				dumpAscii(sb, bytes, lineStart);
+				dumpASCII(sb, bytes, lineStart);
 				sb.nl();
 				col = 0;
 			}
@@ -233,7 +233,7 @@ public class Hex
 			}
 
 			sb.sp();
-			dumpAscii(sb, bytes, lineStart);
+			dumpASCII(sb, bytes, lineStart);
 			sb.nl();
 		}
 		
@@ -242,12 +242,12 @@ public class Hex
 	
 	
 	// dumps byte array into a nicely formatted String
-	// printing address first, then 16 bytes of hex then ascii representation then newline
+	// printing address first, then 16 bytes of hex then ASCII representation then newline
 	//     "0000  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................" or
 	// "00000000  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................" 
 	// depending on startAddress
 	// address starts with startAddress
-	public static String[] toHexStringsAscii(byte[] bytes)
+	public static String[] toHexStringsASCII(byte[] bytes)
 	{
 		SB sb = new SB(78);
 		int len = bytes.length;
@@ -283,7 +283,7 @@ public class Hex
 			if(col >= 15)
 			{
 				sb.sp();
-				dumpAscii(sb, bytes, lineStart);
+				dumpASCII(sb, bytes, lineStart);
 				rv.add(sb.getAndClear());
 				col = 0;
 			}
@@ -303,7 +303,7 @@ public class Hex
 			}
 
 			sb.sp();
-			dumpAscii(sb, bytes, lineStart);
+			dumpASCII(sb, bytes, lineStart);
 			rv.add(sb.getAndClear());
 		}
 		
@@ -318,7 +318,7 @@ public class Hex
 	}
 	
 	
-	private static void dumpAscii(SB sb, byte[] bytes, int lineStart)
+	private static void dumpASCII(SB sb, byte[] bytes, int lineStart)
 	{
 		int max = Math.min(bytes.length,lineStart+16);
 		for(int i=lineStart; i<max; i++)

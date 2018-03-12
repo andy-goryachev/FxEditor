@@ -1,4 +1,4 @@
-// Copyright © 2013-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2013-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 
 
@@ -20,4 +20,8 @@ public interface BackgroundOperation
 	
 	/** returns operation progress value of null if progress can not be determined. */
 	public Progress getProgress();
+	
+	
+	/** release all the resources after op completed normally or with an error */
+	public void dispose();
 }

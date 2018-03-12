@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
@@ -130,7 +130,7 @@ public abstract class FxEditorModel
 	}
 	
 	
-	public void fireEvent(Consumer<FxEditor> f)
+	protected void fireEvent(Consumer<FxEditor> f)
 	{
 		for(FxEditor li: listeners)
 		{
@@ -233,11 +233,11 @@ public abstract class FxEditorModel
 			{
 				if(i == last)
 				{
-					s = s.substring(m0.getOffset(), m1.getOffset());
+					s = s.substring(m0.getLineOffset(), m1.getLineOffset());
 				}
 				else
 				{
-					s = s.substring(m0.getOffset());
+					s = s.substring(m0.getLineOffset());
 				}
 			}
 			else
@@ -246,7 +246,7 @@ public abstract class FxEditorModel
 				
 				if(i == last)
 				{
-					s = s.substring(0, m1.getOffset());
+					s = s.substring(0, m1.getLineOffset());
 				}
 			}
 			

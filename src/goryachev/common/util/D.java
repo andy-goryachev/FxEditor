@@ -1,4 +1,4 @@
-// Copyright © 2007-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2007-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -330,7 +330,7 @@ public class D
 			}
 			else
 			{
-				print("\n" + Hex.toHexStringAscii(b));
+				print("\n" + Hex.toHexStringASCII(b));
 			}
 		}
 	}
@@ -346,7 +346,7 @@ public class D
 			}
 			else
 			{
-				print(s, "\n" + Hex.toHexStringAscii(b));
+				print(s, "\n" + Hex.toHexStringASCII(b));
 			}
 		}
 	}

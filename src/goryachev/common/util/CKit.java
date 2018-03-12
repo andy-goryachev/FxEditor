@@ -1,4 +1,4 @@
-// Copyright © 2007-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2007-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import goryachev.common.io.CWriter;
 import java.io.BufferedInputStream;
@@ -42,7 +42,7 @@ import java.util.zip.ZipFile;
 
 public final class CKit
 {
-	public static final String COPYRIGHT = "Copyright © 1996-2017 Andy Goryachev <andy@goryachev.com>  All Rights Reserved.";
+	public static final String COPYRIGHT = "Copyright © 1996-2018 Andy Goryachev <andy@goryachev.com>  All Rights Reserved.";
 	public static final char APPLE = '\u2318';
 	public static final char BOM = '\ufeff';
 	public static final String[] emptyStringArray = new String[0];
@@ -56,6 +56,8 @@ public final class CKit
 	public static final long MS_IN_A_WEEK = 604800000;
 	private static AtomicInteger id = new AtomicInteger(); 
 	private static Boolean eclipseDetected;
+	private static final JavaVersion JAVA8 = JavaVersion.parse("1.8.0");
+	private static final JavaVersion JAVA9 = JavaVersion.parse("9");
 	
 	
 	public static void close(Closeable x)
@@ -377,7 +379,7 @@ public final class CKit
 	
 	public static String readString(InputStream is) throws Exception
 	{
-		Reader in = new InputStreamReader(is, "UTF-8");
+		Reader in = new InputStreamReader(is, CHARSET_UTF8);
 		try
 		{
 			SB sb = new SB(16384);
@@ -418,11 +420,11 @@ public final class CKit
 
 	public static String readString(String resource) throws Exception
 	{
-		return readString(resource, "UTF-8");
+		return readString(resource, CHARSET_UTF8);
 	}
 
 
-	public static String readString(String resource, String encoding) throws Exception
+	public static String readString(String resource, Charset encoding) throws Exception
 	{
 		InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(resource);
 		try
@@ -432,20 +434,6 @@ public final class CKit
 		finally
 		{
 			close(in);
-		}
-	}
-	
-	
-	public static String readString(InputStream is, String encoding) throws Exception
-	{
-		Reader in = new InputStreamReader(is, encoding);
-		try
-		{
-			return readString(in);
-		}
-		finally
-		{
-			close(is);
 		}
 	}
 	
@@ -487,6 +475,26 @@ public final class CKit
 	}
 	
 	
+	public static String readString(InputStream is, String encoding) throws Exception
+	{
+		Reader in = new InputStreamReader(is, encoding);
+		try
+		{
+			return readString(in);
+		}
+		finally
+		{
+			close(is);
+		}
+	}
+	
+	
+	public static String readString(Reader in) throws Exception
+	{
+		return readString(in, Integer.MAX_VALUE);
+	}
+	
+
 	public static String readString(InputStream is, Charset cs) throws Exception
 	{
 		return readString(is, Integer.MAX_VALUE, cs);
@@ -509,12 +517,6 @@ public final class CKit
 		{
 			close(is);
 		}
-	}
-	
-	
-	public static String readString(Reader in) throws Exception
-	{
-		return readString(in, Integer.MAX_VALUE);
 	}
 	
 	
@@ -1454,6 +1456,7 @@ public final class CKit
 	}
 	
 	
+	/** reads byte array from a resource local to the parent object or class */
 	public static byte[] readLocalBytes(Object parent, String name) throws Exception
 	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream(65536);
@@ -1461,6 +1464,20 @@ public final class CKit
 		InputStream in = c.getResourceAsStream(name);
 		copy(in, out);
 		return out.toByteArray();
+	}
+	
+	
+	/** reads byte array from a resource local to the parent object or class, without throwing an exception */
+	public static byte[] readLocalBytesQuiet(Object parent, String name)
+	{
+		try
+		{
+			return readLocalBytes(parent, name);
+		}
+		catch(Exception ignore)
+		{
+			return null;
+		}
 	}
 
 
@@ -2175,5 +2192,81 @@ public final class CKit
 			}
 			return rv;
 		}
+	}
+
+
+	public static <K,V> CMap<K,V> toMap(Class<K> keyType, Class<V> valueType, Object ... pairs)
+	{
+		int sz = pairs.length;
+		CMap<K,V> m = new CMap(sz / 2);
+		for(int i=0; i<sz; )
+		{
+			K k = (K)pairs[i];
+			if(!k.getClass().isAssignableFrom(keyType))
+			{
+				throw new Error("Expecting " + keyType + " at index " + i);
+			}
+			
+			i++;
+			
+			V v = (V)pairs[i];
+			if(v != null)
+			{
+				if(!v.getClass().isAssignableFrom(valueType))
+				{
+					throw new Error("Expecting " + valueType + " at index " + i);
+				}
+			}
+			
+			Object old = m.put(k, v);
+			if(old != null)
+			{
+				throw new Error("Duplicate key " + k + " at index " + (i - 1));
+			}
+			
+			i++;
+		}
+		return m;
+	}
+
+
+	public static <T> CSet<T> toSet(Class<T> type, T ... items)
+	{
+		int sz = items.length;
+		CSet<T> rv = new CSet(sz);
+		for(int i=0; i<sz; i++)
+		{
+			T item = items[i];
+			if(!item.getClass().isAssignableFrom(type))
+			{
+				throw new Error("Expecting " + type + " at index " + i);
+			}
+			
+			rv.add(item);
+		}
+		return rv;
+	}
+	
+	
+	public static String codePointToString(int cp)
+	{
+		 char[] cs = Character.toChars(cp);
+		 return new String(cs);
+	}
+	
+	
+	public static boolean inRange(int value, int min, int max)
+	{
+		if(min > max)
+		{
+			throw new Error("min > max");
+		}
+		return (value >= min) && (value <= max);
+	}
+	
+	
+	public static boolean isJava9OrLater()
+	{
+		return JavaVersion.getJavaVersion().isSameOrLaterThan(JAVA9);
 	}
 }
