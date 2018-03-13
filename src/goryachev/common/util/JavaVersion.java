@@ -97,19 +97,19 @@ public class JavaVersion
 	
 	public static JavaVersion getJavaVersion()
 	{
-		return parse("java.version");
+		return parseSystemProperty("java.version");
 	}
 	
 	
 	public static JavaVersion getJavaRuntimeVersion()
 	{
-		return parse("java.runtime.version");
+		return parseSystemProperty("java.runtime.version");
 	}
 	
 	
 	public static JavaVersion getJavaSpecificationVersion()
 	{
-		return parse("java.specification.version");
+		return parseSystemProperty("java.specification.version");
 	}
 	
 	
@@ -136,9 +136,15 @@ public class JavaVersion
 	}
 	
 	
-	protected static JavaVersion parse(String propertyKey)
+	protected static JavaVersion parseSystemProperty(String propertyKey)
 	{
 		String s = System.getProperty(propertyKey);
+		return parse(s);
+	}
+	
+	
+	protected static JavaVersion parse(String s)
+	{
 		int[] ver;
 		
 		try
