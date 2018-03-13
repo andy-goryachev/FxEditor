@@ -1,9 +1,11 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.hacks;
 import goryachev.common.util.CKit;
 import goryachev.fx.edit.CHitInfo;
+import java.util.List;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Window;
 
 
 /**
@@ -26,6 +28,12 @@ public abstract class FxHacks
 	
 	/** returns the text position at the specified local coordinates */
 	public abstract int getTextPos(TextFlow t, double x, double y);
+	
+	/** applies global stylesheet on top of the javafx one */
+	public abstract void applyStyleSheet(String old, String cur);
+	
+	/** returns the list of Windows */
+	public abstract List<Window> getWindows();
 	
 	//
 	
