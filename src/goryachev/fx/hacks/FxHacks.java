@@ -1,8 +1,11 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.hacks;
+import goryachev.common.util.CKit;
 import goryachev.fx.edit.CHitInfo;
+import java.util.List;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Window;
 
 
 /**
@@ -26,6 +29,12 @@ public abstract class FxHacks
 	/** returns the text position at the specified local coordinates */
 	public abstract int getTextPos(TextFlow t, double x, double y);
 	
+	/** applies global stylesheet on top of the javafx one */
+	public abstract void applyStyleSheet(String old, String cur);
+	
+	/** returns the list of Windows */
+	public abstract List<Window> getWindows();
+	
 	//
 	
 	private static FxHacks instance;
@@ -40,9 +49,53 @@ public abstract class FxHacks
 	{
 		if(instance == null)
 		{
-			// TODO supply Java9 when it comes
-			instance = new FxHacksJava8();
+			instance = create();
 		}
 		return instance;
+	}
+	
+	
+	private static FxHacks create()
+	{
+		try
+		{
+			String packageName = FxHacks.class.getPackage().getName();
+			String name = getHackName();
+			byte[] b = CKit.readBytes(FxHacks.class, name + ".bin");
+			
+			Class<?> c = new FxClassLoader().load(packageName + "." + name, b);
+			return (FxHacks)c.newInstance();
+		}
+		catch(Exception e)
+		{
+			throw new Error("failed to load FxHacks", e);
+		}
+	}
+	
+	
+	private static String getHackName()
+	{
+		if(CKit.isJava9OrLater())
+		{
+			// this class lives on java9-hacks branch
+			return "FxHacksJava9";
+		}
+		else
+		{
+			// this class lives on java8-hacks branch
+			return "FxHacksJava8";
+		}
+	}
+	
+	
+	//
+	
+	
+	protected static class FxClassLoader extends ClassLoader
+	{
+		public Class<?> load(String name, byte[] b)
+		{
+			return defineClass(name, b, 0, b.length);
+		}
 	}
 }
