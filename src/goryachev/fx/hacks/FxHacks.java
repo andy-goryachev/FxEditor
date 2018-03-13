@@ -49,7 +49,8 @@ public abstract class FxHacks
 	{
 		if(instance == null)
 		{
-			instance = create();
+			//instance = create();
+			instance = new FxHacksJava8();
 		}
 		return instance;
 	}
