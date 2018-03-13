@@ -1456,23 +1456,31 @@ public final class CKit
 	}
 	
 	
-	/** reads byte array from a resource local to the parent object or class */
-	public static byte[] readLocalBytes(Object parent, String name) throws Exception
+	/** reads byte array from a resource local to the parent object (or class) */
+	public static byte[] readBytes(Object parent, String name) throws Exception
 	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream(65536);
 		Class c = (parent instanceof Class ? (Class)parent : parent.getClass()); 
 		InputStream in = c.getResourceAsStream(name);
-		copy(in, out);
+		try
+		{
+			copy(in, out);
+		}
+		finally
+		{
+			close(in);
+			close(out);
+		}
 		return out.toByteArray();
 	}
 	
 	
-	/** reads byte array from a resource local to the parent object or class, without throwing an exception */
-	public static byte[] readLocalBytesQuiet(Object parent, String name)
+	/** reads byte array from a resource local to the parent object (or class), without throwing an exception */
+	public static byte[] readBytesQuiet(Object parent, String name)
 	{
 		try
 		{
-			return readLocalBytes(parent, name);
+			return readBytes(parent, name);
 		}
 		catch(Exception ignore)
 		{

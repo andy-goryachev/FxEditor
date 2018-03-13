@@ -12,7 +12,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.function.Supplier;
-import javafx.application.Application;
 import javafx.application.Platform;
 
 
@@ -168,14 +167,8 @@ public class CssLoader
 	}
 		
 		
-	// FIX move to fx hacks
 	protected void update(String old, String cur)
 	{
 		FxHacks.get().applyStyleSheet(old, cur);
-//		if(old != null)
-//		{
-//			StyleManager.getInstance().removeUserAgentStylesheet(old);
-//		}
-//		StyleManager.getInstance().addUserAgentStylesheet(cur);
 	}
 }
