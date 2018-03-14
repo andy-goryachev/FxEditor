@@ -74,6 +74,6 @@ public class FxHacksJava8
 
 	public List<Window> getWindows()
 	{
-		return new CList(StageHelper.getStages());
+		return new CList(Window.impl_getWindows());
 	}
 }
