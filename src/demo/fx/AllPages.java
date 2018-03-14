@@ -1,4 +1,4 @@
-// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package demo.fx;
 import demo.fx.pages.ButtonDemoPane;
 import demo.fx.pages.ColorsDemoPane;
