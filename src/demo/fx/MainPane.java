@@ -1,6 +1,6 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package demo.fx;
-import goryachev.fx.CAction;
+import goryachev.fx.FxAction;
 import goryachev.fx.CPane;
 import goryachev.fx.table.FxTable;
 import javafx.geometry.Orientation;
@@ -14,7 +14,7 @@ import javafx.scene.control.SplitPane;
 public class MainPane
 	extends CPane
 {
-	public final CAction reloadAction = new CAction(this::reload);
+	public final FxAction reloadAction = new FxAction(this::reload);
 	public final FxTable<DemoPage> table;
 	public final CPane detailPane;
 	public final SplitPane split;

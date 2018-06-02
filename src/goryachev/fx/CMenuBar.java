@@ -74,7 +74,7 @@ public class CMenuBar
 	}
 	
 	
-	public CMenuItem item(String name, CAction a)
+	public CMenuItem item(String name, FxAction a)
 	{
 		CMenuItem m = new CMenuItem(name, a);
 		lastMenu().add(m);

@@ -1,6 +1,6 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package demo.fx;
-import goryachev.fx.CAction;
+import goryachev.fx.FxAction;
 import goryachev.fx.CMenuBar;
 import goryachev.fx.FX;
 import goryachev.fx.FxDump;
@@ -13,8 +13,8 @@ import goryachev.fx.FxWindow;
 public class MainWindow
 	extends FxWindow
 {
-	public final CAction prefsAction = new CAction(this::preferences);
-	public final CAction newWindowAction = new CAction(this::newWindow);
+	public final FxAction prefsAction = new FxAction(this::preferences);
+	public final FxAction newWindowAction = new FxAction(this::newWindow);
 	public final MainPane pane;
 	
 	

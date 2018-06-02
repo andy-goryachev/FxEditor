@@ -1,6 +1,6 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
-import goryachev.fx.CAction;
+import goryachev.fx.FxAction;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
 import goryachev.fx.FX;
@@ -17,7 +17,7 @@ import demo.fx.pages.edit.TestFxColorEditorModel;
 public class MainWindow
 	extends FxWindow
 {
-	public final CAction prefsAction = new CAction(this::preferences);
+	public final FxAction prefsAction = new FxAction(this::preferences);
 	public final MainPane mainPane;
 	
 	

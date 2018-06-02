@@ -5,7 +5,7 @@ import goryachev.common.util.CMap;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
 import goryachev.common.util.WeakList;
-import goryachev.fx.CAction;
+import goryachev.fx.FxAction;
 import goryachev.fx.CssLoader;
 import goryachev.fx.FxWindow;
 import goryachev.fx.OnWindowClosing;
@@ -110,9 +110,9 @@ public class WindowsFx
 	}
 	
 	
-	public CAction exitAction()
+	public FxAction exitAction()
 	{
-		return new CAction(this::exit);
+		return new FxAction(this::exit);
 	}
 	
 	
