@@ -36,6 +36,9 @@ public abstract class FxHacks
 	/** applies global stylesheet on top of the javafx one */
 	public abstract void applyStyleSheet(String old, String cur);
 	
+	/** applies global stylesheet to a specific window on top of the javafx one */
+	public abstract void applyStyleSheet(Window w, String old, String cur);
+	
 	/** returns the list of Windows */
 	public abstract List<Window> getWindows();
 	
