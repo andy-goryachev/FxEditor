@@ -1,5 +1,5 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
-package research.fx;
+package goryachev.fx.hacks;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMethod;
 import goryachev.common.util.Reflector;
