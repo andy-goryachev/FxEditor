@@ -61,6 +61,15 @@ public class FxHacksJava9
 	{
 		for(Window w: getWindows())
 		{
+			applyStyleSheet(w, old, cur);
+		}
+	}
+	
+	
+	public void applyStyleSheet(Window w, String old, String cur)
+	{
+		if(cur != null)
+		{
 			Scene scene = w.getScene();
 			if(scene != null)
 			{
@@ -70,7 +79,7 @@ public class FxHacksJava9
 				}
 				
 				scene.getStylesheets().add(cur);
-			}
+			}			
 		}
 	}
 
