@@ -1,6 +1,6 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package research.fx;
-import goryachev.fx.CButton;
+import goryachev.fx.FxButton;
 
 
 /**
@@ -23,7 +23,7 @@ public class TestKeyMap
 	// TODO define a function
 	public void defineFunction()
 	{
-		CButton n = new CButton("New");
+		FxButton n = new FxButton("New");
 		// adds a key listener with 
 		km.set(n, Accelerators.NEW);
 	}

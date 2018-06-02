@@ -3,7 +3,7 @@ package research.fx;
 import goryachev.common.util.CMap;
 import goryachev.common.util.D;
 import goryachev.fx.FxAction;
-import goryachev.fx.CButton;
+import goryachev.fx.FxButton;
 import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
 
@@ -28,7 +28,7 @@ public class KeyMap<T>
 	}
 	
 	
-	public void set(CButton b, T key)
+	public void set(FxButton b, T key)
 	{
 		b.addEventFilter(KeyEvent.KEY_TYPED, (ev) -> handleKeyPress(key, b, ev, null)); // TODO
 	}

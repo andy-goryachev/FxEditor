@@ -1,9 +1,9 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package demo.fx.pages;
-import goryachev.fx.CButton;
 import goryachev.fx.CCheckBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
+import goryachev.fx.FxButton;
 import goryachev.fx.HPane;
 import javafx.geometry.Pos;
 import javafx.scene.control.RadioButton;
@@ -71,9 +71,9 @@ public class ButtonDemoPane
 	}
 	
 	
-	protected CButton button(String text, boolean disabled)
+	protected FxButton button(String text, boolean disabled)
 	{
-		CButton b = new CButton(text);
+		FxButton b = new FxButton(text);
 		b.setDisable(disabled);
 		return b;
 	}
