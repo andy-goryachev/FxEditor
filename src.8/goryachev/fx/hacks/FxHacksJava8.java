@@ -71,6 +71,12 @@ public class FxHacksJava8
 		StyleManager.getInstance().addUserAgentStylesheet(cur);
 	}
 
+	
+	public void applyStyleSheet(Window w, String old, String cur)
+	{
+		// not needed when using StyleManager
+	}
+	
 
 	public List<Window> getWindows()
 	{
