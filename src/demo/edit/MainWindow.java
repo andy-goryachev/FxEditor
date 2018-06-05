@@ -1,10 +1,9 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
-import goryachev.fx.FxAction;
-import goryachev.fx.CMenu;
-import goryachev.fx.CMenuBar;
 import goryachev.fx.FX;
+import goryachev.fx.FxAction;
 import goryachev.fx.FxDump;
+import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxWindow;
 import goryachev.fx.edit.FxEditor;
 import goryachev.fx.edit.FxEditorModel;
@@ -49,50 +48,50 @@ public class MainWindow
 	}
 	
 	
-	protected CMenuBar createMenu()
+	protected FxMenuBar createMenu()
 	{
-		CMenuBar b = new CMenuBar();
+		FxMenuBar m = new FxMenuBar();
 		// file
-		CMenu m = b.addMenu("File");
-		m.add("Preferences", prefsAction);
+		m.menu("File");
+		m.item("Preferences", prefsAction);
 		m.separator();
-		m.add("Exit", FX.exitAction());
+		m.item("Exit", FX.exitAction());
 		// edit
-		m = b.addMenu("Edit");
-		m.add("Undo");
-		m.add("Redo");
+		m.menu("Edit");
+		m.item("Undo");
+		m.item("Redo");
 		m.separator();
-		m.add("Cut");
-		m.add("Copy", editor().copyAction);
-		m.add("Paste");
+		m.item("Cut");
+		m.item("Copy", editor().copyAction);
+		m.item("Paste");
 		m.separator();
-		m.add("Select All", editor().selectAllAction);
-		m.add("Select Line");
-		m.add("Split Selection into Lines");
+		m.item("Select All", editor().selectAllAction);
+		m.item("Select Line");
+		m.item("Split Selection into Lines");
 		m.separator();
-		m.add("Indent");
-		m.add("Unindent");
-		m.add("Duplicate");
-		m.add("Delete Line");
-		m.add("Move Line Up");
-		m.add("Move Line Down");
+		m.item("Indent");
+		m.item("Unindent");
+		m.item("Duplicate");
+		m.item("Delete Line");
+		m.item("Move Line Up");
+		m.item("Move Line Down");
 		// find
-		m = b.addMenu("Find");
-		m.add("Find");
-		m.add("Regex");
-		m.add("Replace");
+		m.menu("Find");
+		m.item("Find");
+		m.item("Regex");
+		m.item("Replace");
 		m.separator();
-		m.add("Find Next");
-		m.add("Find Previous");
-		m.add("Find and Select");
+		m.item("Find Next");
+		m.item("Find Previous");
+		m.item("Find and Select");
 		// view
-		m = b.addMenu("View");
-		m.add("Show Line Numbers", editor().showLineNumbersProperty());
-		m.add("Wrap Text", editor().wrapTextProperty());
+		m.menu("View");
+		m.item("Show Line Numbers", editor().showLineNumbersProperty());
+		m.item("Wrap Text", editor().wrapTextProperty());
 		// help
-		m = b.addMenu("Help");
-		m.add("About");
-		return b;
+		m.menu("Help");
+		m.item("About");
+		return m;
 	}
 	
 	

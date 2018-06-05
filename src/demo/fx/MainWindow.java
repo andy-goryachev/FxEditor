@@ -1,9 +1,9 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package demo.fx;
-import goryachev.fx.FxAction;
-import goryachev.fx.CMenuBar;
 import goryachev.fx.FX;
+import goryachev.fx.FxAction;
 import goryachev.fx.FxDump;
+import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxWindow;
 
 
@@ -34,9 +34,9 @@ public class MainWindow
 	}
 	
 	
-	protected CMenuBar createMenu()
+	protected FxMenuBar createMenu()
 	{
-		CMenuBar m = new CMenuBar();
+		FxMenuBar m = new FxMenuBar();
 		// app
 		m.menu("FxDemo");
 		m.item("New Window", newWindowAction);

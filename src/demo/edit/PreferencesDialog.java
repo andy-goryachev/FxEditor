@@ -1,8 +1,8 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
-import goryachev.fx.CCheckBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
+import goryachev.fx.FxCheckBox;
 import goryachev.fx.edit.FxEditor;
 import demo.fx.pages.edit.TestFxColorEditorModel;
 import javafx.geometry.Pos;
@@ -39,9 +39,9 @@ public class PreferencesDialog
 		);
 		int r = 0;
 		p.add(0, r, FX.label("Check Boxes:", Pos.TOP_RIGHT));
-		p.add(1, r, new CCheckBox("selected", true));
+		p.add(1, r, new FxCheckBox("selected", true));
 		r++;
-		p.add(1, r, new CCheckBox("deselected", false));
+		p.add(1, r, new FxCheckBox("deselected", false));
 		r++;
 		p.add(1, r, cb("selected, disabled", true, true));
 		r++;
@@ -73,9 +73,9 @@ public class PreferencesDialog
 	}
 	
 	
-	protected CCheckBox cb(String text, boolean selected, boolean disabled)
+	protected FxCheckBox cb(String text, boolean selected, boolean disabled)
 	{
-		CCheckBox c = new CCheckBox(text, selected);
+		FxCheckBox c = new FxCheckBox(text, selected);
 		c.setDisable(disabled);
 		return c;
 	}

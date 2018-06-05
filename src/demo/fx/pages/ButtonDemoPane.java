@@ -1,9 +1,9 @@
 // Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package demo.fx.pages;
-import goryachev.fx.CCheckBox;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxButton;
+import goryachev.fx.FxCheckBox;
 import goryachev.fx.HPane;
 import javafx.geometry.Pos;
 import javafx.scene.control.RadioButton;
@@ -31,9 +31,9 @@ public class ButtonDemoPane
 		
 		int r = 0;
 		add(0, r, FX.label("Check Boxes:", Pos.TOP_RIGHT));
-		add(1, r, new CCheckBox("selected", true));
+		add(1, r, new FxCheckBox("selected", true));
 		r++;
-		add(1, r, new CCheckBox("deselected", false));
+		add(1, r, new FxCheckBox("deselected", false));
 		r++;
 		add(1, r, cb("selected, disabled", true, true));
 		r++;
@@ -54,9 +54,9 @@ public class ButtonDemoPane
 	}
 	
 	
-	protected CCheckBox cb(String text, boolean selected, boolean disabled)
+	protected FxCheckBox cb(String text, boolean selected, boolean disabled)
 	{
-		CCheckBox c = new CCheckBox(text, selected);
+		FxCheckBox c = new FxCheckBox(text, selected);
 		c.setDisable(disabled);
 		return c;
 	}

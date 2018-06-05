@@ -1,10 +1,10 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package demo.fx.pages.cpane;
 import goryachev.common.util.Parsers;
-import goryachev.fx.CComboBox;
 import goryachev.fx.CInsets;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
+import goryachev.fx.FxComboBox;
 import demo.fx.util.DemoTools;
 import javafx.beans.binding.Bindings;
 import javafx.scene.Node;
@@ -148,7 +148,7 @@ public class DemoCPane
 	
 	protected Node c(int ix)
 	{
-		CComboBox<Spec> c = new CComboBox<Spec>(Spec.values());
+		FxComboBox<Spec> c = new FxComboBox<Spec>(Spec.values());
 		c.select(Spec.FILL);
 		c.getSelectionModel().selectedItemProperty().addListener((s,o,v) ->
 		{
@@ -161,7 +161,7 @@ public class DemoCPane
 	
 	protected Node r(int ix)
 	{
-		CComboBox<Spec> c = new CComboBox<Spec>(Spec.values());
+		FxComboBox<Spec> c = new FxComboBox<Spec>(Spec.values());
 		c.select(Spec.PREF);
 		c.getSelectionModel().selectedItemProperty().addListener((s,o,v) ->
 		{
