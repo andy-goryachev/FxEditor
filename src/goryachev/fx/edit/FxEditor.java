@@ -4,7 +4,7 @@ import goryachev.common.util.D;
 import goryachev.common.util.Log;
 import goryachev.fx.Binder;
 import goryachev.fx.FxAction;
-import goryachev.fx.CBooleanProperty;
+import goryachev.fx.FxBoolean;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.Formatters;
@@ -68,7 +68,7 @@ public class FxEditor
 	
 	protected final SimpleBooleanProperty editableProperty = new SimpleBooleanProperty(false);
 	protected final ReadOnlyObjectWrapper<FxEditorModel> modelProperty = new ReadOnlyObjectWrapper<>();
-	protected final CBooleanProperty wrapTextProperty = new CBooleanProperty(true, this::updateLayout);
+	protected final FxBoolean wrapTextProperty = new FxBoolean(true);
 	protected final ReadOnlyBooleanWrapper multipleSelectionProperty = new ReadOnlyBooleanWrapper(false);
 	protected final BooleanProperty displayCaretProperty = new SimpleBooleanProperty(true);
 	protected final BooleanProperty showLineNumbersProperty = new SimpleBooleanProperty(false);
@@ -114,6 +114,7 @@ public class FxEditor
 
 		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
 		Binder.onChange(this::updateLayout, widthProperty(), heightProperty(), showLineNumbersProperty);
+		wrapTextProperty.addListener((s,p,c) -> updateLayout());
 		
 		keymap = createKeyMap();
 		
