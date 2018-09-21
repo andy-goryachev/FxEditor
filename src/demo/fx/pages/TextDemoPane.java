@@ -15,8 +15,8 @@ public class TextDemoPane
 	extends CPane
 {
 	public final TextField textField;
-	public final FxComboBox comboBox;
-	public final FxComboBox comboBoxEditable;
+	public final FxComboBox<String> comboBox;
+	public final FxComboBox<String> comboBoxEditable;
 	public final TextArea textPref;
 	public final TextArea textFill;
 	
@@ -25,9 +25,9 @@ public class TextDemoPane
 	{
 		textField = new TextField("sample text");
 		
-		comboBox = new FxComboBox(new String[] { "one", "two", "tree" });
+		comboBox = new FxComboBox("one", "two", "tree");
 		
-		comboBoxEditable = new FxComboBox(new String[] { "one", "two", "tree" });
+		comboBoxEditable = new FxComboBox("one", "two", "tree");
 		comboBoxEditable.setEditable(true);
 		
 		textPref = new TextArea("1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n")
