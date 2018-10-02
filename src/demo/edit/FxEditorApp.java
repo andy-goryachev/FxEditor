@@ -38,7 +38,7 @@ public class FxEditorApp
 
 	public void start(Stage stage) throws Exception
 	{
-		new MainWindow().open();
+		new MainWindow(null).open();
 		// init styles
 		CssLoader.setStyles(() -> new Styles());
 	}

@@ -18,15 +18,19 @@ public class MainWindow
 {
 	public final FxAction prefsAction = new FxAction(this::preferences);
 	public final MainPane mainPane;
+	protected FxEditorModel model;
 	
 	
-	public MainWindow()
+	public MainWindow(FxEditorModel m)
 	{
 		super("MainWindow");
 
-		FxEditorModel m = new TestFxColorEditorModel(2_000_000_000);
-		
-		mainPane = new MainPane(m);
+		if(m == null)
+		{
+			m = new TestFxColorEditorModel(2_000_000_000);
+		}
+		this.model = m;
+		mainPane = new MainPane(model);
 				
 		setTitle("FxEditor");
 		setTop(createMenu());
@@ -54,6 +58,8 @@ public class MainWindow
 		// file
 		m.menu("File");
 		m.item("Preferences", prefsAction);
+		m.separator();
+		m.item("New Window, Same Model", new FxAction(this::newWindow));
 		m.separator();
 		m.item("Exit", FX.exitAction());
 		// edit
@@ -98,5 +104,11 @@ public class MainWindow
 	protected void preferences()
 	{
 		new PreferencesDialog(this).open();
+	}
+	
+	
+	protected void newWindow()
+	{
+		new MainWindow(model).open();
 	}
 }
