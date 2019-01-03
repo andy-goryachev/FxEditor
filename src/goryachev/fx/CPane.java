@@ -1,4 +1,4 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
@@ -353,14 +353,17 @@ public class CPane
 	protected Node set(Node c, CC cc)
 	{
 		Node old = getBorderComponent(cc);
-		if(old != null)
+		if(old != c)
 		{
-			removeLayoutComponent(old);
-		}
-		
-		if(c != null)
-		{
-			addPrivate(c, cc);
+			if(old != null)
+			{
+				removeLayoutComponent(old);
+			}
+			
+			if(c != null)
+			{
+				addPrivate(c, cc);
+			}
 		}
 		return old;
 	}
@@ -489,7 +492,7 @@ public class CPane
 	
 	public void remove(Node c)
 	{
-		getChildren().remove(c);
+		removeLayoutComponent(c);
 	}
 	
 	

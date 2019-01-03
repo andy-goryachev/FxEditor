@@ -1,4 +1,4 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
@@ -91,6 +91,12 @@ public class FxTreeTable<T>
 	}
 	
 	
+	public TreeItem<T> getRoot()
+	{
+		return tree.getRoot();
+	}
+	
+	
 	public void setShowRoot(boolean on)
 	{
 		tree.setShowRoot(on);
@@ -109,7 +115,8 @@ public class FxTreeTable<T>
 	}
 	
 	
-	protected TreeTableColumn<T,?> lastColumn()
+	// temporarily public until I figure out a better api
+	public TreeTableColumn<T,?> lastColumn()
 	{
 		ObservableList<TreeTableColumn<T,?>> cs = tree.getColumns();
 		return cs.get(cs.size() - 1);
@@ -130,6 +137,7 @@ public class FxTreeTable<T>
 	}
 	
 	
+	@Deprecated
 	public void setResizePolicyConstrained()
 	{
 		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);

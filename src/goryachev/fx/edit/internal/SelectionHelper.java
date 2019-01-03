@@ -1,4 +1,4 @@
-// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit.internal;
 import goryachev.fx.util.FxPathBuilder;
 import javafx.scene.shape.LineTo;

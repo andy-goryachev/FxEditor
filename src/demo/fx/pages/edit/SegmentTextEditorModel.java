@@ -32,7 +32,7 @@ public class SegmentTextEditorModel
 		Text t = toText(seg);
 		
 		LineBox b = new LineBox();
-		b.text().add(t);
+		b.flow().add(t);
 		return b;
 	}
 	

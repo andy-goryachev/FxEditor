@@ -1,4 +1,4 @@
-// Copyright © 2007-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2007-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import goryachev.common.io.CWriter;
 import java.io.BufferedInputStream;
@@ -44,7 +44,7 @@ import java.util.zip.ZipFile;
 
 public final class CKit
 {
-	public static final String COPYRIGHT = "Copyright © 1996-2018 Andy Goryachev <andy@goryachev.com>  All Rights Reserved.";
+	public static final String COPYRIGHT = "Copyright © 1996-2019 Andy Goryachev <andy@goryachev.com>  All Rights Reserved.";
 	public static final char APPLE = '\u2318';
 	public static final char BOM = '\ufeff';
 	public static final String[] emptyStringArray = new String[0];
@@ -2348,6 +2348,11 @@ public final class CKit
 	
 	public static <S,T> List<T> transform(List<S> src, List<T> target, Function<S,T> converter)
 	{
+		if(src == null)
+		{
+			return null;
+		}
+		
 		int sz = src.size();
 		if(target == null)
 		{
@@ -2361,5 +2366,16 @@ public final class CKit
 			target.add(t);
 		}
 		return target;
+	}
+	
+	
+	public static byte[] copyOf(byte[] b)
+	{
+		if(b == null)
+		{
+			return null;
+		}
+		
+		return Arrays.copyOf(b, b.length);
 	}
 }

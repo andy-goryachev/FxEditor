@@ -1,4 +1,4 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
@@ -34,6 +34,13 @@ public class FxTable<T>
 	public FxTable()
 	{
 		table = new TableView<T>();
+		setCenter(table);
+	}
+	
+	
+	public FxTable(ObservableList<T> items)
+	{
+		table = new TableView<T>(items);
 		setCenter(table);
 	}
 	

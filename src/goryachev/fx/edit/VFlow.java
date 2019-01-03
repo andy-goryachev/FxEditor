@@ -1,4 +1,4 @@
-// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.fx.FX;
 import goryachev.fx.edit.internal.CaretLocation;
@@ -48,6 +48,7 @@ public class VFlow
 	protected double offsetx;
 	/** vertical offset or the viewport relative to the topmost line.  always positive */
 	protected double offsety;
+	private static final double MAX_LENGTH = 9_007_199_254_740_992L;
 
 	
 	public VFlow(FxEditor ed)
@@ -78,7 +79,7 @@ public class VFlow
 		caretAnimation = new Timeline();
 		caretAnimation.setCycleCount(Animation.INDEFINITE);
 		
-		getChildren().addAll(selectionHighlight, caretLineHighlight, caretPath);
+		getChildren().addAll(caretLineHighlight, selectionHighlight, caretPath);
 		setClip(clip);
 		
 		caretPath.visibleProperty().bind(new BooleanBinding()
@@ -309,9 +310,10 @@ public class VFlow
 			nd.applyCss();
 			la.addLineBox(b);
 			
-			double w = wrap ? wid : nd.prefWidth(-1);
+			// TODO need to cache preferred widths in case of wrapping off to select max width
+			double w = wrap ? wid : MAX_LENGTH;
 			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
-			double h = nd.prefHeight(w);
+			double h = nd.prefHeight(wrap ? w : -1);
 			
 			if(showLineNumbers)
 			{
@@ -624,10 +626,8 @@ public class VFlow
 			return;
 		}
 		
-		// get selection shapes for top and bottom lines
+		// get selection shapes for top and bottom segments,
 		// translated to this VFlow coordinates.
-		// when we say "visible text line" we mean the first row of text, since the model text line
-		// might contain multiple visible rows due to wrapping.
 		PathElement[] top;
 		PathElement[] bottom;
 		if(startMarker.getLine() == endMarker.getLine())
@@ -653,6 +653,7 @@ public class VFlow
 		// generate shapes
 		double left = layout.getLineNumbersColumnWidth();
 		double right = getWidth();
+		
 		SelectionHelper h = new SelectionHelper(b, left, right);
 		
 		h.process(top);
@@ -668,6 +669,7 @@ public class VFlow
 			h.process(bottom);
 
 			h.generateTop(top);
+			// FIX fails to create selection from a center of a longer string to a center of the subsequent shorter string
 			h.generateMiddle();
 			h.generateBottom(bottom);
 		}
