@@ -61,6 +61,11 @@ public class MainWindow extends FxWindow
 See [MainWindow.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/MainWindow.java)
 
 
+## Warning
+
+This project is not ready for production.  Mutable text models are not yet implemented.
+
+
 ## Similar Projects
 
 Tomas Mikula's [RichTextFX](https://github.com/TomasMikula/RichTextFX).
