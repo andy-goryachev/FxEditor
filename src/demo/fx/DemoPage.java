@@ -1,4 +1,4 @@
-// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package demo.fx;
 import goryachev.common.util.Log;
 import javafx.scene.Node;
