@@ -24,6 +24,7 @@ public class FxEditorLayout
 	private final CList<LineBox> lines = new CList<>();
 	private CMap<Integer,LineBox> newLines;
 	private double lineNumbersColumnWidth;
+	private double unwrappedWidth;
 	
 
 	public FxEditorLayout(FxEditor ed, int topLine)
@@ -205,5 +206,17 @@ public class FxEditorLayout
 	public double getLineNumbersColumnWidth()
 	{
 		return lineNumbersColumnWidth;
+	}
+	
+	
+	public void setUnwrappedWidth(double w)
+	{
+		unwrappedWidth = w;
+	}
+	
+	
+	public double getUnwrappedWidth()
+	{
+		return unwrappedWidth;
 	}
 }

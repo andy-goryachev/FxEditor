@@ -31,6 +31,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -1091,7 +1092,7 @@ public final class FX
 	}
 	
 	
-	public static  <T> void addOneShotListener(Property<T> p, Consumer<T> c)
+	public static <T> void addOneShotListener(Property<T> p, Consumer<T> c)
 	{
 		p.addListener(new ChangeListener<T>()
 		{
@@ -1101,5 +1102,12 @@ public final class FX
 				p.removeListener(this);
 			}
 		});
+	}
+	
+	
+	/** Prevents the node from being resized when the SplitPane is resized. */
+	public static void preventSplitPaneResizing(Node nd)
+	{
+		SplitPane.setResizableWithParent(nd, Boolean.FALSE);
 	}
 }

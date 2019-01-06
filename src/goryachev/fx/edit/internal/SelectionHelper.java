@@ -10,18 +10,16 @@ import javafx.scene.shape.PathElement;
  * Selection Helper encapsulates the logic required to generate selection shapes.
  * 
  * The goal is to find out which shapes correspond to the top-most and bottom-most 
- * text rows (in the presence of wrapping).  These shapes should be added to selection as is.
- * The (possible) space in between would generate a single rectangular block that fills the
- * width of the container:
+ * text rows (in the presence of wrapping).  These shapes (#) should be added to selection as is.
+ * Any space in between (x) would generate a single rectangular block that fills the
+ * width of the container.  Additional shapes (#) will be added when necessary to make
+ * the selection appear contiguious.  These shapes are positioned to the left or to the right
+ * of the selected text depending on the direction of text. - last part TODO
  * 
- *	 ----***--***----
- *	 ****************
- *	 ****************
- *	 ----**----------
- * 
- * This algorithm has a minor drawback where the top and bottom row selection may not go
- * to the left and right side of the container.  This is because I am too lazy to account 
- * for RTL/LTR text and wrapping.
+ *	 ----***--***####
+ *	 xxxxxxxxxxxxxxxx
+ *	 xxxxxxxxxxxxxxxx
+ *	 ####**----------
  */
 public class SelectionHelper
 {
@@ -52,7 +50,7 @@ public class SelectionHelper
 	}
 
 
-	public void process(PathElement[] elements)
+	protected void process(PathElement[] elements)
 	{
 		for(PathElement em: elements)
 		{
@@ -63,37 +61,7 @@ public class SelectionHelper
 	}
 
 
-	public void generateTop(PathElement[] elements)
-	{
-		boolean include = false;
-		double y;
-		for(PathElement em: elements)
-		{
-			if(em instanceof LineTo)
-			{
-				if(include)
-				{
-					pathBuilder.add(em);
-				}
-			}
-			else if(em instanceof MoveTo)
-			{
-				y = getY(em);
-				if((y == topUp) || (y == topDn))
-				{
-					pathBuilder.add(em);
-					include = true;
-				}
-				else
-				{
-					include = false;
-				}
-			}
-		}
-	}
-
-
-	public void generateMiddle()
+	protected void generateMiddle()
 	{
 		if(Double.isNaN(topUp))
 		{
@@ -112,36 +80,6 @@ public class SelectionHelper
 	}
 
 
-	public void generateBottom(PathElement[] elements)
-	{
-		boolean include = false;
-		double y;
-		for(PathElement em: elements)
-		{
-			if(em instanceof LineTo)
-			{
-				if(include)
-				{
-					pathBuilder.add(em);
-				}
-			}
-			else if(em instanceof MoveTo)
-			{
-				y = getY(em);
-				if((y == botUp) || (y == botDn))
-				{
-					pathBuilder.add(em);
-					include = true;
-				}
-				else
-				{
-					include = false;
-				}
-			}
-		}
-	}
-	
-	
 	protected double getY(PathElement em)
 	{
 		if(em instanceof LineTo)
@@ -233,6 +171,27 @@ public class SelectionHelper
 		else
 		{
 			return false;
+		}
+	}
+
+
+	public void generate(PathElement[] top, PathElement[] bottom, boolean topLTF, boolean bottomLTR)
+	{
+		process(top);
+		
+		if(bottom == null)
+		{
+			pathBuilder.addAll(top);
+		}
+		else
+		{
+			process(bottom);
+			
+			pathBuilder.addAll(top);
+			// TODO add top line trailer
+			generateMiddle();
+			// TODO add bottom line leader
+			pathBuilder.addAll(bottom);
 		}
 	}
 }

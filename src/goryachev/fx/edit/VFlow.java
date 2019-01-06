@@ -48,7 +48,6 @@ public class VFlow
 	protected double offsetx;
 	/** vertical offset or the viewport relative to the topmost line.  always positive */
 	protected double offsety;
-	private static final double MAX_LENGTH = 9_007_199_254_740_992L;
 
 	
 	public VFlow(FxEditor ed)
@@ -265,32 +264,37 @@ public class VFlow
 		
 		// TODO is loaded?
 		FxEditorModel model = editor.getModel();
-		int lines = model.getLineCount();
+		int lineCount = model.getLineCount();
 		FxEditorLayout la = new FxEditorLayout(editor, topLine);
 		
 		Insets pad = getInsets();
 		double ymax = height - pad.getBottom();
-		double y = pad.getTop() - offsety;
+		double y0 = pad.getTop() - offsety;
 		double x0 = pad.getLeft();
 		double x1 = x0;
 		boolean wrap = editor.isWrapText();
 		boolean showLineNumbers = editor.isShowLineNumbers();
 		boolean estimateLineNumberWidth = showLineNumbers;
 		double wid = width - x1 - pad.getRight();
-		double lineNumbersColumnWidth = 0;
+		double lineNumbersColumnWidth = 0.0;
+		double unwrappedWidth = -1.0;
 		
-		// from top to bottom
-		for(int ix=topLine; ix<lines; ix++)
+		// layout from top to bottom.
+		// stage 1: computing preferred sizes
+		
+		double y = y0;
+		for(int i=topLine; i<lineCount; i++)
 		{
-			LineBox b = (prev == null ? null : prev.getLineBox(ix));
+			LineBox b = (prev == null ? null : prev.getLineBox(i));
 			if(b == null)
 			{
-				b = model.getLineBox(ix);
-				b.init(ix);
+				b = model.getLineBox(i);
+				b.init(i);
 			}
 			
 			if(estimateLineNumberWidth)
 			{
+				// TODO can simply get the last line pref width after the sizing cycle, before the actual layout cycle
 				lineNumbersColumnWidth = estimateLineNumberColumnWidth(b.getLineNumberComponent());
 				
 				x1 += lineNumbersColumnWidth;
@@ -310,35 +314,72 @@ public class VFlow
 			nd.applyCss();
 			la.addLineBox(b);
 			
-			// TODO need to cache preferred widths in case of wrapping off to select max width
-			double w = wrap ? wid : MAX_LENGTH;
+			// TODO can use cached value if the vflow width is the same
+			double w = wrap ? wid : -1;
 			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
-			double h = nd.prefHeight(wrap ? w : -1);
+			double h = nd.prefHeight(w);
+			
+			if(!wrap)
+			{
+				Region center = b.getCenter();
+				double prefw = center == null ? 0.0 : center.prefWidth(-1);
+				if(unwrappedWidth < prefw)
+				{
+					unwrappedWidth = prefw;
+				}
+			}
 			
 			if(showLineNumbers)
 			{
 				Labeled nc = b.getLineNumberComponent();
-				setLineNumber(nc, ix);
+				setLineNumber(nc, i);
 				
 				nc.setManaged(true);
 				getChildren().add(nc);
 				nc.applyCss();
 				
-				h = Math.max(h, nc.prefHeight(lineNumbersColumnWidth));
+				h = Math.max(h, nc.prefHeight(-1));
 				b.setHeight(h);
 				b.setY(y);
+				
+//				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+//				layoutInArea(nc, x0, y, lineNumbersColumnWidth, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
+			}
+			else
+			{
+				b.setHeight(h);
+				
+//				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
+			}
+			
+			y += h;
+			if(y > ymax)
+			{
+				break;
+			}
+		}
+		
+		// stage 2: layout components
+		
+		y = y0;
+		for(int ix=topLine; ix<lineCount; ix++)
+		{
+			LineBox b = la.getLineBox(ix);
+			Region nd = b.getCenter();
+			double h = b.getHeight();
+			double w = wrap ? wid : unwrappedWidth;
+			
+			if(showLineNumbers)
+			{
+				Labeled nc = b.getLineNumberComponent();
 				
 				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 				layoutInArea(nc, x0, y, lineNumbersColumnWidth, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
 			}
 			else
 			{
-				b.setHeight(h);
-				
 				layoutInArea(nd, x1, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			}
-			
-			// TODO set line box width
 			
 			y += h;
 			if(y > ymax)
@@ -348,6 +389,7 @@ public class VFlow
 		}
 		
 		la.setLineNumbersColumnWidth(lineNumbersColumnWidth);
+		la.setUnwrappedWidth(unwrappedWidth);
 		
 		return la;
 	}
@@ -653,25 +695,11 @@ public class VFlow
 		// generate shapes
 		double left = layout.getLineNumbersColumnWidth();
 		double right = getWidth();
-		
-		SelectionHelper h = new SelectionHelper(b, left, right);
-		
-		h.process(top);
-		
-		if(bottom == null)
-		{
-			h.generateTop(top);
-			h.generateMiddle();
-			h.generateBottom(top);
-		}
-		else
-		{
-			h.process(bottom);
 
-			h.generateTop(top);
-			// FIX fails to create selection from a center of a longer string to a center of the subsequent shorter string
-			h.generateMiddle();
-			h.generateBottom(bottom);
-		}
+		// TODO
+		boolean topLTF = true;
+		boolean bottomLTR = true;
+		
+		new SelectionHelper(b, left, right).generate(top, bottom, topLTF, bottomLTR);
 	}
 }

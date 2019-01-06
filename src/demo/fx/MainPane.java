@@ -1,7 +1,10 @@
 // Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package demo.fx;
-import goryachev.fx.FxAction;
+import goryachev.common.util.D;
 import goryachev.fx.CPane;
+import goryachev.fx.FX;
+import goryachev.fx.FxAction;
+import goryachev.fx.FxInt;
 import goryachev.fx.table.FxTable;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -18,6 +21,7 @@ public class MainPane
 	public final FxTable<DemoPage> table;
 	public final CPane detailPane;
 	public final SplitPane split;
+	public final FxInt selectedPage = new FxInt();
 	
 	
 	public MainPane()
@@ -29,14 +33,26 @@ public class MainPane
 		table.setResizePolicyConstrained();
 		
 		table.getItems().setAll(AllPages.get());
-		table.selectedItemProperty().addListener((s) -> updateSelection());
+		table.selectedItemProperty().addListener((s,p,c) -> updateSelection());
+		table.selectedIndexProperty().addListener((s,p,c) -> selectedPage.set(c));
 		
 		split = new SplitPane(table, detailPane);
 		split.setOrientation(Orientation.HORIZONTAL);
+		FX.preventSplitPaneResizing(table);
 		
 		setCenter(split);
 		
 		table.selectFirst();
+		
+		FX.bind(this, "selectedPage", selectedPage);
+		FX.setOnSettingsLoaded(this, this::restoreSelection);
+	}
+	
+	
+	protected void restoreSelection()
+	{
+		int ix = selectedPage.get();
+		table.selectRow(ix);
 	}
 	
 	

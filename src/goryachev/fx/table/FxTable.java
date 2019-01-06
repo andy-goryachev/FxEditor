@@ -4,6 +4,7 @@ import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
 import goryachev.fx.internal.CssTools;
 import java.util.Collection;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -213,6 +214,12 @@ public class FxTable<T>
 	}
 	
 	
+	public void selectRow(int ix)
+	{
+		table.getSelectionModel().select(ix);
+	}
+	
+	
 	public void clearSelection()
 	{
 		table.getSelectionModel().clearSelection();
@@ -234,6 +241,12 @@ public class FxTable<T>
 	public ObservableList<T> selectedItemsProperty()
 	{
 		return getSelectionModel().getSelectedItems();
+	}
+	
+	
+	public ReadOnlyIntegerProperty selectedIndexProperty()
+	{
+		return getSelectionModel().selectedIndexProperty();
 	}
 
 
