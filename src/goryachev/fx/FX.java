@@ -1117,21 +1117,21 @@ public final class FX
 	/** sometimes MouseEvent.isPopupTrigger() is not enough */
 	public static boolean isPopupTrigger(MouseEvent ev)
 	{
-		if(CPlatform.isMac())
+		if(ev.getButton() == MouseButton.SECONDARY)
 		{
-			if
-			(
-				!ev.isAltDown() &&
-				!ev.isMetaDown() &&
-				!ev.isShiftDown()
-			)
+			if(CPlatform.isMac())
 			{
-				return true;
-			}		
-		}
-		else
-		{
-			if(ev.getButton() == MouseButton.SECONDARY)
+				if
+				(
+					!ev.isAltDown() &&
+					!ev.isMetaDown() &&
+					!ev.isShiftDown()
+				)
+				{
+					return true;
+				}
+			}
+			else
 			{
 				if
 				(
