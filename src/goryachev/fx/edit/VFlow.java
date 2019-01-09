@@ -697,9 +697,9 @@ public class VFlow
 		double right = getWidth();
 
 		// TODO
-		boolean topLTF = true;
+		boolean topLTR = true;
 		boolean bottomLTR = true;
 		
-		new SelectionHelper(b, left, right).generate(top, bottom, topLTF, bottomLTR);
+		new SelectionHelper(b, left, right).generate(top, bottom, topLTR, bottomLTR);
 	}
 }

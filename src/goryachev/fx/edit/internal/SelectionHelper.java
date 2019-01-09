@@ -1,5 +1,7 @@
 // Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit.internal;
+import goryachev.common.util.SB;
+import goryachev.fx.FX;
 import goryachev.fx.util.FxPathBuilder;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -14,7 +16,9 @@ import javafx.scene.shape.PathElement;
  * Any space in between (x) would generate a single rectangular block that fills the
  * width of the container.  Additional shapes (#) will be added when necessary to make
  * the selection appear contiguious.  These shapes are positioned to the left or to the right
- * of the selected text depending on the direction of text. - last part TODO
+ * of the selected text depending on the direction of text.
+ * 
+ * TODO RTL text
  * 
  *	 ----***--***####
  *	 xxxxxxxxxxxxxxxx
@@ -28,8 +32,12 @@ public class SelectionHelper
 	private final double right;
 	private double topUp = Double.NaN;
 	private double topDn = Double.NaN;
-	private double botUp = Double.NaN;
-	private double botDn = Double.NaN;
+	private double topLeft = Double.NaN;
+	private double topRight = Double.NaN;
+	private double bottomUp = Double.NaN;
+	private double bottomDn = Double.NaN;
+	private double bottomLeft = Double.NaN;
+	private double bottomRight = Double.NaN;
 
 	
 	public SelectionHelper(FxPathBuilder b, double left, double right)
@@ -45,90 +53,140 @@ public class SelectionHelper
 		return 
 			"topUp=" + topUp +
 			" topDn=" + topDn +
-			" botUp=" + botUp +
-			" botDn=" + botDn;
+			" botUp=" + bottomUp +
+			" botDn=" + bottomDn;
 	}
 
 
+	// computes edge coordinates for middle, top trailing, and bottom leading sections
 	protected void process(PathElement[] elements)
 	{
 		for(PathElement em: elements)
 		{
-			double y = getY(em);
-			setTop(y);
-			setBottom(y);
+			double x;
+			double y;
+			
+			if(em instanceof LineTo)
+			{
+				LineTo m = (LineTo)em;
+				x = m.getX();
+				y = m.getY();
+			}
+			else if(em instanceof MoveTo)
+			{
+				MoveTo m = (MoveTo)em;
+				x = m.getX();
+				y = m.getY();
+			}
+			else
+			{
+				throw new Error("?" + em);
+			}
+			
+			setTop(x, y);
+			setBottom(x, y);
 		}
 	}
 
 
-	protected void generateMiddle()
+	protected void generateMiddle(boolean topLTR, boolean bottomLTR)
 	{
 		if(Double.isNaN(topUp))
 		{
 			return;
 		}
 		
-		if(botUp > topDn)
+		// only if the middle exists
+		if(bottomUp > topDn)
 		{
-			// only if the middle exists
+			if(topLTR)
+			{
+				pathBuilder.moveto(topRight, topUp);
+				pathBuilder.lineto(right, topUp);
+				pathBuilder.lineto(right, topDn);
+				pathBuilder.lineto(topRight, topDn);
+				pathBuilder.lineto(topRight, topUp);
+			}
+			else
+			{
+				// TODO
+			}
+			
 			pathBuilder.moveto(left, topDn);
 			pathBuilder.lineto(right, topDn);
-			pathBuilder.lineto(right, botUp);
-			pathBuilder.lineto(left, botUp);
+			pathBuilder.lineto(right, bottomUp);
+			pathBuilder.lineto(left, bottomUp);
 			pathBuilder.lineto(left, topDn);
+			
+			// TODO trailer
 		}
 	}
 
-
-	protected double getY(PathElement em)
-	{
-		if(em instanceof LineTo)
-		{
-			LineTo m = (LineTo)em;
-			return m.getY();
-		}
-		else if(em instanceof MoveTo)
-		{
-			MoveTo m = (MoveTo)em;
-			return m.getY();
-		}
-		else
-		{
-			throw new Error("?" + em);
-		}
-	}
 	
-	
-	protected void setTop(double y)
+	protected void setTop(double x, double y)
 	{
+		boolean setx = false;
+		
 		if(isSmaller(y, topUp))
 		{
 			if(isSmaller(topUp, topDn))
 			{
 				topDn = topUp;
+				setx = true;
 			}
 			topUp = y;
 		}
 		else if(isSmaller(y, topDn) && (y > topUp))
 		{
 			topDn = y;
+			setx = true;
+		}
+		
+		if(setx)
+		{
+			if(isSmaller(x, topLeft))
+			{
+				topLeft = x;
+			}
+			
+			if(!isSmaller(topRight, x))
+			{
+				topRight = x;
+			}
 		}
 	}
 	
 
-	protected void setBottom(double y)
+	protected void setBottom(double x, double y)
 	{
-		if(isLarger(y, botDn))
+		boolean setx = false;
+		
+		if(isLarger(y, bottomDn))
 		{
-			if(isLarger(botDn, botUp))
+			if(isLarger(bottomDn, bottomUp))
 			{
-				botUp = botDn;
+				bottomUp = bottomDn;
+				setx = true;
 			}
-			botDn = y;
+			bottomDn = y;
 		}
-		else if(isLarger(y, botUp) && (y < botDn))
+		else if(isLarger(y, bottomUp) && (y < bottomDn))
 		{
-			botUp = y;
+			bottomUp = y;
+			setx = true;
+		}
+		
+		if(setx)
+		{
+			if(isSmaller(x, bottomLeft))
+			{
+				bottomLeft = x;
+			}
+			
+			if(!isSmaller(x, bottomRight))
+			{
+				bottomRight = x;
+			}
 		}
 	}
 	
@@ -173,10 +231,51 @@ public class SelectionHelper
 			return false;
 		}
 	}
-
-
-	public void generate(PathElement[] top, PathElement[] bottom, boolean topLTF, boolean bottomLTR)
+	
+	
+	private static int r(double x)
 	{
+		return FX.round(x);
+	}
+	
+	
+	private static String dump(PathElement[] elements)
+	{
+		SB sb = new SB();
+		if(elements == null)
+		{
+			sb.append("null");
+		}
+		else
+		{
+			for(PathElement em: elements)
+			{
+				if(em instanceof MoveTo)
+				{
+					MoveTo m = (MoveTo)em;
+					sb.a("M");
+					sb.a(r(m.getX()));
+					sb.a(",");
+					sb.a(r(m.getY()));
+					sb.a(" ");
+				}
+				else if(em instanceof LineTo)
+				{
+					LineTo m = (LineTo)em;
+					sb.a("L");
+					sb.a(r(m.getX()));
+					sb.a(",");
+					sb.a(r(m.getY()));
+					sb.a(" ");
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+
+	public void generate(PathElement[] top, PathElement[] bottom, boolean topLTR, boolean bottomLTR)
+	{		
 		process(top);
 		
 		if(bottom == null)
@@ -187,10 +286,12 @@ public class SelectionHelper
 		{
 			process(bottom);
 			
+//			D.print("top", dump(top), "bottom", dump(bottom)); // FIX
+//			D.print(" top=(" + r(topLeft) + "x" + r(topUp) + ")..(" + r(topRight) + "x" + r(topDn) + ")");
+//			D.print(" bot=(" + r(bottomLeft) + "x" + r(bottomUp) + ")..(" + r(bottomRight) + "x" + r(bottomDn) + ")");
+			
 			pathBuilder.addAll(top);
-			// TODO add top line trailer
-			generateMiddle();
-			// TODO add bottom line leader
+			generateMiddle(topLTR, bottomLTR);
 			pathBuilder.addAll(bottom);
 		}
 	}
