@@ -1,5 +1,6 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.CPlatform;
 import goryachev.fx.edit.FxEditor;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.internal.FxCssProp;
@@ -38,6 +39,13 @@ public class CommonStyles
 				prop("-fx-focus-color", theme.focus),
 				// focus glow
 				prop("-fx-faint-focus-color", TRANSPARENT)
+				
+				// TODO need conditional
+//				CPlatform.isMac() ? new Object[]
+//				{
+//					prop("-fx-font-size", "10pt"),
+//					prop("-fx-font-type", "Dialog")
+//				} : ""
 			),
 			
 			button(theme),

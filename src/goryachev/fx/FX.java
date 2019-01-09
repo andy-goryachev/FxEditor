@@ -1,5 +1,6 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.CPlatform;
 import goryachev.common.util.GlobalSettings;
 import goryachev.fx.hacks.FxHacks;
 import goryachev.fx.internal.CssTools;
@@ -40,6 +41,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -1109,5 +1111,40 @@ public final class FX
 	public static void preventSplitPaneResizing(Node nd)
 	{
 		SplitPane.setResizableWithParent(nd, Boolean.FALSE);
+	}
+	
+	
+	/** sometimes MouseEvent.isPopupTrigger() is not enough */
+	public static boolean isPopupTrigger(MouseEvent ev)
+	{
+		if(CPlatform.isMac())
+		{
+			if
+			(
+				!ev.isAltDown() &&
+				!ev.isMetaDown() &&
+				!ev.isShiftDown()
+			)
+			{
+				return true;
+			}		
+		}
+		else
+		{
+			if(ev.getButton() == MouseButton.SECONDARY)
+			{
+				if
+				(
+					!ev.isAltDown() &&
+					!ev.isControlDown() &&
+					!ev.isMetaDown() &&
+					!ev.isShiftDown()
+				)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

@@ -1,6 +1,7 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.D;
+import goryachev.fx.FX;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
@@ -94,9 +95,14 @@ public class FxEditorMouseHandler
 	
 	public void handleMousePressed(MouseEvent ev)
 	{
+		if(FX.isPopupTrigger(ev))
+		{
+			return;
+		}
+
 		Marker pos = getTextPos(ev);
 		editor.setSuppressBlink(true);
-				
+		
 		if(ev.isShiftDown())
 		{
 			// expand selection from the anchor point to the current position
@@ -127,7 +133,7 @@ public class FxEditorMouseHandler
 		editor.requestFocus();
 	}
 	
-	
+
 	public void handleMouseDragged(MouseEvent ev)
 	{
 		double y = ev.getY();
