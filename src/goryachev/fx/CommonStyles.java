@@ -39,15 +39,23 @@ public class CommonStyles
 				prop("-fx-focus-color", theme.focus),
 				// focus glow
 				prop("-fx-faint-focus-color", TRANSPARENT)
-				
-				// TODO need conditional
-//				CPlatform.isMac() ? new Object[]
-//				{
-//					prop("-fx-font-size", "10pt"),
-//					prop("-fx-font-type", "Dialog")
-//				} : ""
-			),
+			)
+		);
+		
+		if(CPlatform.isMac())
+		{
+			add
+			(
+				selector(".root").defines
+				(
+					prop("-fx-font-size", "10pt"),
+					prop("-fx-font-type", "Dialog")
+				)
+			);
+		}
 			
+		add
+		(
 			button(theme),
 			// FIX
 //			checkbox(theme),						
