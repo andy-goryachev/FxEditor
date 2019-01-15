@@ -118,7 +118,20 @@ public class SelectionHelper
 			pathBuilder.lineto(left, bottomUp);
 			pathBuilder.lineto(left, topDn);
 			
-			// TODO trailer
+			// trailer
+			
+			if(bottomLTR)
+			{
+				pathBuilder.moveto(left, bottomUp);
+				pathBuilder.lineto(bottomLeft, bottomUp);
+				pathBuilder.lineto(bottomLeft, bottomDn);
+				pathBuilder.lineto(left, bottomDn);
+				pathBuilder.lineto(left, bottomUp);
+			}
+			else
+			{
+				// TODO
+			}
 		}
 	}
 

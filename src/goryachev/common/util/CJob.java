@@ -252,8 +252,14 @@ public abstract class CJob
 	
 	public void submit()
 	{
+		submit(this);
+	}
+	
+	
+	public static void submit(Runnable r)
+	{
 		ApplicationSupport.shutdownCJobExecutor = true;
-		exec.submit(this);
+		exec.submit(r);
 	}
 	
 	

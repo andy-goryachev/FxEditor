@@ -272,7 +272,7 @@ public class VFlow
 		double y0 = pad.getTop() - offsety;
 		double x0 = pad.getLeft();
 		double x1 = x0;
-		boolean wrap = editor.isWrapText();
+		boolean wrap = editor.isWordWrap();
 		boolean showLineNumbers = editor.isShowLineNumbers();
 		boolean estimateLineNumberWidth = showLineNumbers;
 		double wid = width - x1 - pad.getRight();
@@ -400,7 +400,7 @@ public class VFlow
 		// warning: the same code in recreateLayout() above
 		Insets pad = getInsets();
 		double x0 = pad.getLeft();
-		boolean wrap = editor.isWrapText();
+		boolean wrap = editor.isWordWrap();
 		double width = getWidth();
 		
 		// TODO account for leading, trailing components

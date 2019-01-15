@@ -58,7 +58,7 @@ public class CssLoader
 				}
 			});
 			
-			if(Boolean.getBoolean(CONTINUOUS_REFRESH_PROPERTY))
+			if(FxConfig.continuousCssRefresh || Boolean.getBoolean(CONTINUOUS_REFRESH_PROPERTY))
 			{
 				Thread t = new Thread("reloading css")
 				{
@@ -158,7 +158,7 @@ public class CssLoader
 					Platform.runLater(() -> update(old, url));
 				}
 				
-				if(Boolean.getBoolean(DUMP_CSS_PROPERTY))
+				if(FxConfig.dumpCSS || Boolean.getBoolean(DUMP_CSS_PROPERTY))
 				{
 					// stderr is ok here
 					System.err.println(css);

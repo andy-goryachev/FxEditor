@@ -41,7 +41,7 @@ public class FxEditorDemoPane
 	{
 		FxPopupMenu m = new FxPopupMenu();
 		m.checkItem("Show Line Numbers", ed.showLineNumbersProperty());
-		m.checkItem("Wrap Text", ed.wrapTextProperty());
+		m.checkItem("Word Wrap", ed.wordWrapProperty());
 		m.separator();
 		m.item("Test");
 		return m;

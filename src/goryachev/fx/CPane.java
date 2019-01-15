@@ -27,7 +27,7 @@ import javafx.scene.layout.Region;
 public class CPane
 	extends Pane
 {
-	public static final CssStyle CPANE = new CssStyle();
+	public static final CssStyle STYLE = new CssStyle("CPane_PANE");
 	public static final double FILL = -1.0;
 	public static final double PREF = -2.0;
 	
@@ -59,7 +59,7 @@ public class CPane
 	/** sets standard padding and gaps */
 	public void setDefaultStyle()
 	{
-		FX.style(this, CPANE);
+		FX.style(this, STYLE);
 	}
 	
 	

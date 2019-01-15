@@ -38,7 +38,7 @@ public class MainWindow
 		setSize(600, 700);
 		
 		// props
-		bind("WRAP_TEXT", editor().wrapTextProperty());
+		bind("WORD_WRAP", editor().wordWrapProperty());
 		bind("SHOW_LINE_NUMBERS", editor().showLineNumbersProperty());
 		
 		// debug
@@ -93,7 +93,7 @@ public class MainWindow
 		// view
 		m.menu("View");
 		m.item("Show Line Numbers", editor().showLineNumbersProperty());
-		m.item("Wrap Text", editor().wrapTextProperty());
+		m.item("Word Wrap", editor().wordWrapProperty());
 		// help
 		m.menu("Help");
 		m.item("About");

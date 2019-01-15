@@ -67,7 +67,7 @@ public class FxEditor
 	
 	protected final FxBoolean editableProperty = new FxBoolean(false);
 	protected final ReadOnlyObjectWrapper<FxEditorModel> modelProperty = new ReadOnlyObjectWrapper<>();
-	protected final FxBoolean wrapTextProperty = new FxBoolean(true);
+	protected final FxBoolean wordWrapProperty = new FxBoolean(true);
 	protected final ReadOnlyBooleanWrapper multipleSelectionProperty = new ReadOnlyBooleanWrapper(false);
 	protected final FxBoolean displayCaretProperty = new FxBoolean(true);
 	protected final FxBoolean showLineNumbersProperty = new FxBoolean(false);
@@ -105,7 +105,7 @@ public class FxEditor
 		vscroll = createVScrollBar();
 		
 		hscroll = createHScrollBar();
-		hscroll.visibleProperty().bind(wrapTextProperty.not());
+		hscroll.visibleProperty().bind(wordWrapProperty.not());
 		
 		getChildren().addAll(vflow, vscroll, hscroll);
 		
@@ -113,7 +113,7 @@ public class FxEditor
 
 		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
 		Binder.onChange(this::updateLayout, widthProperty(), heightProperty(), showLineNumbersProperty);
-		wrapTextProperty.addListener((s,p,c) -> updateLayout());
+		wordWrapProperty.addListener((s,p,c) -> updateLayout());
 		
 		keymap = createKeyMap();
 		
@@ -300,21 +300,21 @@ public class FxEditor
 	}
 	
 	
-	public boolean isWrapText()
+	public boolean isWordWrap()
 	{
-		return wrapTextProperty.get();
+		return wordWrapProperty.get();
 	}
 	
 	
-	public void setWrapText(boolean on)
+	public void setWordWrap(boolean on)
 	{
-		wrapTextProperty.set(on);
+		wordWrapProperty.set(on);
 	}
 	
 	
-	public BooleanProperty wrapTextProperty()
+	public BooleanProperty wordWrapProperty()
 	{
-		return wrapTextProperty;
+		return wordWrapProperty;
 	}
 	
 	

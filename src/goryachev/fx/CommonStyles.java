@@ -48,7 +48,7 @@ public class CommonStyles
 			(
 				selector(".root").defines
 				(
-					prop("-fx-font-size", "10pt"),
+					prop("-fx-font-size", "9pt"),
 					prop("-fx-font-type", "Dialog")
 				)
 			);
@@ -581,7 +581,7 @@ public class CommonStyles
 	{
 		return new Object[]
 		{
-			selector(CPane.CPANE).defines
+			selector(CPane.STYLE).defines
 			(
 				padding(10),
 				prop("-ag-hgap", 10),
