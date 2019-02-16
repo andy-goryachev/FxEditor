@@ -24,9 +24,14 @@ public class Markers
 		Marker m = new Marker(this, lineNumber, charIndex, leading);
 		markers.add(m);
 		
-		if(markers.size() > 1000000)
+		if(markers.size() > 1_000_000)
 		{
-			throw new Error("too many markers");
+			markers.gc();
+			
+			if(markers.size() > 1_000_000)
+			{	
+				throw new Error("too many markers");
+			}
 		}
 		
 		return m;

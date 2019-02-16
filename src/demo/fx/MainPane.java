@@ -30,7 +30,7 @@ public class MainPane
 		
 		table = new FxTable();
 		table.addColumn("Example");
-		table.setResizePolicyConstrained();
+		table.setAutoResizeMode(true);
 		
 		table.getItems().setAll(AllPages.get());
 		table.selectedItemProperty().addListener((s,p,c) -> updateSelection());

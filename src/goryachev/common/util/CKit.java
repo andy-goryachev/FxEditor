@@ -2153,13 +2153,27 @@ public final class CKit
 	 * utility method converts a String Collection to a String[].
 	 * returns null if input is null 
 	 */ 
-	public static String[] toArray(Collection<String> x)
+	public static String[] toArray(Collection<String> coll)
 	{
-		if(x == null)
+		if(coll == null)
 		{
 			return null;
 		}
-		return x.toArray(new String[x.size()]);
+		return coll.toArray(new String[coll.size()]);
+	}
+	
+	
+	/** converts a collection to an array.  returns null if collection is null */
+	public static <T> T[] toArray(Class<T> type, Collection<T> coll)
+	{
+		if(coll == null)
+		{
+			return null;
+		}
+		
+		int sz = coll.size();
+		T[] a = (T[])Array.newInstance(type, sz);
+		return coll.toArray(a);
 	}
 	
 	

@@ -118,6 +118,7 @@ public class StandardFxProperties
 	
 	public static String commas(Object ... xs) { return CssTools.list(",", xs); }
 	public static String spaces(Object ... xs) { return CssTools.list(" ", xs); }
+	public static String px(int px) { return px + "px"; }
 	
 	
 	public static Object shadow()

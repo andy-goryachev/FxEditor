@@ -2,13 +2,15 @@
 package goryachev.fx.table;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
-import goryachev.fx.internal.CssTools;
+import goryachev.fx.FxBoolean;
 import java.util.Collection;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -30,12 +32,14 @@ public class FxTable<T>
 	extends BorderPane
 {
 	public final TableView<T> table;
+	public final FxBoolean autoResizeMode = new FxBoolean();
 	
 	
 	public FxTable()
 	{
 		table = new TableView<T>();
 		setCenter(table);
+		init();
 	}
 	
 	
@@ -43,6 +47,63 @@ public class FxTable<T>
 	{
 		table = new TableView<T>(items);
 		setCenter(table);
+		init();
+	}
+	
+	
+	private void init()
+	{
+		table.skinProperty().addListener((s,p,c) -> fixHorizontalScrollbar());
+	}
+	
+	
+	public boolean isAutoResizeMode()
+	{
+		return autoResizeMode.get();
+	}
+	
+	
+	public void setAutoResizeMode(boolean on)
+	{
+		autoResizeMode.set(on);
+
+		if(on)
+		{
+			// TODO implement a better resizing policy that uses preferred column width
+			table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		}
+		else
+		{
+			table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+		}
+		fixHorizontalScrollbar();
+	}
+	
+	
+	protected void fixHorizontalScrollbar()
+	{
+		for(Node n: lookupAll(".scroll-bar"))
+		{
+			if(n instanceof ScrollBar)
+			{
+				ScrollBar b = (ScrollBar)n;
+				if(b.getOrientation() == Orientation.HORIZONTAL)
+				{
+					if(isAutoResizeMode())
+					{
+						b.setManaged(false);
+						b.setPrefHeight(0);
+						b.setPrefWidth(0);
+					}
+					else
+					{
+						b.setManaged(true);
+						b.setPrefHeight(USE_COMPUTED_SIZE);
+						b.setPrefWidth(USE_COMPUTED_SIZE);
+					}
+				}
+			}
+		}
 	}
 	
 	
@@ -159,13 +220,6 @@ public class FxTable<T>
 	{
 		clearSelection();
 		table.getItems().clear();
-	}
-	
-	
-	public void setResizePolicyConstrained()
-	{
-		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-		FX.style(table, CssTools.NO_HORIZONTAL_SCROLL_BAR);
 	}
 	
 	

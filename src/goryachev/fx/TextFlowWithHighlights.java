@@ -29,6 +29,9 @@ public class TextFlowWithHighlights
 	}
 	
 	
+	/**
+	 * adds a highlight.  the node that implements a highlight is a Path (Shape)
+	 */
 	public void addHighlight(CssStyle style, int start, int end)
 	{
 		HL h = new HL();
@@ -56,9 +59,13 @@ public class TextFlowWithHighlights
 		for(HL h: highlights)
 		{
 			PathElement[] es = getRange(h.start, h.end);
-			h.path = new Path(es);
-			h.path.getStyleClass().add(h.style.getName());
-			getChildren().add(ix, h.path);
+			
+			Path p = new Path(es);
+			p.setManaged(false);
+			p.getStyleClass().add(h.style.getName());
+			getChildren().add(ix, p);
+			
+			h.path = p;
 			ix++;
 		}
 	}

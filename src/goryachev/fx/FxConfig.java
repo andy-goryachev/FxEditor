@@ -3,10 +3,13 @@ package goryachev.fx;
 
 
 /**
- * Application-wide flags to be used in development.
+ * These application-wide flags control FX subsystem.
  */
 public class FxConfig
 {
-	public static boolean continuousCssRefresh = false;
-	public static boolean dumpCSS = false;
+	/** -Dcss.refresh=true enables polling of css style sheet for changes */
+	public static boolean continuousCssRefresh() { return Boolean.getBoolean("css.refresh"); };
+	
+	/** -Dcss.dump=true enables CSS dump to stdout upon startup and also upon change */
+	public static boolean dumpCSS() { return Boolean.getBoolean("css.dump"); }
 }

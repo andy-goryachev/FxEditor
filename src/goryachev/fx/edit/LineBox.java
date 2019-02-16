@@ -233,16 +233,16 @@ public class LineBox
 	}
 
 
-	public void addBoxOutline(FxPathBuilder b, double w)
+	public void addBoxOutline(FxPathBuilder b, double x, double w)
 	{
 		double y0 = center.getLayoutY();
 		double y1 = y0 + center.getHeight();
 		
-		b.moveto(0, y0);
+		b.moveto(x, y0);
 		b.lineto(w, y0);
 		b.lineto(w, y1);
-		b.lineto(0, y1);
-		b.lineto(0, y0);
+		b.lineto(x, y1);
+		b.lineto(x, y0);
 	}
 	
 	

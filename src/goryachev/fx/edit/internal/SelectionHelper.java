@@ -24,20 +24,23 @@ import javafx.scene.shape.PathElement;
  *	 xxxxxxxxxxxxxxxx
  *	 xxxxxxxxxxxxxxxx
  *	 ####**----------
+ *
+ * TODO this class can be static because everything happens in FX app thread.
  */
 public class SelectionHelper
 {
 	private final FxPathBuilder pathBuilder;
 	private final double left;
 	private final double right;
-	private double topUp = Double.NaN;
-	private double topDn = Double.NaN;
-	private double topLeft = Double.NaN;
-	private double topRight = Double.NaN;
-	private double bottomUp = Double.NaN;
-	private double bottomDn = Double.NaN;
-	private double bottomLeft = Double.NaN;
-	private double bottomRight = Double.NaN;
+	private double topUp = Double.POSITIVE_INFINITY;
+	private double topDn = Double.POSITIVE_INFINITY;
+	private double topLeft = Double.POSITIVE_INFINITY;
+	private double topRight = Double.NEGATIVE_INFINITY;
+	private double bottomUp = Double.NEGATIVE_INFINITY;
+	private double bottomDn = Double.NEGATIVE_INFINITY;
+	private double bottomLeft = Double.POSITIVE_INFINITY;
+	private double bottomRight = Double.NEGATIVE_INFINITY;
+	private static final double EPSILON = 0.001; // float point arithmetic is inexact
 
 	
 	public SelectionHelper(FxPathBuilder b, double left, double right)
@@ -56,35 +59,33 @@ public class SelectionHelper
 			" botUp=" + bottomUp +
 			" botDn=" + bottomDn;
 	}
-
-
-	// computes edge coordinates for middle, top trailing, and bottom leading sections
-	protected void process(PathElement[] elements)
+	
+	
+	@FunctionalInterface
+	protected interface PathHandler
+	{
+		public void processPoint(double x, double y);
+	}
+	
+	
+	protected void process(PathElement[] elements, PathHandler h)
 	{
 		for(PathElement em: elements)
 		{
-			double x;
-			double y;
-			
 			if(em instanceof LineTo)
 			{
 				LineTo m = (LineTo)em;
-				x = m.getX();
-				y = m.getY();
+				h.processPoint(m.getX(), m.getY());
 			}
 			else if(em instanceof MoveTo)
 			{
 				MoveTo m = (MoveTo)em;
-				x = m.getX();
-				y = m.getY();
+				h.processPoint(m.getX(), m.getY());
 			}
 			else
 			{
 				throw new Error("?" + em);
 			}
-			
-			setTop(x, y);
-			setBottom(x, y);
 		}
 	}
 
@@ -135,123 +136,15 @@ public class SelectionHelper
 		}
 	}
 
-	
-	protected void setTop(double x, double y)
-	{
-		boolean setx = false;
-		
-		if(isSmaller(y, topUp))
-		{
-			if(isSmaller(topUp, topDn))
-			{
-				topDn = topUp;
-				setx = true;
-			}
-			topUp = y;
-		}
-		else if(isSmaller(y, topDn) && (y > topUp))
-		{
-			topDn = y;
-			setx = true;
-		}
-		
-		if(setx)
-		{
-			if(isSmaller(x, topLeft))
-			{
-				topLeft = x;
-			}
-			
-			if(!isSmaller(topRight, x))
-			{
-				topRight = x;
-			}
-		}
-	}
-	
 
-	protected void setBottom(double x, double y)
-	{
-		boolean setx = false;
-		
-		if(isLarger(y, bottomDn))
-		{
-			if(isLarger(bottomDn, bottomUp))
-			{
-				bottomUp = bottomDn;
-				setx = true;
-			}
-			bottomDn = y;
-		}
-		else if(isLarger(y, bottomUp) && (y < bottomDn))
-		{
-			bottomUp = y;
-			setx = true;
-		}
-		
-		if(setx)
-		{
-			if(isSmaller(x, bottomLeft))
-			{
-				bottomLeft = x;
-			}
-			
-			if(!isSmaller(x, bottomRight))
-			{
-				bottomRight = x;
-			}
-		}
-	}
-	
-
-	protected boolean isSmaller(double y, double current)
-	{
-		if(Double.isNaN(y))
-		{
-			return false;
-		}
-		else if(Double.isNaN(current))
-		{
-			return true;
-		}
-		else if(y < current)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	
-	protected boolean isLarger(double y, double current)
-	{
-		if(Double.isNaN(y))
-		{
-			return false;
-		}
-		else if(Double.isNaN(current))
-		{
-			return true;
-		}
-		else if(y > current)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	
+	@Deprecated // debugging
 	private static int r(double x)
 	{
 		return FX.round(x);
 	}
 	
 	
+	@Deprecated // debugging
 	private static String dump(PathElement[] elements)
 	{
 		SB sb = new SB();
@@ -285,23 +178,97 @@ public class SelectionHelper
 		}
 		return sb.toString();
 	}
+	
+	
+	protected boolean isNear(double a, double b)
+	{
+		return Math.abs(a - b) < EPSILON;
+	}
+	
+	
+	protected void determineTopYLimits(double x, double y)
+	{
+		if(y < topUp)
+		{
+			topUp = y;
+		}
+	}
+	
+	
+	protected void determineTopXLimits(double x, double y)
+	{
+		if(isNear(y, topUp))
+		{			
+			if(x < topLeft)
+			{
+				topLeft = x;
+			}
+			
+			if(x > topRight)
+			{
+				topRight = x;
+			}
+		}
+		else
+		{
+			if(y < topDn)
+			{
+				topDn = y;
+			}	
+		}
+	}
+	
+	
+	protected void determineBottomYLimits(double x, double y)
+	{
+		if(y > bottomDn)
+		{
+			bottomDn = y;
+		}
+	}
+	
+	
+	protected void determineBottomXLimits(double x, double y)
+	{
+		if(isNear(y, bottomDn))
+		{
+			if(x < bottomLeft)
+			{
+				bottomLeft = x;
+			}
+			
+			if(x > bottomRight)
+			{
+				bottomRight = x;
+			}
+		}
+		else
+		{
+			if(y > bottomUp)
+			{
+				bottomUp = y;
+			}
+		}
+	}
 
 
 	public void generate(PathElement[] top, PathElement[] bottom, boolean topLTR, boolean bottomLTR)
 	{		
-		process(top);
-		
 		if(bottom == null)
 		{
 			pathBuilder.addAll(top);
 		}
 		else
 		{
-			process(bottom);
+			process(top, this::determineTopYLimits);
+			process(top, this::determineTopXLimits);
+
+			process(bottom, this::determineBottomYLimits);
+			process(bottom, this::determineBottomXLimits);
 			
 //			D.print("top", dump(top), "bottom", dump(bottom)); // FIX
-//			D.print(" top=(" + r(topLeft) + "x" + r(topUp) + ")..(" + r(topRight) + "x" + r(topDn) + ")");
-//			D.print(" bot=(" + r(bottomLeft) + "x" + r(bottomUp) + ")..(" + r(bottomRight) + "x" + r(bottomDn) + ")");
+//			D.print(" top: y=" + r(topUp) + ".." + r(topDn) + " x=" + r(topLeft) + ".." +  r(topRight));
+//			D.print(" bot: y=" + r(bottomUp) + ".." + r(bottomDn) + " x=" + r(bottomLeft) + ".." + r(bottomRight));
 			
 			pathBuilder.addAll(top);
 			generateMiddle(topLTR, bottomLTR);

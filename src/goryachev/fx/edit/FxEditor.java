@@ -616,12 +616,21 @@ public class FxEditor
 	}
 
 
-	public void scrollToVisible(int ix)
+	public void scrollToVisible(int row)
 	{
-		if((ix >= 0) && (ix < getLineCount()))
+		if((row >= 0) && (row < getLineCount()))
 		{
 			// FIX smarter positioning so the target line is somewhere at 25% of the height
-			vflow.scrollToVisible(ix);
+			vflow.scrollToVisible(row);
+		}
+	}
+	
+	
+	public void setOrigin(int row)
+	{
+		if((row >= 0) && (row < getLineCount()))
+		{
+			vflow.setOrigin(row, 0);
 		}
 	}
 	
@@ -740,6 +749,14 @@ public class FxEditor
 			return true;
 		}
 	}
+	
+	
+	public void setCaret(int row, int charIndex)
+	{
+		D.print(row); // FIX
+		Marker m = newMarker(row, charIndex, true);
+		select(m, m);
+	}
 
 
 	public void selectLine(Marker m)
@@ -778,5 +795,12 @@ public class FxEditor
 	public int getTextLength(int line)
 	{
 		return getModel().getTextLength(line);
+	}
+
+
+	/** recreate visible area */
+	public void reloadVisibleArea()
+	{
+		vflow.invalidateLayout();
 	}
 }

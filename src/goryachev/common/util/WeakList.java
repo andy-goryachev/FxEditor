@@ -21,6 +21,21 @@ public class WeakList<T>
 	{
 		list = new CList<>(size);
 	}
+	
+	
+	public void gc()
+	{
+		int sz = list.size();
+		for(int i=sz-1; i>=0; i--)
+		{
+			WeakReference<T> ref = list.get(i);
+			T item = ref.get();
+			if(item == null)
+			{
+				list.remove(i);
+			}
+		}
+	}
 
 
 	public CList<T> asList()
