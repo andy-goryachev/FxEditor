@@ -7,11 +7,10 @@ import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxWindow;
 import goryachev.fx.edit.FxEditor;
 import goryachev.fx.edit.FxEditorModel;
-import demo.fx.pages.edit.TestFxColorEditorModel;
 
 
 /**
- * Demo Window.
+ * FxEditor Demo Window.
  */
 public class MainWindow
 	extends FxWindow
@@ -27,7 +26,7 @@ public class MainWindow
 
 		if(m == null)
 		{
-			m = new TestFxColorEditorModel(2_000_000_000);
+			m = new DemoColorEditorModel(2_000_000_000);
 		}
 		this.model = m;
 		mainPane = new MainPane(model);
@@ -103,7 +102,6 @@ public class MainWindow
 	
 	protected void preferences()
 	{
-		new PreferencesDialog(this).open();
 	}
 	
 	

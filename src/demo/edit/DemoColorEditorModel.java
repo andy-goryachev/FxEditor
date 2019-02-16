@@ -1,26 +1,24 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
-package demo.fx.pages.edit;
+package demo.edit;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.fx.edit.AbstractPlainTextEditorModel;
 import goryachev.fx.edit.Edit;
 import goryachev.fx.edit.LineBox;
-import demo.edit.DemoSyntax;
-import demo.edit.Segment;
 import javafx.scene.text.Text;
 
 
 /**
  * test plain text model with up to 2 billion rows
  */
-public class TestFxColorEditorModel
+public class DemoColorEditorModel
 	extends AbstractPlainTextEditorModel
 {
 	private final int lineCount;
 	private final String[] lines;
 	
 	
-	public TestFxColorEditorModel(int lineCount)
+	public DemoColorEditorModel(int lineCount)
 	{
 		this.lineCount = lineCount;
 		this.lines = readFile();
@@ -32,7 +30,7 @@ public class TestFxColorEditorModel
 		String resource = "example.txt";
 		try
 		{
-			String[] ss = CKit.readLines(TestFxColorEditorModel.class, resource);
+			String[] ss = CKit.readLines(DemoColorEditorModel.class, resource);
 			return ss;
 		}
 		catch(Exception e)
