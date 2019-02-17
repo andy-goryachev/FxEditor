@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * Fast Hashing to be used in hashCode().
  * 
- * Based on standard java polynomial hash value computation algorithm using
+ * This code is based on standard java polynomial hash value computation algorithm.
  */
 public class FH
 {

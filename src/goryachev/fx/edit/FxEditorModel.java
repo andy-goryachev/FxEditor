@@ -244,7 +244,10 @@ public abstract class FxEditorModel
 				
 				if(i == last)
 				{
-					s = s.substring(0, m1.getLineOffset());
+					if(s.length() > 0)
+					{
+						s = s.substring(0, m1.getLineOffset());
+					}
 				}
 			}
 			

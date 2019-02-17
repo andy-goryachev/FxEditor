@@ -185,6 +185,88 @@ public class CommonStyles
 					backgroundColor(commas(theme.focus, Color.WHITE)),
 					backgroundInsets("0, 1"),
 					backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+				),
+				
+				selector(FlatToggleButton.STYLE).defines
+				(
+					backgroundColor(TRANSPARENT),
+					backgroundInsets(0),
+					backgroundRadius(0),
+					padding(spaces("0.33333em 0.666667em 0.333333em 0.666667em")),
+					textFill("-fx-text-base-color"),
+					prop("-fx-alignment", "center"),
+					prop("-fx-content-display", "left"),
+					
+					selector(HOVER).defines
+					(
+						backgroundColor(Color.LIGHTGRAY),
+						backgroundInsets(0),
+						backgroundRadius(px(flatButtonRadius))
+					),
+					
+					selector(FOCUSED).defines
+					(
+						backgroundColor(commas(theme.focus, theme.base)),
+						backgroundInsets("0, 1"),
+						backgroundRadius(px(flatButtonRadius))
+					),
+					
+					selector(FOCUSED, HOVER).defines
+					(
+						backgroundColor(commas(theme.focus, Color.LIGHTGRAY)),
+						backgroundInsets("0 0 0 0, 1 1 1 1"),
+						backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+					),
+					
+					selector(DISABLED).defines
+					(
+						opacity(0.4)
+					),
+					
+					selector(ARMED).defines
+					(
+						textFill(Color.BLACK),
+						backgroundColor(commas(theme.focus, Color.WHITE)),
+						backgroundInsets("0, 1"),
+						backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+					),
+					
+					selector(ARMED, HOVER).defines
+					(
+						textFill(Color.BLACK),
+						backgroundColor(commas(theme.focus, Color.WHITE)),
+						backgroundInsets("0, 1"),
+						backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+					),
+					
+					selector(SELECTED).defines
+					(
+						textFill(Color.BLACK),
+						backgroundColor(Color.WHITE),
+						backgroundInsets("0, 1"),
+						backgroundRadius(px(flatButtonRadius)),
+						
+						selector(FOCUSED).defines
+						(
+							backgroundColor(commas(theme.focus, Color.WHITE)),
+							backgroundInsets("0 0 0 0, 1 1 1 1"),
+							backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1))),
+							
+							selector(HOVER).defines
+							(
+								backgroundColor(commas(theme.focus, FX.gray(250))),
+								backgroundInsets("0 0 0 0, 1 1 1 1"),
+								backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+							)
+						),
+						
+						selector(HOVER).defines
+						(
+							backgroundColor(commas(theme.focus, FX.gray(250))),
+							backgroundInsets("0 0 0 0, 1 1 1 1"),
+							backgroundRadius(commas(px(flatButtonRadius), px(flatButtonRadius - 1)))
+						)
+					)
 				)
 			)
 		};

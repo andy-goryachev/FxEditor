@@ -413,6 +413,12 @@ public final class FX
 	}
 	
 	
+	public static Color gray(int col)
+	{
+		return Color.rgb(col, col, col);
+	}
+	
+	
 	/** Creates Color from an RGB value. */
 	public static Color rgb(int rgb)
 	{
@@ -423,13 +429,27 @@ public final class FX
 	}
 	
 	
+	/** Creates Color from an RGB value. */
+	public static Color rgb(int red, int green, int blue)
+	{
+		return Color.rgb(red, green, blue);
+	}
+	
+	
 	/** Creates Color from an RGB value + alpha. */
-	public static Color rgba(int rgb, double alpha)
+	public static Color rgb(int rgb, double alpha)
 	{
 		int r = (rgb >> 16) & 0xff;
 		int g = (rgb >>  8) & 0xff;
 		int b = (rgb      ) & 0xff;
 		return Color.rgb(r, g, b, alpha);
+	}
+	
+	
+	/** Creates Color from an RGB value + alpha */
+	public static Color rgb(int red, int green, int blue, double alpha)
+	{
+		return Color.rgb(red, green, blue, alpha);
 	}
 
 
@@ -779,7 +799,7 @@ public final class FX
 	
 	
 	/** sets a tool tip on the control. */
-	public static void tooltip(Control n, Object tooltip)
+	public static void toolTip(Control n, Object tooltip)
 	{
 		if(tooltip == null)
 		{
