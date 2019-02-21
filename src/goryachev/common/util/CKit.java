@@ -2392,4 +2392,40 @@ public final class CKit
 		
 		return Arrays.copyOf(b, b.length);
 	}
+	
+	
+	/** returns a new copy of the specified array with the item added */
+	public static <T> T[] add(T[] items, T item)
+	{
+		int len = items.length;
+		T[] a = Arrays.copyOf(items, len + 1);
+		a[len] = item;
+		return a;
+	}
+	
+	
+	/** 
+	 * returns a new copy of the specified array with the first matching item removed.
+	 * the matching item is determined by CKit.equals() method.
+	 * this method returns the original array if no matching item is found.
+	 */
+	public static <T> T[] remove(T[] items, T item)
+	{
+		int ix = indexOf(items, item);
+		if(ix < 0)
+		{
+			return items;
+		}
+		
+		int len = items.length - 1;
+		T[] a = Arrays.copyOf(items, len);
+		
+		len = len - ix;
+		if(len > 0)
+		{
+			System.arraycopy(items, ix + 1, a, ix, len);
+		}
+		
+		return a;
+	}
 }
