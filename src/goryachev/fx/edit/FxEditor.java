@@ -106,6 +106,7 @@ public class FxEditor
 		
 		hscroll = createHScrollBar();
 		hscroll.visibleProperty().bind(wordWrapProperty.not());
+		hscroll.valueProperty().addListener((s,p,c) -> handleHorizontalScroll(c.doubleValue()));
 		
 		getChildren().addAll(vflow, vscroll, hscroll);
 		
@@ -121,6 +122,18 @@ public class FxEditor
 		
 		// init key handler
 		addEventFilter(KeyEvent.ANY, (ev) -> handleKeyEvent(ev));
+	}
+	
+	
+	public ScrollBar getVerticalScrollBar()
+	{
+		return vscroll;
+	}
+	
+	
+	public ScrollBar getHorizontalScrollBar()
+	{
+		return hscroll;
 	}
 	
 	
@@ -651,6 +664,15 @@ public class FxEditor
 			// FIX for now, just show the lower portion of the bottom line
 			int ix = vflow.getTopLine() + Math.max(0, vflow.getVisibleLineCount() - 1);
 			vflow.scrollToVisible(ix);
+		}
+	}
+	
+	
+	protected void handleHorizontalScroll(double val)
+	{
+		if(handleScrollEvents)
+		{
+			vflow.setHorizontalScroll(val);
 		}
 	}
 	

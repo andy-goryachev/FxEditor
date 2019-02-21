@@ -1134,6 +1134,12 @@ public final class FX
 	}
 	
 	
+	public static boolean isLeftButton(MouseEvent ev)
+	{
+		return (ev.getButton() == MouseButton.PRIMARY);
+	}
+	
+	
 	/** sometimes MouseEvent.isPopupTrigger() is not enough */
 	public static boolean isPopupTrigger(MouseEvent ev)
 	{

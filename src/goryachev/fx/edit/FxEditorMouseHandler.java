@@ -95,6 +95,8 @@ public class FxEditorMouseHandler
 	
 	public void handleMousePressed(MouseEvent ev)
 	{
+		// not sure - perhaps only ignore if the mouse press is within a selection
+		// and reset selection if outside?
 		if(FX.isPopupTrigger(ev))
 		{
 			return;
@@ -136,6 +138,11 @@ public class FxEditorMouseHandler
 
 	public void handleMouseDragged(MouseEvent ev)
 	{
+		if(!FX.isLeftButton(ev))
+		{
+			return;
+		}
+		
 		double y = ev.getY();
 		if(y < 0)
 		{
