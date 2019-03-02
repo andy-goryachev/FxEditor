@@ -573,15 +573,16 @@ public class FxEditor
 	}
 	
 	
-	public void blockScroll(boolean up)
+	public void scroll(double fractionOfHeight)
 	{
-		vflow.blockScroll(up);
+		vflow.scroll(fractionOfHeight);
 	}
 	
 	
-	public void blockScroll(double delta, boolean up)
+	/** scrolls up (deltaInPixels < 0) or down (deltaInPixels > 0) */
+	public void blockScroll(double deltaInPixels)
 	{
-		vflow.blockScroll(delta, up);
+		vflow.blockScroll(deltaInPixels);
 	}
 	
 	

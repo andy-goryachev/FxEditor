@@ -319,6 +319,6 @@ public class FxTable<T>
 	public void setAlternateRowsColoring(boolean on)
 	{
 		// https://stackoverflow.com/questions/38680711/javafx-tableview-remove-default-alternate-row-color
-		FX.setStyle(table, CommonStyles.ALTERNATE_ROWS_OFF, !on);
+		FX.setStyle(table, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR, !on);
 	}
 }

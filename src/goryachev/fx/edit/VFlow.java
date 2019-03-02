@@ -128,7 +128,7 @@ public class VFlow
 					double dy = y - getHeight();
 					if(y > 0)
 					{
-						blockScroll(dy, true);
+						blockScroll(dy);
 						return;
 					}
 				}
@@ -344,37 +344,27 @@ public class VFlow
 	
 	public void pageUp()
 	{
-		blockScroll(getHeight(), true);
+		blockScroll(-getHeight());
 	}
 	
 	
 	public void pageDown()
 	{
-		blockScroll(getHeight(), false);
+		blockScroll(getHeight());
 	}
 	
 	
-	public void blockScroll(boolean up)
+	public void scroll(double fractionOfHeight)
 	{
-		// this could be a preference
-		double BLOCK_SCROLL_FACTOR = 0.1;
-		double BLOCK_MIN_SCROLL = 40;
-		
-		double h = getHeight();
-		double delta = h * BLOCK_SCROLL_FACTOR;
-		if(delta < BLOCK_MIN_SCROLL)
-		{
-			delta = h;
-		}
-		
-		blockScroll(delta, up);
+		blockScroll(getHeight() * fractionOfHeight);
 	}
 	
 	
-	public void blockScroll(double delta, boolean up)
+	public void blockScroll(double delta)
 	{
-		if(up)
+		if(delta < 0)
 		{
+			delta = -delta;
 			if(delta <= offsety)
 			{
 				// no need to query the model
@@ -474,6 +464,17 @@ public class VFlow
 		LineBox lineBox = layout.getLineBox(line);
 		if(lineBox == null)
 		{
+			// FIX not sure what causes flashes 
+//			if(line <= topLine)
+//			{
+//				return getRangeTop();
+//			}
+//			else if(line >= (topLine + getVisibleLineCount()))
+//			{
+//				return getRangeBottom();
+//			}
+//			// should never happen
+//			throw new Error("line=" + line + " top=" + topLine + " bottom=" + (topLine + getVisibleLineCount()));
 			return null;
 		}
 		

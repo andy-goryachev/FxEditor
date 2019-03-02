@@ -13,10 +13,10 @@ import javafx.scene.paint.Color;
 public class CommonStyles
 	extends FxStyleSheet
 {
-	/** suppresses alternate rows styling */
-	public static final CssStyle ALTERNATE_ROWS_OFF = new CssStyle("CommonStyles_ALTERNATE_ROWS_OFF");
 	/** bold type face */
 	public static final CssStyle BOLD = new CssStyle("CommonStyles_BOLD");
+	/** disables alternative row color */
+	public static final CssStyle DISABLE_ALTERNATIVE_ROW_COLOR = new CssStyle("CommonStyles_DISABLE_ALTERNATIVE_ROW_COLOR");
 	/** disables horizontal scroll bar */
 	public static final CssStyle NO_HORIZONTAL_SCROLL_BAR = new CssStyle("CommonStyles_NO_HORIZONTAL_SCROLL_BAR");
 	
@@ -31,6 +31,7 @@ public class CommonStyles
 		(
 			selector(".root").defines
 			(
+				prop("-fx-font-smoothing-type", "gray"),
 				// text selection
 				prop("-fx-accent", FX.alpha(theme.selectedTextBG, 0.7)),
 				prop("-fx-base", theme.base),
@@ -77,7 +78,7 @@ public class CommonStyles
 						
 			// andy's hacks
 			
-			selector(ALTERNATE_ROWS_OFF).defines
+			selector(DISABLE_ALTERNATIVE_ROW_COLOR).defines
 			(
 				new FxCssProp("-fx-control-inner-background-alt", "-fx-control-inner-background")
 			),
@@ -712,6 +713,7 @@ public class CommonStyles
 				backgroundInsets(commas(0, 1)),
 				backgroundColor(commas(theme.outline, theme.textBG)),
 				backgroundRadius(commas(0, 0)),
+//				padding("0.333333em, 0.583em, 0.333333em, 0.583em"),
 				
 				new Selector(FOCUSED).defines
 				(

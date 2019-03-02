@@ -6,6 +6,7 @@ import goryachev.fx.hacks.FxHacks;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.internal.FxSchema;
 import goryachev.fx.internal.WindowsFx;
+import goryachev.fx.table.FxTable;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -31,6 +32,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.ListView;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
@@ -1172,5 +1174,23 @@ public final class FX
 			}
 		}
 		return false;
+	}
+
+
+	public static void disableAlternativeRowColor(FxTable<?> table)
+	{
+		FX.style(table.table, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR);
+	}
+	
+	
+	public static void disableAlternativeRowColor(TableView<?> table)
+	{
+		FX.style(table, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR);
+	}
+	
+	
+	public static void disableAlternativeRowColor(ListView<?> v)
+	{
+		FX.style(v, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR);
 	}
 }

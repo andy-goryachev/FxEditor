@@ -13,10 +13,12 @@ import javafx.util.StringConverter;
  */
 public class Converters
 {
-	protected static StringConverter<Boolean> cboolean;
-	protected static StringConverter<Integer> cint;
-	protected static StringConverter<String> cstring;
-	protected static StringConverter<Object> cobject;
+	protected static StringConverter<Boolean> booleanConverter;
+	protected static StringConverter<Integer> intConverter;
+	protected static StringConverter<Number> doubleNumberConverter;
+	protected static StringConverter<Number> intNumberConverter;
+	protected static StringConverter<String> stringConverter;
+	protected static StringConverter<Object> objectConverter;
 	
 	
 	@SuppressWarnings("unchecked")
@@ -43,9 +45,9 @@ public class Converters
 	
 	public static StringConverter<Boolean> BOOLEAN()
 	{
-		if(cboolean == null)
+		if(booleanConverter == null)
 		{
-			cboolean = new StringConverter<Boolean>()
+			booleanConverter = new StringConverter<Boolean>()
 			{
 				public Boolean fromString(String s)
 				{
@@ -58,15 +60,15 @@ public class Converters
 				}
 			};
 		}
-		return cboolean;
+		return booleanConverter;
 	}
 	
 	
 	public static StringConverter<Integer> INT()
 	{
-		if(cint == null)
+		if(intConverter == null)
 		{
-			cint = new StringConverter<Integer>()
+			intConverter = new StringConverter<Integer>()
 			{
 				public Integer fromString(String s)
 				{
@@ -79,15 +81,57 @@ public class Converters
 				}
 			};
 		}
-		return cint;
+		return intConverter;
+	}
+	
+	
+	public static StringConverter<Number> NUMBER_INT()
+	{
+		if(intNumberConverter == null)
+		{
+			intNumberConverter = new StringConverter<Number>()
+			{
+				public Number fromString(String s)
+				{
+					return Parsers.parseInt(s, 0);
+				}
+
+				public String toString(Number x)
+				{
+					return String.valueOf(x);
+				}
+			};
+		}
+		return intNumberConverter;
+	}
+	
+	
+	public static StringConverter<Number> NUMBER_DOUBLE()
+	{
+		if(doubleNumberConverter == null)
+		{
+			doubleNumberConverter = new StringConverter<Number>()
+			{
+				public Number fromString(String s)
+				{
+					return Parsers.parseDouble(s, 0.0);
+				}
+
+				public String toString(Number x)
+				{
+					return String.valueOf(x);
+				}
+			};
+		}
+		return doubleNumberConverter;
 	}
 	
 	
 	public static StringConverter<String> STRING()
 	{
-		if(cstring == null)
+		if(stringConverter == null)
 		{
-			cstring = new StringConverter<String>()
+			stringConverter = new StringConverter<String>()
 			{
 				public String toString(String s)
 				{
@@ -100,15 +144,15 @@ public class Converters
 				}
 			};
 		}
-		return cstring;
+		return stringConverter;
 	}
 	
 	
 	public static StringConverter<Object> OBJECT()
 	{
-		if(cobject == null)
+		if(objectConverter == null)
 		{
-			cobject = new StringConverter<Object>()
+			objectConverter = new StringConverter<Object>()
 			{
 				public String toString(Object x)
 				{
@@ -121,6 +165,6 @@ public class Converters
 				}
 			};
 		}
-		return cobject;
+		return objectConverter;
 	}
 }

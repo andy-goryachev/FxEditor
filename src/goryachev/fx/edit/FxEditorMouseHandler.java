@@ -25,6 +25,7 @@ public class FxEditorMouseHandler
 	private double autoScrollStepFast = 200; // arbitrary
 	private double autoScrollStepSlow = 20; // arbitrary
 	private boolean autoScrollUp;
+	private double scrollWheelStepSize = 0.25;
 
 
 	public FxEditorMouseHandler(FxEditor ed, SelectionController sel)
@@ -59,7 +60,8 @@ public class FxEditorMouseHandler
 		else
 		{
 			// vertical block scroll
-			editor.blockScroll(ev.getDeltaY() >= 0);
+			double frac = scrollWheelStepSize * (ev.getDeltaY() >= 0 ? -1 : 1); 
+			editor.scroll(frac); 
 		}
 	}
 	
@@ -191,7 +193,11 @@ public class FxEditorMouseHandler
 	protected void autoScroll()
 	{
 		double delta = fastAutoScroll ? autoScrollStepFast : autoScrollStepSlow;
-		editor.blockScroll(delta, autoScrollUp);
+		if(autoScrollUp)
+		{
+			delta = -delta;
+		}
+		editor.blockScroll(delta);
 		
 		Point2D p;
 		if(autoScrollUp)
