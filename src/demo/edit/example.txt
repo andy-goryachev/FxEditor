@@ -1,6 +1,7 @@
-short line
-long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line  
-short line
+	tab
+		tab tab long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line  
+    spaces
+        spaces spaces
 medium medium medium line
 short line
 

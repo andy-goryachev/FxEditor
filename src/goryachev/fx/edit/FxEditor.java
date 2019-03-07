@@ -99,24 +99,14 @@ public class FxEditor
 		
 		modelListener = new FxEditorModelListener()
 		{
-			public void eventLinesUpdated(int start, int count)
-			{
-				handleLinesUpdated(start, count);
-			}
-			
-			public void eventLinesInserted(int start, int count)
-			{
-				handleLinesInserted(start, count);
-			}
-			
-			public void eventLinesDeleted(int start, int count)
-			{
-				handleLinesDeleted(start, count);
-			}
-			
 			public void eventAllLinesChanged()
 			{
 				handleAllLinesChanged();
+			}
+
+			public void eventTextUpdated(int startLine, int startCharIndex, int endLine, int endCharIndex, int numberOfLinesInserted)
+			{
+				handleTextUpdated(startLine, startCharIndex, endLine, endCharIndex, numberOfLinesInserted);
 			}
 		};
 		
@@ -510,29 +500,12 @@ public class FxEditor
 	}
 
 
-	protected void handleLinesDeleted(int start, int count)
-	{
-		// FIX
-		D.print(start, count);
-	}
-
-
-	protected void handleLinesInserted(int start, int count)
-	{
-		// FIX
-		D.print(start, count);
-	}
-
-
-	protected void handleLinesUpdated(int start, int count)
+	protected void handleTextUpdated(int startLine, int startCharIndex, int endLine, int endCharIndex, int numberOfLinesInserted)
 	{
 		// TODO
-		// - update markers
-		// problem: markers need more detailed information about change
-		// - reload line boxes if visible
-		D.print(start, count);
+		D.print(startLine, startCharIndex, endLine, endCharIndex, numberOfLinesInserted);
 	}
-	
+
 	
 	public void setDisplayCaret(boolean on)
 	{
