@@ -42,7 +42,7 @@ public class DemoColorEditorModel
 	
 	public LineBox getLineBox(int line)
 	{
-		String text = getText(line);
+		String text = getPlainText(line);
 		CList<Segment> ss = new DemoSyntax(text).generateSegments();
 		
 		LineBox box = new LineBox();
@@ -65,7 +65,7 @@ public class DemoColorEditorModel
 	}
 	
 	
-	public String getText(int line)
+	public String getPlainText(int line)
 	{
 		int ix = line % lines.length;
 		return lines[ix];

@@ -1,8 +1,13 @@
 // Copyright © 2019 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
 import goryachev.common.util.CList;
+import goryachev.common.util.D;
 import goryachev.fx.edit.AbstractPlainTextEditorModel;
 import goryachev.fx.edit.Edit;
+import java.util.Random;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 
 /**
@@ -12,11 +17,66 @@ public class DemoGrowingModel
 	extends AbstractPlainTextEditorModel
 {
 	protected final CList<String> lines = new CList();
+	protected final Timeline timer;
 	
 	
 	public DemoGrowingModel()
 	{
-		// TODO start timer to add random text to the end.
+		Duration period = Duration.millis(1000);
+		
+		timer = new Timeline(new KeyFrame(period, (ev) -> addSomeText()));
+		timer.setCycleCount(Timeline.INDEFINITE);
+		timer.play();
+	}
+	
+	
+	protected void addSomeText()
+	{
+		String text = nextText();
+		append(text);
+	}
+	
+	
+	// TODO
+	protected void append(String text)
+	{
+		D.print(text);
+		
+		int max = getLineCount();
+		int line = Math.max(0, max - 1);
+		String s = getPlainText(line);
+		int charIndex = s == null ? 0 : s.length();
+	}
+	
+
+	protected String nextText()
+	{
+		int r = new Random().nextInt(11);
+		switch(r)
+		{
+		case 0:
+			return "zero ";
+		case 1:
+			return "one ";
+		case 2:
+			return "two ";
+		case 3:
+			return "three ";
+		case 4:
+			return "four ";
+		case 5:
+			return "five ";
+		case 6:
+			return "six ";
+		case 7:
+			return "seven ";
+		case 8:
+			return "eight ";
+		case 9:
+			return "nine ";
+		default:
+			return "\n";	
+		}
 	}
 
 
@@ -35,5 +95,15 @@ public class DemoGrowingModel
 	public Edit edit(Edit ed) throws Exception
 	{
 		throw new Error();
+	}
+
+
+	public String getPlainText(int line)
+	{
+		if(line < lines.size())
+		{
+			return lines.get(line);
+		}
+		return null;
 	}
 }

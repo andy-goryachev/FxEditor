@@ -19,6 +19,17 @@ public class SimpleStyledTextModel
 	}
 	
 	
+	public String getPlainText(int line)
+	{
+		LineBox b = getLineBox(line);
+		if(b != null)
+		{
+			return b.getText();
+		}
+		return null;
+	}
+	
+	
 	public LineBox getLineBox(int line)
 	{
 		if(lines.isValidIndex(line))

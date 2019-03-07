@@ -39,7 +39,7 @@ public class MainWindow
 		// props
 		bind("WORD_WRAP", editor().wordWrapProperty());
 		bind("SHOW_LINE_NUMBERS", editor().showLineNumbersProperty());
-		bind("EDITABLE_MODEL", tailMode);
+		bind("TAIL_MODE", tailMode);
 
 		tailMode.addListener((s,p,c) -> updateModel());
 		updateModel();
@@ -95,7 +95,7 @@ public class MainWindow
 		// file
 		m.menu("File");
 		m.separator();
-		m.item("Tail Mode", tailMode);
+		m.item("Growing Model", tailMode);
 		m.item("New Window, Same Model", new FxAction(this::newWindow));
 		m.separator();
 		m.item("Preferences", prefsAction);

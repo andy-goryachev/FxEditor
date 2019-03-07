@@ -44,6 +44,9 @@ public abstract class FxEditorModel
 	/** returns a known line count.  if the model is still loading, returns the best estimate of the number of lines. */
 	public abstract int getLineCount();
 	
+	/** returns plain text at the specified line, or null if unknown */
+	public abstract String getPlainText(int line);
+	
 	/** 
 	 * returns a non-null LineBox containing components that represent a logical line.
 	 */
@@ -116,6 +119,7 @@ public abstract class FxEditorModel
 				public int getLineCount() { return 0; }
 				public LineBox getLineBox(int line) { return box; }
 				public Edit edit(Edit ed) throws Exception { throw new Exception(); }
+				public String getPlainText(int line) { return null; }
 			};
 		}
 		return empty;
@@ -260,13 +264,5 @@ public abstract class FxEditorModel
 	{
 		String s = getPlainText(line);
 		return s == null ? 0 : s.length();
-	}
-	
-	
-	/** returns plain text at the specified line, or null if unknown */
-	public String getPlainText(int line)
-	{
-		LineBox b = getLineBox(line);
-		return b.getText();
 	}
 }
