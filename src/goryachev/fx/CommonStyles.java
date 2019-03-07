@@ -17,8 +17,6 @@ public class CommonStyles
 	public static final CssStyle BOLD = new CssStyle("CommonStyles_BOLD");
 	/** disables alternative row color */
 	public static final CssStyle DISABLE_ALTERNATIVE_ROW_COLOR = new CssStyle("CommonStyles_DISABLE_ALTERNATIVE_ROW_COLOR");
-	/** disables horizontal scroll bar */
-	public static final CssStyle NO_HORIZONTAL_SCROLL_BAR = new CssStyle("CommonStyles_NO_HORIZONTAL_SCROLL_BAR");
 	
 	private static String TABLE_ROW_HEIGHT = "1.8em";
 
@@ -87,24 +85,6 @@ public class CommonStyles
 			selector(BOLD).defines
 			(
 				fontWeight("bold")
-			),
-			
-			// disables horizontal scroll bar
-			// FIX does not disable completely
-			selector(NO_HORIZONTAL_SCROLL_BAR).defines
-			(
-				selector(".scroll-bar:horizontal").defines
-				(
-					maxHeight(0),
-					padding(0),
-					opacity(0)
-				),
-				selector(".scroll-bar:horizontal *").defines
-				(
-					maxHeight(0),
-					padding(0),
-					opacity(0)
-				)
 			)
 		);
 	}

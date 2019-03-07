@@ -47,23 +47,50 @@ public class SimpleStyledTextModel
 	}
 	
 	
-	public void add(TStyle s, String text)
+	protected LineBox last()
 	{
-		LineBox b = new LineBox();
-		b.addText(s, text);
-		lines.add(b);
+		if(lines.size() == 0)
+		{
+			lines.add(new LineBox());
+		}
+		return lines.get(lines.size() - 1);
 	}
 	
 	
+	public void add(TStyle s, String text)
+	{
+		LineBox b = last();
+		b.addText(s, text);
+	}
+	
+	
+	/** inserts a newline */
+	public void nl()
+	{
+		lines.add(new LineBox());
+	}
+	
+	
+	/** construct text from a sequence of TStyle,String.  A single "\n" separates line. */
 	public void add(Object ... styleTextPairs)
 	{
-		LineBox b = new LineBox();
 		for(int i=0; i<styleTextPairs.length; )
 		{
-			TStyle s = (TStyle)styleTextPairs[i++];
-			String text = (String)styleTextPairs[i++];
-			b.addText(s, text);
+			Object x = styleTextPairs[i++];
+			if("\n".equals(x))
+			{
+				nl();
+			}
+			else if(x instanceof TStyle)
+			{
+				TStyle s = (TStyle)x;
+				String text = (String)styleTextPairs[i++];
+				add(s, text);
+			}
+			else
+			{
+				throw new Error("?" + x);
+			}
 		}
-		lines.add(b);
 	}
 }

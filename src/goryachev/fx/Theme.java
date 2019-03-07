@@ -97,5 +97,32 @@ public class Theme
 		{
 			throw new Error(sb.toString());
 		}
+	}
+	
+	
+	/** creates a light/dark compatible gray color, based on the intensity of the textBG */
+	public Color gray(int gray)
+	{
+		if(isLight())
+		{
+			return Color.rgb(gray, gray, gray);
+		}
+		else
+		{
+			return Color.rgb(255 - gray, 255 - gray, 255 - gray);
+		}
 	}	
+	
+	
+	public boolean isLight()
+	{
+		// this is good enough for now
+		return (textBG.getBrightness() > 0.5);
+	}
+	
+	
+	public boolean isDark()
+	{
+		return !isLight();
+	}
 }

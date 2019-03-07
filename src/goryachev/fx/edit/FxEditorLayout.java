@@ -53,24 +53,21 @@ public class FxEditorLayout
 			Insets pad = box.getPadding();
 			double x = p.getX() - pad.getLeft();
 			double y = p.getY() - pad.getTop();
-			
-			if(y >= 0)
+		
+			if(y < 0)
 			{
-				if(y < box.getHeight())
+				return markers.newMarker(line.getLineNumber(), 0, true);
+			}
+			else if(y < box.getHeight())
+			{
+				if(box instanceof CTextFlow)
 				{
-					if(box instanceof CTextFlow)
+					CHitInfo hit = ((CTextFlow)box).getHit(x, y);
+					if(hit != null)
 					{
-						CHitInfo hit = ((CTextFlow)box).getHit(x, y);
-						if(hit != null)
-						{
-							return markers.newMarker(line.getLineNumber(), hit.getCharIndex(), hit.isLeading());
-						}
+						return markers.newMarker(line.getLineNumber(), hit.getCharIndex(), hit.isLeading());
 					}
 				}
-			}
-			else
-			{
-				break;
 			}
 		}
 		

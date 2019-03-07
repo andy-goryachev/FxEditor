@@ -1059,29 +1059,32 @@ public final class FX
 	{
 		owner.setOnContextMenuRequested((ev) ->
 		{
-			FX.later(() ->
+			if(generator != null)
 			{
-				FxPopupMenu m = generator.get();
-				if(m != null)
+				FX.later(() ->
 				{
-					if(m.getItems().size() > 0)
+					FxPopupMenu m = generator.get();
+					if(m != null)
 					{
-						// javafx does not dismiss the popup when the user
-						// clicks on the owner node
-						EventHandler<MouseEvent> li = new EventHandler<MouseEvent>()
+						if(m.getItems().size() > 0)
 						{
-							public void handle(MouseEvent event)
+							// javafx does not dismiss the popup when the user
+							// clicks on the owner node
+							EventHandler<MouseEvent> li = new EventHandler<MouseEvent>()
 							{
-								m.hide();
-								owner.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
-							}
-						};
-						
-						owner.addEventFilter(MouseEvent.MOUSE_PRESSED, li);
-						m.show(owner, ev.getScreenX(), ev.getScreenY());
+								public void handle(MouseEvent event)
+								{
+									m.hide();
+									owner.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
+								}
+							};
+							
+							owner.addEventFilter(MouseEvent.MOUSE_PRESSED, li);
+							m.show(owner, ev.getScreenX(), ev.getScreenY());
+						}
 					}
-				}
-			});
+				});
+			}
 			ev.consume();
 		});
 	}

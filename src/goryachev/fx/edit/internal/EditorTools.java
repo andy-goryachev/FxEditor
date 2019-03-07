@@ -68,6 +68,11 @@ public class EditorTools
 	{
 		Insets pad = src.getPadding();
 		Point2D p = src.localToScreen(pad.getLeft(), pad.getTop());
+		if(p == null)
+		{
+			// FIX search for 's' in appstate.json
+			throw new Error("null?"); // FIX
+		}
 		
 		p = target.screenToLocal(p);
 		double dx = p.getX();

@@ -59,7 +59,7 @@ public abstract class FxEditorModel
 	//
 
 	protected FxBoolean editableProperty = new FxBoolean(false);
-	protected CList<FxEditor> listeners = new CList<>();
+	protected CList<FxEditorModelListener> listeners = new CList<>();
 	protected final CMap<DataFormat,ClipboardHandlerBase> clipboardHandlers = new CMap(); 
 	private static FxEditorModel empty;
 	
@@ -70,13 +70,13 @@ public abstract class FxEditorModel
 	}
 
 
-	public void addListener(FxEditor li)
+	public void addListener(FxEditorModelListener li)
 	{
 		listeners.add(li);
 	}
 	
 	
-	public void removeListener(FxEditor li)
+	public void removeListener(FxEditorModelListener li)
 	{
 		listeners.remove(li);
 	}
@@ -124,13 +124,13 @@ public abstract class FxEditorModel
 	
 	public void fireAllChanged()
 	{
-		fireEvent((li) -> li.eventAllChanged());
+		fireEvent((li) -> li.eventAllLinesChanged());
 	}
 	
 	
-	protected void fireEvent(Consumer<FxEditor> f)
+	protected void fireEvent(Consumer<FxEditorModelListener> f)
 	{
-		for(FxEditor li: listeners)
+		for(FxEditorModelListener li: listeners)
 		{
 			f.accept(li);
 		}

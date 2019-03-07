@@ -2,7 +2,7 @@ FIX
 ===
 - popup menu clears selection
 - improper selection on the first word: [s*election]
-- wrong selection when dbl-clickon on space
+- wrong selection when dbl-click on on space
 - wrong caret: [(tab)*(tab)(tab)]
 - wrong selection: [word(tab)(tab)*(tab)]
 

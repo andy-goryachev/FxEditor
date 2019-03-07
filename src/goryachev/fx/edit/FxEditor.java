@@ -79,7 +79,8 @@ public class FxEditor
 	protected final ScrollBar vscroll;
 	protected final ScrollBar hscroll;
 	protected final SelectionController selector;
-	protected final KeyMap keymap;
+	protected final KeyMap keymap; // TODO
+	protected final FxEditorModelListener modelListener;
 	protected boolean handleScrollEvents = true;
 	protected BiConsumer<FxEditor,Marker> wordSelector = new SimpleWordSelector();
 
@@ -95,6 +96,29 @@ public class FxEditor
 		setFocusTraversable(true);
 		FX.style(this, PANEL);
 		setBackground(FX.background(Color.WHITE));
+		
+		modelListener = new FxEditorModelListener()
+		{
+			public void eventLinesUpdated(int start, int count)
+			{
+				handleLinesUpdated(start, count);
+			}
+			
+			public void eventLinesInserted(int start, int count)
+			{
+				handleLinesInserted(start, count);
+			}
+			
+			public void eventLinesDeleted(int start, int count)
+			{
+				handleLinesDeleted(start, count);
+			}
+			
+			public void eventAllLinesChanged()
+			{
+				handleAllLinesChanged();
+			}
+		};
 		
 		selector = createSelectionController();
 
@@ -231,14 +255,14 @@ public class FxEditor
 		FxEditorModel old = getModel();
 		if(old != null)
 		{
-			old.removeListener(this);
+			old.removeListener(modelListener);
 		}
 		
 		modelProperty.set(m);
 		
 		if(m != null)
 		{
-			m.addListener(this);
+			m.addListener(modelListener);
 		}
 		
 		selector.clear();
@@ -247,7 +271,7 @@ public class FxEditor
 			vflow.invalidateLayout();
 		}
 		
-		eventAllChanged();
+		handleAllLinesChanged();
 //		updateLayout();
 	}
 	
@@ -366,6 +390,10 @@ public class FxEditor
 	{
 		if(vflow != null)
 		{
+			if(wordWrapProperty.get())
+			{
+				vflow.offsetx = 0;
+			}
 			vflow.requestLayout();
 		}
 		requestLayout();
@@ -458,7 +486,7 @@ public class FxEditor
 	}
 
 	
-	protected void eventAllChanged()
+	protected void handleAllLinesChanged()
 	{
 		clearSelection();
 		
@@ -482,23 +510,26 @@ public class FxEditor
 	}
 
 
-	protected void eventLinesDeleted(int start, int count)
+	protected void handleLinesDeleted(int start, int count)
 	{
 		// FIX
 		D.print(start, count);
 	}
 
 
-	protected void eventLinesInserted(int start, int count)
+	protected void handleLinesInserted(int start, int count)
 	{
 		// FIX
 		D.print(start, count);
 	}
 
 
-	protected void eventLinesModified(int start, int count)
+	protected void handleLinesUpdated(int start, int count)
 	{
-		// FIX
+		// TODO
+		// - update markers
+		// problem: markers need more detailed information about change
+		// - reload line boxes if visible
 		D.print(start, count);
 	}
 	

@@ -322,11 +322,11 @@ public class VFlow
 			Insets m = getPadding();
 			if(editor.isWordWrap())
 			{
-				b.addBoxOutline(pbuilder, m.getLeft(), getWidth() - m.getLeft() - m.getRight()); // FIX a bit too narrow?
+				b.addBoxOutline(pbuilder, m.getLeft(), getWidth() - m.getLeft() - m.getRight());
 			}
 			else
 			{
-				b.addBoxOutline(pbuilder, m.getLeft() - offsetx, layout.getUnwrappedWidth() - m.getLeft() - m.getRight());
+				b.addBoxOutline(pbuilder, m.getLeft() - offsetx, layout.getUnwrappedWidth() - m.getLeft()); 
 			}
 		}
 	}

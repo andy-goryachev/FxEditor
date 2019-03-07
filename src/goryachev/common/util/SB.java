@@ -1,6 +1,7 @@
 // Copyright © 2010-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.util.Collection;
+import java.util.Map;
 
 
 /** An extended version of StringBuilder */
@@ -728,7 +729,7 @@ public class SB
 		return this;
 	}
 	
-	
+		
 	public SB list(Object[] items, char delimiter)
 	{
 		if(items != null)
@@ -746,6 +747,33 @@ public class SB
 					sep = true;
 				}
 				sb.append(x);
+			}
+		}
+		return this;
+	}
+	
+	
+	public SB list(Map<?,?> items, char delimiter)
+	{
+		if(items != null)
+		{
+			boolean sep = false;
+			// would be nice to sort, but keys may not be sortable
+			for(Object k: items.keySet())
+			{
+				if(sep)
+				{
+					sb.append(delimiter);
+				}
+				else
+				{
+					sep = true;
+				}
+				
+				Object v = items.get(k);
+				sb.append(k);
+				sb.append('=');
+				sb.append(v);
 			}
 		}
 		return this;
