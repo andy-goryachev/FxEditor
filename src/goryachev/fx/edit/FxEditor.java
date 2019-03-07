@@ -112,7 +112,7 @@ public class FxEditor
 		
 		selector = createSelectionController();
 
-		setTextModel(m);
+		setModel(m);
 		
 		vflow = new VFlow(this);
 		
@@ -238,7 +238,7 @@ public class FxEditor
 	}
 	
 	
-	public void setTextModel(FxEditorModel m)
+	public void setModel(FxEditorModel m)
 	{
 		markers.clear();
 		

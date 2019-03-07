@@ -586,7 +586,7 @@ public class VFlow
 		
 		// TODO is loaded?
 		FxEditorModel model = editor.getModel();
-		int lineCount = model.getLineCount();
+		int lineCount = model == null ? 0 : model.getLineCount();
 		FxEditorLayout la = new FxEditorLayout(editor, topLine);
 		
 		Insets pad = getInsets();
@@ -605,78 +605,81 @@ public class VFlow
 		
 		double x1 = x0;
 		double y = y0;
-		for(int i=topLine; i<lineCount; i++)
+		if(model != null)
 		{
-			LineBox b = (prev == null ? null : prev.getLineBox(i));
-			if(b == null)
+			for(int i=topLine; i<lineCount; i++)
 			{
-				b = model.getLineBox(i);
-				b.init(i);
-			}
-			
-			if(estimateLineNumberWidth)
-			{
-				// TODO can simply get the last line pref width after the sizing cycle, before the actual layout cycle
-				lineNumbersColumnWidth = estimateLineNumberColumnWidth(b.getLineNumberComponent());
-				
-				x1 += lineNumbersColumnWidth;
-				wid -= lineNumbersColumnWidth;
-				if(wid < 0)
+				LineBox b = (prev == null ? null : prev.getLineBox(i));
+				if(b == null)
 				{
-					wid = 0;
+					b = model.getLineBox(i);
+					b.init(i);
 				}
-				estimateLineNumberWidth = false;
-			}
-			
-			// TODO skip sizing if the width has not changed (incl. line number component)
-			
-			Region nd = b.getCenter();
-			nd.setManaged(true);
-			getChildren().add(nd);
-			nd.applyCss();
-			la.addLineBox(b);
-			
-			// TODO can use cached value if the vflow width is the same
-			double w = wrap ? wid : -1;
-			nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
-			double h = nd.prefHeight(w);
-			
-			if(!wrap)
-			{
-				Region center = b.getCenter();
-				double prefw = center == null ? 0.0 : center.prefWidth(-1);
-				if(unwrappedWidth < prefw)
+				
+				if(estimateLineNumberWidth)
 				{
-					unwrappedWidth = prefw;
+					// TODO can simply get the last line pref width after the sizing cycle, before the actual layout cycle
+					lineNumbersColumnWidth = estimateLineNumberColumnWidth(b.getLineNumberComponent());
+					
+					x1 += lineNumbersColumnWidth;
+					wid -= lineNumbersColumnWidth;
+					if(wid < 0)
+					{
+						wid = 0;
+					}
+					estimateLineNumberWidth = false;
 				}
-			}
-			
-			if(showLineNumbers)
-			{
-				Labeled nc = b.getLineNumberComponent();
-				setLineNumber(nc, i);
 				
-				nc.setManaged(true);
-				getChildren().add(nc);
-				nc.applyCss();
+				// TODO skip sizing if the width has not changed (incl. line number component)
 				
-				// FIX
-				// for some reason, label is taller than the text flow alone, even with the same font
-				// the -fx-padding is correct, and -fx-label-padding is 0 on line number labels
-//				h = Math.max(h, nc.prefHeight(-1));
+				Region nd = b.getCenter();
+				nd.setManaged(true);
+				getChildren().add(nd);
+				nd.applyCss();
+				la.addLineBox(b);
 				
-				b.setHeight(h);
-				b.setY(y);
-			}
-			else
-			{
-				b.setHeight(h);
-			}
-			
-			y += h;
-			if(y > ymax)
-			{
-				break;
+				// TODO can use cached value if the vflow width is the same
+				double w = wrap ? wid : -1;
+				nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
+				double h = nd.prefHeight(w);
+				
+				if(!wrap)
+				{
+					Region center = b.getCenter();
+					double prefw = center == null ? 0.0 : center.prefWidth(-1);
+					if(unwrappedWidth < prefw)
+					{
+						unwrappedWidth = prefw;
+					}
+				}
+				
+				if(showLineNumbers)
+				{
+					Labeled nc = b.getLineNumberComponent();
+					setLineNumber(nc, i);
+					
+					nc.setManaged(true);
+					getChildren().add(nc);
+					nc.applyCss();
+					
+					// FIX
+					// for some reason, label is taller than the text flow alone, even with the same font
+					// the -fx-padding is correct, and -fx-label-padding is 0 on line number labels
+	//				h = Math.max(h, nc.prefHeight(-1));
+					
+					b.setHeight(h);
+					b.setY(y);
+				}
+				else
+				{
+					b.setHeight(h);
+				}
+				
+				y += h;
+				if(y > ymax)
+				{
+					break;
+				}
 			}
 		}
 		

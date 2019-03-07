@@ -20,11 +20,11 @@ public class MainPane
 	public final FxEditor editor;
 
 	
-	public MainPane(FxEditorModel m)
+	public MainPane()
 	{
 		FX.style(this, PANE);
 		
-		editor = new FxEditor(m);
+		editor = new FxEditor();
 		editor.setContentPadding(new CInsets(2, 4));
 		editor.setBlinkRate(Duration.millis(600));
 		editor.setMultipleSelectionEnabled(true);
@@ -32,6 +32,12 @@ public class MainPane
 		setCenter(editor);
 		
 		showFindPane();
+	}
+	
+	
+	public void setModel(FxEditorModel m)
+	{
+		editor.setModel(m);
 	}
 	
 	

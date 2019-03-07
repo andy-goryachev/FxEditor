@@ -2,8 +2,10 @@
 package demo.edit;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
+import goryachev.fx.FxBoolean;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxMenuBar;
+import goryachev.fx.FxPopupMenu;
 import goryachev.fx.FxWindow;
 import goryachev.fx.edit.FxEditor;
 import goryachev.fx.edit.FxEditorModel;
@@ -17,19 +19,17 @@ public class MainWindow
 {
 	public final FxAction prefsAction = new FxAction(this::preferences);
 	public final MainPane mainPane;
+	protected FxBoolean tailMode = new FxBoolean();
 	protected FxEditorModel model;
+	protected static DemoColorEditorModel largeModel;
+	protected static DemoGrowingModel growingModel;
 	
 	
-	public MainWindow(FxEditorModel m)
+	public MainWindow()
 	{
 		super("MainWindow");
 
-		if(m == null)
-		{
-			m = new DemoColorEditorModel(2_000_000_000);
-		}
-		this.model = m;
-		mainPane = new MainPane(model);
+		mainPane = new MainPane();
 				
 		setTitle("FxEditor");
 		setTop(createMenu());
@@ -39,9 +39,37 @@ public class MainWindow
 		// props
 		bind("WORD_WRAP", editor().wordWrapProperty());
 		bind("SHOW_LINE_NUMBERS", editor().showLineNumbersProperty());
+		bind("EDITABLE_MODEL", tailMode);
+
+		tailMode.addListener((s,p,c) -> updateModel());
+		updateModel();
+		
+		FX.setPopupMenu(editor(), this::createPopupMenu);
 		
 		// debug
 		FxDump.attach(this);
+	}
+	
+	
+	protected void updateModel()
+	{
+		if(tailMode.get())
+		{
+			if(growingModel == null)
+			{
+				growingModel = new DemoGrowingModel();
+			}
+			model = growingModel;
+		}
+		else
+		{
+			if(largeModel == null)
+			{
+				largeModel = new DemoColorEditorModel(2_000_000_000);
+			}
+			model = largeModel;
+		}
+		editor().setModel(model);
 	}
 	
 	
@@ -51,14 +79,26 @@ public class MainWindow
 	}
 	
 	
+	protected FxPopupMenu createPopupMenu()
+	{
+		FxPopupMenu m = new FxPopupMenu();
+		m.item("Cut");
+		m.item("Copy");
+		m.item("Paste");
+		return m;
+	}
+	
+	
 	protected FxMenuBar createMenu()
 	{
 		FxMenuBar m = new FxMenuBar();
 		// file
 		m.menu("File");
-		m.item("Preferences", prefsAction);
 		m.separator();
+		m.item("Tail Mode", tailMode);
 		m.item("New Window, Same Model", new FxAction(this::newWindow));
+		m.separator();
+		m.item("Preferences", prefsAction);
 		m.separator();
 		m.item("Exit", FX.exitAction());
 		// edit
@@ -107,6 +147,8 @@ public class MainWindow
 	
 	protected void newWindow()
 	{
-		new MainWindow(model).open();
+		MainWindow w = new MainWindow();
+		w.tailMode.set(tailMode.get());
+		w.open();
 	}
 }
