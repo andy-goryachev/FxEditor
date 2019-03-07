@@ -46,12 +46,20 @@ public class DemoColorEditorModel
 		CList<Segment> ss = new DemoSyntax(text).generateSegments();
 		
 		LineBox box = new LineBox();
-		for(Segment s: ss)
+		if(ss.size() == 0)
 		{
-			Text t = new Text(s.text);
-			t.setFill(s.color);
-			
-			box.addText(t);
+			// needs at least one empty Text child to compute height properly
+			box.addText(new Text(""));
+		}
+		else
+		{
+			for(Segment s: ss)
+			{
+				Text t = new Text(s.text);
+				t.setFill(s.color);
+				
+				box.addText(t);
+			}
 		}
 		return box;
 	}
