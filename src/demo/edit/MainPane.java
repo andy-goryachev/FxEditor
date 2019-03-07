@@ -2,6 +2,7 @@
 package demo.edit;
 import goryachev.fx.CInsets;
 import goryachev.fx.CPane;
+import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.edit.FindPane;
 import goryachev.fx.edit.FxEditor;
@@ -15,11 +16,14 @@ import javafx.util.Duration;
 public class MainPane
 	extends CPane
 {
+	public static final CssStyle PANE = new CssStyle("MainPane_PANE");
 	public final FxEditor editor;
 
 	
 	public MainPane(FxEditorModel m)
 	{
+		FX.style(this, PANE);
+		
 		editor = new FxEditor(m);
 		editor.setContentPadding(new CInsets(2, 4));
 		editor.setBlinkRate(Duration.millis(600));

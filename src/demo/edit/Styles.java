@@ -3,6 +3,7 @@ package demo.edit;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FxStyleSheet;
 import goryachev.fx.Theme;
+import goryachev.fx.edit.FxEditor;
 
 
 /**
@@ -18,7 +19,12 @@ public class Styles
 		add
 		(
 			// common fx styles
-			new CommonStyles()
+			new CommonStyles(),
+			
+			selector(MainPane.PANE, FxEditor.PANE).defines
+			(
+				fontSize("200%")
+			)
 		);
 	}
 }

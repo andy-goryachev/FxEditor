@@ -372,7 +372,7 @@ public class CommonStyles
 	
 	protected Object fxEditor(Theme theme)
 	{
-		return selector(FxEditor.PANEL).defines
+		return selector(FxEditor.PANE).defines
 		(
 			backgroundColor(commas(theme.textBG, theme.textBG)),
 			backgroundInsets(commas(0, 1)),

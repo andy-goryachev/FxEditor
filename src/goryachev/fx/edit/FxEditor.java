@@ -56,7 +56,7 @@ public class FxEditor
 	/** selection highlight */
 	public static final CssStyle SELECTION_HIGHLIGHT = new CssStyle("FxEditor_SELECTION_HIGHLIGHT");
 	/** panel style */
-	public static final CssStyle PANEL = new CssStyle("FxEditor_PANEL");
+	public static final CssStyle PANE = new CssStyle("FxEditor_PANEL");
 	/** line number component */
 	public static final CssStyle LINE_NUMBER = new CssStyle("FxEditor_LINE_NUMBER");
 	/** vflow */
@@ -94,7 +94,7 @@ public class FxEditor
 	public FxEditor(FxEditorModel m)
 	{
 		setFocusTraversable(true);
-		FX.style(this, PANEL);
+		FX.style(this, PANE);
 		setBackground(FX.background(Color.WHITE));
 		
 		modelListener = new FxEditorModelListener()
