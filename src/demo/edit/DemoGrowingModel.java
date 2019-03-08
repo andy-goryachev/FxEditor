@@ -1,5 +1,6 @@
 // Copyright © 2019 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
+import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.D;
 import goryachev.fx.edit.AbstractPlainTextEditorModel;
@@ -46,6 +47,25 @@ public class DemoGrowingModel
 		int line = Math.max(0, max - 1);
 		String s = getPlainText(line);
 		int charIndex = s == null ? 0 : s.length();
+		
+		String[] ss = CKit.split(text, '\n');
+		
+		for(int i=0; i<ss.length; i++)
+		{
+			int ix = line + i;
+			s = getPlainText(ix);
+			if(s == null)
+			{
+				lines.add(ss[i]);
+			}
+			else
+			{
+				lines.set(ix, s + ss[i]);
+			}
+		}
+		
+		int inserted = Math.max(0, ss.length - 1);
+		fireTextUpdated(line, charIndex, line, charIndex, inserted);
 	}
 	
 
