@@ -104,9 +104,9 @@ public class FxEditor
 				handleAllLinesChanged();
 			}
 
-			public void eventTextUpdated(int startLine, int startCharIndex, int endLine, int endCharIndex, int numberOfLinesInserted)
+			public void eventTextUpdated(int startLine, int startPos, int startCharsInserted, int linesInserted, int endLine, int endPos, int endCharsInserted)
 			{
-				handleTextUpdated(startLine, startCharIndex, endLine, endCharIndex, numberOfLinesInserted);
+				handleTextUpdated(startLine, startPos, startCharsInserted, linesInserted, endLine, endPos, endCharsInserted);
 			}
 		};
 		
@@ -500,10 +500,17 @@ public class FxEditor
 	}
 
 
-	protected void handleTextUpdated(int startLine, int startCharIndex, int endLine, int endCharIndex, int numberOfLinesInserted)
+	protected void handleTextUpdated(int startLine, int startPos, int startCharsInserted, int linesInserted, int endLine, int endPos, int endCharsInserted)
 	{
 		// TODO
-		D.print(startLine, startCharIndex, endLine, endCharIndex, numberOfLinesInserted);
+		D.print(startLine, startPos, startCharsInserted, linesInserted, endLine, endPos, endCharsInserted);
+		
+		// update markers
+		markers.update(startLine, startPos, startCharsInserted, linesInserted, endLine, endPos, endCharsInserted);
+		// update vflow
+		vflow.update(startLine, linesInserted, endLine);
+		
+		// update scroll bars
 	}
 
 	

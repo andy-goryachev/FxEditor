@@ -12,10 +12,27 @@ public interface FxEditorModelListener
 {
 	/**
 	 * The text between two positions has changed: either deleted, replaced, or inserted.
-	 * @param numberOfLinesInserted is the number of lines (essentially, a number of line breaks)
-	 * that would exist after the transformation. 
+	 * <pre>
+	 * Before:
+	 *   startLine ->  TTTTTTT|DDDDD                      | startPos=7
+	 *                 DDDDDDDDDD                         |
+	 *     endLine ->  DDDD|TTTTTTTTTTTT                  | endPos=4
+	 * 
+	 * After:
+	 *   startLine ->  TTTTTTT|II                         | startCharsInserted=2
+	 *                 IIII                               | linesInserted=1
+	 *     endLine ->  I|TTTTTTTTTTTT                     | endCharsInserted=1
+	 * </pre>
+	 * 
+	 * @param startLine - first marker line
+	 * @param startPos - first marker position (0 ... length)
+	 * @param startCharsInserted - number of characters inserted after startPos on the startLine
+	 * @param linesInserted - number of lines inserted between (and not counting) startLine and endLine
+	 * @param endLine - second marker line
+	 * @param endPos - second marker position
+	 * @param endCharsInserted - number of characters inserted before endPos on the endLine
 	 */
-	public void eventTextUpdated(int startLine, int startCharIndex, int endLine, int endCharIndex, int numberOfLinesInserted);
+	public void eventTextUpdated(int startLine, int startPos, int startCharsInserted, int linesInserted, int endPos, int endCharIndex, int endCharsInserted);
 
 	/** 
 	 * All lines in the editor have changed.  

@@ -153,6 +153,10 @@ public class VFlow
 	
 	public int getVisibleLineCount()
 	{
+		if(layout == null)
+		{
+			return 0;
+		}
 		return layout.getVisibleLineCount();
 	}
 	
@@ -787,5 +791,26 @@ public class VFlow
 		}
 		
 		updateCaretAndSelection();
+	}
+
+
+	// returns true if update resulted in a visual change
+	public boolean update(int startLine, int linesInserted, int endLine)
+	{
+		int max = Math.max(endLine, startLine + linesInserted);
+		if(max < topLine)
+		{
+			return false;
+		}
+		else if(startLine > (topLine + getVisibleLineCount()))
+		{
+			return false;
+		}
+		
+		// TODO optimize, but for now simply
+		invalidateLayout();
+		requestLayout();
+		
+		return true;
 	}
 }

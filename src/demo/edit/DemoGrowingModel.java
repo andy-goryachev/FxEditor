@@ -64,8 +64,9 @@ public class DemoGrowingModel
 			}
 		}
 		
-		int inserted = Math.max(0, ss.length - 1);
-		fireTextUpdated(line, charIndex, line, charIndex, inserted);
+		int startCharsInserted = ss[0].length();
+		int linesInserted = Math.max(0, ss.length - 1);
+		fireTextUpdated(line, charIndex, startCharsInserted, linesInserted, line, charIndex, 0);
 	}
 	
 

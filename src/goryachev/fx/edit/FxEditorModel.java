@@ -132,9 +132,9 @@ public abstract class FxEditorModel
 	}
 	
 	
-	public void fireTextUpdated(int startLine, int startCharIndex, int endLine, int endCharIndex, int numberOfLinesInserted)
+	public void fireTextUpdated(int startLine, int startPos, int startCharsInserted, int linesInserted, int endLine, int endPos, int endCharsInserted)
 	{
-		fireEvent((li) -> li.eventTextUpdated(startLine, startCharIndex, endLine, endCharIndex, numberOfLinesInserted));
+		fireEvent((li) -> li.eventTextUpdated(startLine, startPos, startCharsInserted, linesInserted, endLine, endPos, endCharsInserted));
 	}
 	
 	
