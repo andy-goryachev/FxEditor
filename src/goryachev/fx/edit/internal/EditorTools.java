@@ -71,7 +71,8 @@ public class EditorTools
 		if(p == null)
 		{
 			// FIX search for 's' in appstate.json
-			throw new Error("null?"); // FIX
+			new Error("null?").printStackTrace(); // FIX
+			return null;
 		}
 		
 		p = target.screenToLocal(p);

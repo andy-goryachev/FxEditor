@@ -262,7 +262,6 @@ public class FxEditor
 		}
 		
 		handleAllLinesChanged();
-//		updateLayout();
 	}
 	
 	
@@ -274,7 +273,8 @@ public class FxEditor
 	
 	public int getLineCount()
 	{
-		return getModel().getLineCount();
+		FxEditorModel m = getModel();
+		return m == null ? 0 : m.getLineCount();
 	}
 	
 	
@@ -309,7 +309,8 @@ public class FxEditor
 		if(handleScrollEvents)
 		{
 			// TODO account for visible line count
-			int start = FX.round(getModel().getLineCount() * pos);
+			int start = FX.round(pos); 
+				//FX.round(getModel().getLineCount() * pos);
 			setTopLineIndex(start);
 		}
 	}
@@ -509,8 +510,6 @@ public class FxEditor
 		markers.update(startLine, startPos, startCharsInserted, linesInserted, endLine, endPos, endCharsInserted);
 		// update vflow
 		vflow.update(startLine, linesInserted, endLine);
-		
-		// update scroll bars
 	}
 
 	
@@ -787,7 +786,6 @@ public class FxEditor
 	
 	public void setCaret(int row, int charIndex)
 	{
-		D.print(row); // FIX
 		Marker m = newMarker(row, charIndex, true);
 		select(m, m);
 	}

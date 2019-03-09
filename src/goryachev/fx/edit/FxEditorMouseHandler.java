@@ -25,7 +25,7 @@ public class FxEditorMouseHandler
 	private double autoScrollStepFast = 200; // arbitrary
 	private double autoScrollStepSlow = 20; // arbitrary
 	private boolean autoScrollUp;
-	private double scrollWheelStepSize = 0.25;
+	private double scrollWheelStepSize = 0.1;
 
 
 	public FxEditorMouseHandler(FxEditor ed, SelectionController sel)
