@@ -1,17 +1,16 @@
 FIX
 ===
-- no horizontal scrolling for line numbers!
+- focus border is hidden behind scroll bars
+- line number text is slightly off vertically
+- adjust offsetx on resize if sufficient space exists
 
 
 
 TODO
 ====
 - editable
-- line number colum width in layout
 - layout: skip resizing if same width
 - click handler
-- horizontal scrolling
-- scroll bar thumb sizing
 - temporarily set editable to false and do copy() in a background thread (with an error handler) if the model is large
 - focused border
 - model: highlighters
