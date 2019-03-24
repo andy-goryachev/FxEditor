@@ -21,12 +21,15 @@ import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.KeyCode;
@@ -78,8 +81,8 @@ public class FxEditor
 	protected final VFlow vflow;
 	protected final ScrollBar vscroll;
 	protected final ScrollBar hscroll;
+	protected final ChangeListener<LoadStatus> loadStatusListener;
 	protected final SelectionController selector;
-	protected final KeyMap keymap; // TODO
 	protected final FxEditorModelListener modelListener;
 	protected boolean handleScrollEvents = true;
 	protected BiConsumer<FxEditor,Marker> wordSelector = new SimpleWordSelector();
@@ -112,25 +115,49 @@ public class FxEditor
 		
 		selector = createSelectionController();
 
+		loadStatusListener = new ChangeListener<LoadStatus>()
+		{
+			public void changed(ObservableValue<? extends LoadStatus> observable, LoadStatus prev, LoadStatus cur)
+			{
+				updateLoadStatus(cur);
+			}
+		};
+
 		setModel(m);
 		
 		vflow = new VFlow(this);
 		
 		vscroll = createVScrollBar();
+		vscroll.setOrientation(Orientation.VERTICAL);
+		vscroll.setManaged(true);
+		vscroll.setMin(0.0);
+		vscroll.setMax(1.0);
+		vscroll.valueProperty().addListener((src,old,val) -> setAbsolutePositionVertical(val.doubleValue()));
+		vscroll.addEventFilter(ScrollEvent.ANY, (ev) -> ev.consume());
 		
 		hscroll = createHScrollBar();
+		hscroll.setOrientation(Orientation.HORIZONTAL);
+		hscroll.setManaged(true);
+		hscroll.setMin(0.0);
+		hscroll.setMax(1.0);
+		hscroll.valueProperty().addListener((src,old,val) -> setAbsolutePositionHorizontal(val.doubleValue()));
+		hscroll.addEventFilter(ScrollEvent.ANY, (ev) -> ev.consume());
 		hscroll.visibleProperty().bind(wordWrapProperty.not());
 		hscroll.valueProperty().addListener((s,p,c) -> handleHorizontalScroll(c.doubleValue()));
 		
 		getChildren().addAll(vflow, vscroll, hscroll);
 		
 		selector.segments.addListener((Observable src) -> vflow.updateCaretAndSelection());
-
+		
 		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
 		Binder.onChange(this::updateLayout, widthProperty(), heightProperty(), showLineNumbersProperty);
 		wordWrapProperty.addListener((s,p,c) -> updateLayout());
 		
-		keymap = createKeyMap();
+		// key map
+		KeyMap.onKeyPressed(this, KeyCode.C, KeyMap.SHORTCUT, this::copy);
+		KeyMap.onKeyPressed(this, KeyCode.PAGE_DOWN, this::pageDown);
+		KeyMap.onKeyPressed(this, KeyCode.PAGE_UP, this::pageUp);
+		KeyMap.onKeyPressed(this, KeyCode.A, KeyMap.SHORTCUT, this::selectAll);
 		
 		initMouseController();
 		
@@ -195,18 +222,6 @@ public class FxEditor
 	}
 	
 	
-	/** override to provide your own controller */
-	protected KeyMap createKeyMap()
-	{
-		KeyMap m = new KeyMap();
-		m.shortcut(KeyCode.C, this::copy);
-		m.add(KeyCode.PAGE_DOWN, this::pageDown);
-		m.add(KeyCode.PAGE_UP, this::pageUp);
-		m.shortcut(KeyCode.A, this::selectAll);
-		return m;
-	}
-	
-	
 	public ReadOnlyObjectProperty<EditorSelection> selectionProperty()
 	{
 		return selector.selectionProperty();
@@ -246,6 +261,7 @@ public class FxEditor
 		if(old != null)
 		{
 			old.removeListener(modelListener);
+			old.loadStatus.removeListener(loadStatusListener);
 		}
 		
 		modelProperty.set(m);
@@ -253,6 +269,7 @@ public class FxEditor
 		if(m != null)
 		{
 			m.addListener(modelListener);
+			m.loadStatus.addListener(loadStatusListener);
 		}
 		
 		selector.clear();
@@ -280,27 +297,38 @@ public class FxEditor
 	
 	protected ScrollBar createVScrollBar()
 	{
-		ScrollBar s = new ScrollBar();
-		s.setOrientation(Orientation.VERTICAL);
-		s.setManaged(true);
-		s.setMin(0.0);
-		s.setMax(1.0);
-		s.valueProperty().addListener((src,old,val) -> setAbsolutePositionVertical(val.doubleValue()));
-		s.addEventFilter(ScrollEvent.ANY, (ev) -> ev.consume());
-		return s;
+		return new XScrollBar();
 	}
 	
 	
 	protected ScrollBar createHScrollBar()
 	{
-		ScrollBar s = new ScrollBar();
-		s.setOrientation(Orientation.HORIZONTAL);
-		s.setManaged(true);
-		s.setMin(0.0);
-		s.setMax(1.0);
-		s.valueProperty().addListener((src,old,val) -> setAbsolutePositionHorizontal(val.doubleValue()));
-		s.addEventFilter(ScrollEvent.ANY, (ev) -> ev.consume());
-		return s;
+		return new XScrollBar();
+	}
+	
+	
+	protected void updateLoadStatus(LoadStatus s)
+	{
+		if(vscroll instanceof XScrollBar)
+		{
+			XScrollBar vs = (XScrollBar)vscroll;
+			if(s.isValid())
+			{
+				vs.setPainer((canvas) ->
+				{
+					double w = canvas.getWidth();
+					double h = canvas.getHeight();
+					double y = s.getProgress() * h;
+					GraphicsContext g = canvas.getGraphicsContext2D();
+					g.setFill(Color.LIGHTGRAY);
+					g.fillRect(0, y, w, h - y);
+				});
+			}
+			else
+			{
+				vs.setPainer(null);
+			}
+		}
 	}
 	
 	
@@ -411,12 +439,12 @@ public class FxEditor
 			hscrollHeight = hscroll.prefHeight(-1);
 		}
 		
-		double w = getWidth() - m.getLeft() - m.getRight() - vscrollWidth;
-		double h = getHeight() - m.getTop() - m.getBottom() - hscrollHeight;
+		double w = getWidth() - m.getLeft() - m.getRight() - vscrollWidth - 1;
+		double h = getHeight() - m.getTop() - m.getBottom() - hscrollHeight - 1;
 
 		// layout children
-		layoutInArea(vscroll, w, y0, vscrollWidth, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
-		layoutInArea(hscroll, x0, h, w, hscrollHeight, 0, null, true, true, HPos.LEFT, VPos.BOTTOM);
+		layoutInArea(vscroll, w, y0 + 1, vscrollWidth, h, 0, null, true, true, HPos.RIGHT, VPos.TOP);
+		layoutInArea(hscroll, x0 + 1, h, w, hscrollHeight, 0, null, true, true, HPos.LEFT, VPos.BOTTOM);
 		layoutInArea(vflow, x0, y0, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 	}
 	
@@ -692,13 +720,6 @@ public class FxEditor
 	{
 		if(!ev.isConsumed())
 		{
-			Runnable a = keymap.getActionForKeyEvent(ev);
-			if(a != null)
-			{
-				a.run();
-				return;
-			}
-			
 			EventType<KeyEvent> t = ev.getEventType();
 			if(t == KeyEvent.KEY_PRESSED)
 			{

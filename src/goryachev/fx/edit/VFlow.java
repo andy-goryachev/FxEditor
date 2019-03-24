@@ -158,6 +158,7 @@ public class VFlow
 	
 	protected void layoutChildren()
 	{
+		// TODO skip if nothing changed!
 		layout = recreateLayout(layout);
 		updateCaretAndSelection();
 		//updateVerticalScrollBar();
@@ -555,7 +556,7 @@ public class VFlow
 		boolean topLTR = true;
 		boolean bottomLTR = true;
 		
-		new SelectionHelper(b, left - offsetx, right).generate(top, bottom, topLTR, bottomLTR);
+		new SelectionHelper(b, left, right).generate(top, bottom, topLTR, bottomLTR);
 	}
 
 	

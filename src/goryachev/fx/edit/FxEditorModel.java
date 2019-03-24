@@ -5,6 +5,7 @@ import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
 import goryachev.common.util.Log;
 import goryachev.fx.FxBoolean;
+import goryachev.fx.FxObject;
 import java.io.Writer;
 import java.util.function.Consumer;
 import javafx.beans.property.BooleanProperty;
@@ -61,8 +62,9 @@ public abstract class FxEditorModel
 	
 	//
 
-	protected FxBoolean editableProperty = new FxBoolean(false);
-	protected CList<FxEditorModelListener> listeners = new CList<>();
+	protected final FxBoolean editableProperty = new FxBoolean(false);
+	protected final CList<FxEditorModelListener> listeners = new CList<>();
+	protected final FxObject<LoadStatus> loadStatus = new FxObject(LoadStatus.UNKNOWN);
 	protected final CMap<DataFormat,ClipboardHandlerBase> clipboardHandlers = new CMap(); 
 	private static FxEditorModel empty;
 	
@@ -270,5 +272,15 @@ public abstract class FxEditorModel
 	{
 		String s = getPlainText(line);
 		return s == null ? 0 : s.length();
+	}
+	
+	
+	public void setLoadStatus(LoadStatus s)
+	{
+		if(s == null)
+		{
+			throw new NullPointerException("load status");
+		}
+		loadStatus.set(s);
 	}
 }

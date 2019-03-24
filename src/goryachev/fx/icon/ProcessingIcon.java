@@ -10,6 +10,8 @@ import javafx.util.Duration;
 
 /**
  * Processing Icon.
+ * 
+ * TODO extends IconBase
  */
 public class ProcessingIcon
 {

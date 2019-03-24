@@ -42,6 +42,8 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -1195,5 +1197,39 @@ public final class FX
 	public static void disableAlternativeRowColor(ListView<?> v)
 	{
 		FX.style(v, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR);
+	}
+
+
+	/** 
+	 * returns a key code that represents a shortcut on this platform.
+	 * why this functionality is not public in javafx is unclear to me.
+	 */
+	public static KeyCode getShortcutKeyCode()
+	{
+		KeyEvent ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.CONTROL, false, true, false, false);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.CONTROL;
+		}
+		
+		ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.META, false, false, false, true);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.META;
+		}
+		
+		ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.ALT, false, false, true, false);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.ALT;
+		}
+		
+		ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.SHIFT, true, false, false, false);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.SHIFT;
+		}
+		
+		return null;
 	}
 }

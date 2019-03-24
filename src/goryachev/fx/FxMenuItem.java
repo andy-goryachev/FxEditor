@@ -42,5 +42,6 @@ public class FxMenuItem
 	public FxMenuItem(String text)
 	{
 		super(text);
+		setDisable(true);
 	}
 }

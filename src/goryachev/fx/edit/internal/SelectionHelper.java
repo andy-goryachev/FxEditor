@@ -256,6 +256,7 @@ public class SelectionHelper
 	{		
 		if(bottom == null)
 		{
+			// TODO special handling when outside of visible area
 			pathBuilder.addAll(top);
 		}
 		else

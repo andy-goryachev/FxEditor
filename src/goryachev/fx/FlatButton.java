@@ -1,6 +1,7 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 
+import javafx.scene.Node;
 
 /**
  * Flat Button.
@@ -28,6 +29,20 @@ public class FlatButton
 	public FlatButton(String text)
 	{
 		super(text);
+		FX.style(this, STYLE);
+	}
+	
+	
+	public FlatButton(Node icon)
+	{
+		super(icon);
+		FX.style(this, STYLE);
+	}
+	
+	
+	public FlatButton(Node icon, FxAction a)
+	{
+		super(icon, a);
 		FX.style(this, STYLE);
 	}
 }

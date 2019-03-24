@@ -70,8 +70,6 @@ public class EditorTools
 		Point2D p = src.localToScreen(pad.getLeft(), pad.getTop());
 		if(p == null)
 		{
-			// FIX search for 's' in appstate.json
-			new Error("null?").printStackTrace(); // FIX
 			return null;
 		}
 		

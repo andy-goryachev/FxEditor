@@ -398,7 +398,7 @@ public class D
 	
 	
 	/** when running in eclipse, prints frmatted string to stderr */
-	public static void pf(String fmt, Object ... args)
+	public static void f(String fmt, Object ... args)
 	{
 		if(CKit.isEclipse())
 		{
