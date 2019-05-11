@@ -12,7 +12,7 @@ import javafx.stage.Window;
 
 
 /**
- * FxHacks for Java 9.
+ * FxHacks for Java 9+.
  */
 public class FxHacksJava9
 	extends FxHacks
