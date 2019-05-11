@@ -16,7 +16,22 @@ import javafx.stage.Window;
  * supposedly all the necessary internal machinery will have been made public.
  * 
  * Development of java 8 and java 9 hacks is being done as part of FxEditor project
- * https://github.com/andy-goryachev/FxEditor/ 
+ * https://github.com/andy-goryachev/FxEditor/
+ * 
+ * How to update:
+ * 1. set jdk to 8
+ * 2. checkout java8-hacks branch
+ * 3. compile
+ * 4. copy out/.../FxHacksJava8.class to ~/FxHacksJava8.bin
+ * 5. commit
+ * 6. set jdk to 9 (or 10)
+ * 7. checkout java9-hacks branch
+ * 8. compile
+ * 9. copy out/.../FxHacksJava9.class to ~/FxHacksJava9.bin
+ * 10. commit
+ * 11. checkout master branch
+ * 12. copy ~/FxHackJava?.bin to src/goryachev/fx/hacks
+ * 13. commit
  */
 public abstract class FxHacks
 {
