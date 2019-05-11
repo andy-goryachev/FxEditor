@@ -1,4 +1,4 @@
-// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
 
 
@@ -7,5 +7,5 @@ package demo.edit;
  */
 public class Conf
 {
-	public static final int LINE_COUNT = 2000; // Integer.MAX_VALUE;
+	public static final int LINE_COUNT = 10_000; // Integer.MAX_VALUE;
 }

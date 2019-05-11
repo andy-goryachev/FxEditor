@@ -1,17 +1,27 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.CPlatform;
 import goryachev.common.util.GlobalSettings;
+import goryachev.fx.hacks.FxHacks;
 import goryachev.fx.internal.CssTools;
+import goryachev.fx.internal.FxSchema;
 import goryachev.fx.internal.WindowsFx;
+import goryachev.fx.table.FxTable;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -22,13 +32,21 @@ import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.ListView;
 import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -57,10 +75,14 @@ public final class FX
 	
 	public static FxWindow getWindow(Node n)
 	{
-		Window w = n.getScene().getWindow();
-		if(w instanceof FxWindow)
+		Scene sc = n.getScene();
+		if(sc != null)
 		{
-			return (FxWindow)w;
+			Window w = sc.getWindow();
+			if(w instanceof FxWindow)
+			{
+				return (FxWindow)w;
+			}
 		}
 		return null;
 	}
@@ -68,15 +90,20 @@ public final class FX
 	
 	public static void storeSettings(Node n)
 	{
-		FxWindow w = getWindow(n);
-		storeSettings(w);
+		if(n != null)
+		{
+			windowsFx.storeNode(n);
+			GlobalSettings.save();
+		}
 	}
 	
 	
 	public static void restoreSettings(Node n)
 	{
-		FxWindow w = getWindow(n);
-		restoreSettings(w);
+		if(n != null)
+		{
+			windowsFx.restoreNode(n);
+		}
 	}
 	
 	
@@ -112,13 +139,13 @@ public final class FX
 	}
 	
 	
-	public static CAction exitAction()
+	public static FxAction exitAction()
 	{
 		return windowsFx.exitAction();
 	}
 	
 	
-	/** creates a label */
+	/** creates a label.  accepts: CssStyle, CssID, FxCtl, Insets, OverrunStyle, Pos, TextAlignment, Color, Node, Background */
 	public static Label label(Object ... attrs)
 	{
 		Label n = new Label();
@@ -390,6 +417,12 @@ public final class FX
 	}
 	
 	
+	public static Color gray(int col)
+	{
+		return Color.rgb(col, col, col);
+	}
+	
+	
 	/** Creates Color from an RGB value. */
 	public static Color rgb(int rgb)
 	{
@@ -400,13 +433,27 @@ public final class FX
 	}
 	
 	
+	/** Creates Color from an RGB value. */
+	public static Color rgb(int red, int green, int blue)
+	{
+		return Color.rgb(red, green, blue);
+	}
+	
+	
 	/** Creates Color from an RGB value + alpha. */
-	public static Color rgba(int rgb, double alpha)
+	public static Color rgb(int rgb, double alpha)
 	{
 		int r = (rgb >> 16) & 0xff;
 		int g = (rgb >>  8) & 0xff;
 		int b = (rgb      ) & 0xff;
 		return Color.rgb(r, g, b, alpha);
+	}
+	
+	
+	/** Creates Color from an RGB value + alpha */
+	public static Color rgb(int red, int green, int blue, double alpha)
+	{
+		return Color.rgb(red, green, blue, alpha);
 	}
 
 
@@ -474,18 +521,33 @@ public final class FX
 	}
 	
 	
-	/** returns parent window or null */
-	public static Window getParentWindow(Node n)
+	/** 
+	 * returns parent window or null, accepts either a Node or a Window.
+	 * unfortunately, FX Window is not a Node, so we have to lose some type safety 
+	 */
+	public static Window getParentWindow(Object nodeOrWindow)
 	{
-		if(n != null)
+		if(nodeOrWindow == null)
 		{
-			Scene s = n.getScene();
+			return null;
+		}
+		else if(nodeOrWindow instanceof Window)
+		{
+			return (Window)nodeOrWindow;
+		}
+		else if(nodeOrWindow instanceof Node)
+		{
+			Scene s = ((Node)nodeOrWindow).getScene();
 			if(s != null)
 			{
 				return s.getWindow();
 			}
+			return null;
 		}
-		return null;
+		else
+		{
+			throw new Error("node or window");
+		}
 	}
 	
 	
@@ -514,6 +576,22 @@ public final class FX
 	public static void later(Runnable r)
 	{
 		Platform.runLater(r);
+	}
+	
+	
+	/** swing invokeAndWait() analog.  if called from an FX application thread, simply invokes the producer. */
+	public static <T> T invokeAndWait(Callable<T> producer) throws Exception
+	{
+		if(Platform.isFxApplicationThread())
+		{
+			return producer.call();
+		}
+		else
+		{
+			FutureTask<T> t = new FutureTask(producer);
+			FX.later(t);
+			return t.get();
+		}
 	}
 
 
@@ -546,31 +624,48 @@ public final class FX
 	}
 	
 	
+	/** assign a name to the node for the purposes of saving settings */
+	public static void setName(Node n, String name)
+	{
+		FxSchema.setName(n, name);
+	}
+	
+	
+	/** 
+	 * attaches a handler to be notified when settings for the node have been loaded.  
+	 * setting null clears the handler 
+	 */
+	public static void setOnSettingsLoaded(Node n, Runnable r)
+	{
+		FxSchema.setOnSettingsLoaded(n, r);
+	}
+	
+	
 	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
 	public static <T> void bind(Node n, String subKey, Property<T> p)
 	{
-		windowsFx.bindings(n, true).add(subKey, p, null);
+		FxSchema.bindings(n, true).add(subKey, p, null);
 	}
 	
 	
 	/** bind an object with settings to be saved as part of FxWindow settings using the specified subkey */
 	public static <T> void bind(Node n, String subKey, HasSettings x)
 	{
-		windowsFx.bindings(n, true).add(subKey, x);
+		FxSchema.bindings(n, true).add(subKey, x);
 	}
 	
 	
 	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
 	public static <T> void bind(Node n, String subKey, Property<T> p, StringConverter<T> c)
 	{
-		windowsFx.bindings(n, true).add(subKey, p, c);
+		FxSchema.bindings(n, true).add(subKey, p, c);
 	}
 	
 	
 	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
 	public static <T> void bind(Node n, String subKey, Property<T> p, SSConverter<T> c)
 	{
-		windowsFx.bindings(n, true).add(subKey, c, p);
+		FxSchema.bindings(n, true).add(subKey, c, p);
 	}
 	
 	
@@ -708,7 +803,7 @@ public final class FX
 	
 	
 	/** sets a tool tip on the control. */
-	public static void tooltip(Control n, Object tooltip)
+	public static void toolTip(Control n, Object tooltip)
 	{
 		if(tooltip == null)
 		{
@@ -801,9 +896,9 @@ public final class FX
 			{
 				((Node)x).setDisable(on);
 			}
-			else if(x instanceof CAction)
+			else if(x instanceof FxAction)
 			{
-				((CAction)x).setDisabled(on);
+				((FxAction)x).setDisabled(on);
 			}
 		}
 	}
@@ -920,5 +1015,221 @@ public final class FX
 		double h = Math.ceil(r.getHeight() + m.getTop() + m.getBottom());
 		
 		return new FxSize(w, h);
+	}
+	
+
+	/** requests focus in Platform.runLater() */
+	public static void focusLater(Node n)
+	{
+		later(() -> n.requestFocus());
+	}
+	
+	
+	/** returns a parent of the specified type, or null.  if comp is an instance of the specified class, returns comp */
+	public static <T> T getAncestorOfClass(Class<T> c, Node comp)
+	{
+		while(comp != null)
+		{
+			if(c.isInstance(comp))
+			{
+				return (T)comp;
+			}
+			
+//			if(comp instanceof JPopupMenu)
+//			{
+//				if(comp.getParent() == null)
+//				{
+//					comp = ((JPopupMenu)comp).getInvoker();
+//					continue;
+//				}
+//			}
+			
+			comp = comp.getParent();
+		}
+		return null;
+	}
+	
+	
+	public static List<Window> getWindows()
+	{
+		return FxHacks.get().getWindows();
+	}
+	
+	
+	/** attach a popup menu to the node */
+	public static void setPopupMenu(Node owner, Supplier<FxPopupMenu> generator)
+	{
+		owner.setOnContextMenuRequested((ev) ->
+		{
+			if(generator != null)
+			{
+				FX.later(() ->
+				{
+					FxPopupMenu m = generator.get();
+					if(m != null)
+					{
+						if(m.getItems().size() > 0)
+						{
+							// javafx does not dismiss the popup when the user
+							// clicks on the owner node
+							EventHandler<MouseEvent> li = new EventHandler<MouseEvent>()
+							{
+								public void handle(MouseEvent event)
+								{
+									m.hide();
+									owner.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
+								}
+							};
+							
+							owner.addEventFilter(MouseEvent.MOUSE_PRESSED, li);
+							m.show(owner, ev.getScreenX(), ev.getScreenY());
+						}
+					}
+				});
+			}
+			ev.consume();
+		});
+	}
+	
+	
+	public static void checkThread()
+	{
+		if(!Platform.isFxApplicationThread())
+		{
+			throw new Error("must be called from an FX application thread");
+		}
+	}
+
+
+	public static void onKey(Node node, KeyCode code, FxAction a)
+	{
+		node.addEventHandler(KeyEvent.KEY_PRESSED, (ev) ->
+		{
+			if(ev.getCode() == code)
+			{
+				if(ev.isAltDown() || ev.isControlDown() || ev.isMetaDown() || ev.isShiftDown() || ev.isShortcutDown())
+				{
+					return;
+				}
+				else
+				{
+					a.action();
+					ev.consume();
+				}
+			}
+		});
+	}
+	
+	
+	public static <T> void addOneShotListener(Property<T> p, Consumer<T> c)
+	{
+		p.addListener(new ChangeListener<T>()
+		{
+			public void changed(ObservableValue<? extends T> observable, T old, T cur)
+			{
+				c.accept(cur);
+				p.removeListener(this);
+			}
+		});
+	}
+	
+	
+	/** Prevents the node from being resized when the SplitPane is resized. */
+	public static void preventSplitPaneResizing(Node nd)
+	{
+		SplitPane.setResizableWithParent(nd, Boolean.FALSE);
+	}
+	
+	
+	public static boolean isLeftButton(MouseEvent ev)
+	{
+		return (ev.getButton() == MouseButton.PRIMARY);
+	}
+	
+	
+	/** sometimes MouseEvent.isPopupTrigger() is not enough */
+	public static boolean isPopupTrigger(MouseEvent ev)
+	{
+		if(ev.getButton() == MouseButton.SECONDARY)
+		{
+			if(CPlatform.isMac())
+			{
+				if
+				(
+					!ev.isAltDown() &&
+					!ev.isMetaDown() &&
+					!ev.isShiftDown()
+				)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				if
+				(
+					!ev.isAltDown() &&
+					!ev.isControlDown() &&
+					!ev.isMetaDown() &&
+					!ev.isShiftDown()
+				)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
+	public static void disableAlternativeRowColor(FxTable<?> table)
+	{
+		FX.style(table.table, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR);
+	}
+	
+	
+	public static void disableAlternativeRowColor(TableView<?> table)
+	{
+		FX.style(table, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR);
+	}
+	
+	
+	public static void disableAlternativeRowColor(ListView<?> v)
+	{
+		FX.style(v, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR);
+	}
+
+
+	/** 
+	 * returns a key code that represents a shortcut on this platform.
+	 * why this functionality is not public in javafx is unclear to me.
+	 */
+	public static KeyCode getShortcutKeyCode()
+	{
+		KeyEvent ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.CONTROL, false, true, false, false);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.CONTROL;
+		}
+		
+		ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.META, false, false, false, true);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.META;
+		}
+		
+		ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.ALT, false, false, true, false);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.ALT;
+		}
+		
+		ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.SHIFT, true, false, false, false);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.SHIFT;
+		}
+		
+		return null;
 	}
 }

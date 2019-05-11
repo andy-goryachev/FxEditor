@@ -1,8 +1,7 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.hacks;
 import goryachev.common.util.ByteArrayClassLoader;
 import goryachev.common.util.CKit;
-import goryachev.fx.edit.CHitInfo;
 import java.util.List;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.TextFlow;

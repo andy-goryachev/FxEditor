@@ -1,12 +1,12 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
 import goryachev.common.util.FileSettingsProvider;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
 import goryachev.common.util.SB;
 import goryachev.fx.FxWindow;
-import goryachev.fx.edit.CHitInfo;
-import goryachev.fx.edit.CTextFlow;
+import goryachev.fx.hacks.CHitInfo;
+import goryachev.fxeditor.CTextFlow;
 import java.io.File;
 import javafx.application.Application;
 import javafx.geometry.Point2D;

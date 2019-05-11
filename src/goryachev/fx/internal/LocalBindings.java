@@ -1,4 +1,4 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.internal;
 import goryachev.common.util.CMap;
 import goryachev.common.util.GlobalSettings;
@@ -72,6 +72,25 @@ public class LocalBindings
 					T v = c.fromStream(s);
 					p.setValue(v);
 				}
+			}
+		});
+	}
+	
+	
+	public void add(String subKey, Property<String> p)
+	{
+		entries.put(subKey, new Entry()
+		{
+			public void saveValue(String prefix)
+			{
+				String v = p.getValue();
+				GlobalSettings.setString(prefix + "." + subKey, v);
+			}
+
+			public void loadValue(String prefix)
+			{
+				String v = GlobalSettings.getString(prefix + "." + subKey);
+				p.setValue(v);
 			}
 		});
 	}

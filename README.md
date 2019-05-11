@@ -32,8 +32,7 @@ is currently implemented.
 
 To see how little is implemented, launch 
 [FxEditorDemoApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/FxEditorDemoApp.java)
-or
-[FxDemoApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/fx/FxDemoApp.java).
+.
 
 
 ## Example
@@ -59,6 +58,11 @@ public class MainWindow extends FxWindow
 ```
 
 See [MainWindow.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/MainWindow.java)
+
+
+## Warning
+
+This project is not ready for production.  Mutable (editable) text models are not yet implemented.
 
 
 ## Similar Projects

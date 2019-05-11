@@ -1,5 +1,6 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
@@ -8,11 +9,18 @@ package goryachev.fx;
 public class CssID
 {
 	private final String id;
+	private static final AtomicLong seq = new AtomicLong();
 	
 	
 	public CssID(String id)
 	{
-		this.id = id;
+		this.id = id + "_" + seq.incrementAndGet();
+	}
+	
+	
+	public CssID()
+	{
+		this("");
 	}
 	
 	
