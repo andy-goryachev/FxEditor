@@ -4,9 +4,9 @@ import goryachev.fx.CInsets;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
-import goryachev.fx.edit.FindPane;
-import goryachev.fx.edit.FxEditor;
-import goryachev.fx.edit.FxEditorModel;
+import goryachev.fxeditor.FindPane;
+import goryachev.fxeditor.FxEditor;
+import goryachev.fxeditor.FxEditorModel;
 import javafx.util.Duration;
 
 

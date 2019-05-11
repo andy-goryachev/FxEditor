@@ -3,7 +3,7 @@ package demo.edit;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FxStyleSheet;
 import goryachev.fx.Theme;
-import goryachev.fx.edit.FxEditor;
+import goryachev.fxeditor.FxEditor;
 
 
 /**

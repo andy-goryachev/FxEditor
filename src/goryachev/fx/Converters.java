@@ -2,6 +2,7 @@
 package goryachev.fx;
 import goryachev.common.util.Parsers;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
@@ -31,6 +32,10 @@ public class Converters
 		else if(p instanceof IntegerProperty)
 		{
 			return (StringConverter<T>)INT();
+		}
+		else if(p instanceof DoubleProperty)
+		{
+			return (StringConverter<T>)NUMBER_DOUBLE();
 		}
 		else if(p instanceof StringProperty)
 		{

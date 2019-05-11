@@ -7,8 +7,8 @@ import goryachev.fx.FxDump;
 import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxPopupMenu;
 import goryachev.fx.FxWindow;
-import goryachev.fx.edit.FxEditor;
-import goryachev.fx.edit.FxEditorModel;
+import goryachev.fxeditor.FxEditor;
+import goryachev.fxeditor.FxEditorModel;
 
 
 /**

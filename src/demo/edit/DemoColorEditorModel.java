@@ -2,9 +2,10 @@
 package demo.edit;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.fx.edit.AbstractPlainTextEditorModel;
-import goryachev.fx.edit.Edit;
-import goryachev.fx.edit.LineBox;
+import goryachev.fxeditor.AbstractPlainTextEditorModel;
+import goryachev.fxeditor.Edit;
+import goryachev.fxeditor.FxEditorModel.LoadInfo;
+import goryachev.fxeditor.LineBox;
 import javafx.scene.text.Text;
 
 

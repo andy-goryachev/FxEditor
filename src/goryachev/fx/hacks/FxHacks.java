@@ -2,7 +2,6 @@
 package goryachev.fx.hacks;
 import goryachev.common.util.ByteArrayClassLoader;
 import goryachev.common.util.CKit;
-import goryachev.fx.edit.CHitInfo;
 import java.util.List;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.TextFlow;
