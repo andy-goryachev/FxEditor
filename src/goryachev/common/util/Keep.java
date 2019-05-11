@@ -1,4 +1,4 @@
-// Copyright © 2012-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2012-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import static java.lang.annotation.ElementType.*;
 import java.lang.annotation.Documented;
@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * Prevents obfuscation of an annotated constructor, field, method, or class name.
+ * Prevents obfuscation of an annotated field, method, or an entire class.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

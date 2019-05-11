@@ -1,4 +1,4 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
 import goryachev.common.util.FileSettingsProvider;
 import goryachev.common.util.GlobalSettings;
@@ -39,6 +39,7 @@ public class FxEditorApp
 	public void start(Stage stage) throws Exception
 	{
 		new MainWindow().open();
+		
 		// init styles
 		CssLoader.setStyles(() -> new Styles());
 	}

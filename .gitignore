@@ -1,9 +1,10 @@
-/build/
-/out/
-/user.home*/
 ~*
+/build/
+/*.conf
+hs_err_pid*
 /*.jar
 /*.log
-/*.conf
+/out/
+/user.home*/
 /reference/reference.css
-hs_err_pid*
+/.settings/

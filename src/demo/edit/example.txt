@@ -1,0 +1,46 @@
+	tab
+		tab tab long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line long long long line  
+    spaces
+        spaces spaces
+medium medium medium line
+short line
+
+في علم الحاسوب، الترميز الموحد (يونيكود[1] أو يُونِكُود[2]) (بالإنجليزية: Unicode) هو معيار يمكن الحواسيب من تمثيل النصوص المكتوبة بأغلب نظم الكتابة ومعالجتها، بصورة متناسقة. يتكون يونيكود من 100،000 محرف، وطقم من مخططات الرموز كمرجع مرئي، ونهج في الترميز، وطقم من ترميزات المحارف المعيارية، وسرد لخصائص المحارف، وطقم من البيانات المرجعية، وعدد من الأمور المتعلقة مثل خصائص المحارف، وقواعد تطبيع النص، وفك الحروف لوحداتها الأولية، والترتيب، والتصيير، وثنائية الاتجاه (لعرض النصوص الذي يحتوي على كتابات من اليمين لليسار، مثل العربية، مع كتابات من اليسار لليمين، مثل اللاتينية).[3] يطور يونيكود بالتوازي مع معيار طقم المحارف العالمي، وينشر على شكل كتاب يحمل الاسم معيار يونيكود (Unicode Standard).
+يطمح مجمع يونيكود -المنظمة غير الربحية التي تنسق تطوير يونيكود- في النهاية إلى استبدال ترميزات المحارف الموجودة حاليا، ليحل محلها يونيكود وتنسيق يونيكود المعياري للتحويل (Unicode Transformation Format ،UTF)، حيث أن الكثير من الترميزات الحالية محدودة السعة والمدى، ولا تتوافق مع البيئات متعددة اللغات.
+أدى نجاح يونيكود في توحيد أطقم المحارف إلى انتشار وغلبة استخدامه في توطين وعولمة برمجيات الحاسوب. وجرى تطبيق البرنامج في العديد من التقنيات الحديثة، مثل لغة الترميز القابلة للامتداد، ولغة البرمجة جافا وأنظمة التشغيل الحديثة. 
+			
+Entropy		
+																			19 tabs
+   ...,...,...
+In statistical mechanics, entropy (usual symbol S) is related to the number of microscopic configurations Ω that a thermodynamic system can have when in a state as specified by some macroscopic variables. Specifically, assuming for simplicity that each of the microscopic configurations is equally probable, the entropy of the system is the natural logarithm of that number of configurations, multiplied by the Boltzmann constant kB.
+Энтропи́я (от др.-греч. ἐντροπία «поворот», «превращение») — широко используемый в естественных и точных науках термин. Впервые введён в рамках термодинамики как функция состояния термодинамической системы, определяющая меру необратимого рассеивания энергии.
+בפיזיקה, אֶנְטְרוֹפּיה (מסומנת לרוב באות S) היא אחד הגדלים המאפיינים מערכת רבת חלקיקים, והיא מתארת את המידה בה מתקיים הכלל שאומר שלא ניתן להמיר את כל אנרגיית החום של מערכת סגורה לאנרגיה מכנית (החוק השני של התרמודינמיקה).
+エントロピー（英: entropy）は、熱力学および統計力学において定義される示量性の状態量である。熱力学において断熱条件下での不可逆性を表す指標として導入され、統計力学において系の微視的な「乱雑さ」[注 1]を表す物理量という意味付けがなされた。
+واژهٔ آنتروپی یا اِنتروپی یا درگاشت (به انگلیسی: Entropy) در رشته‌های گوناگون علمی، معانی متفاوت پیدا کرده است که اساسی‌ترین آنها در زیر آورده شده‌اند.
+2-12-85-06
+
+		double width = getWidth();
+
+
+		double height = getHeight();
+		clip.setWidth(width);
+		clip.setHeight(height);
+ऊष्मागतिकी में, एन्ट्रॉपी एक भौतिक राशि है जो सीधे मापी नहीं जाती बल्कि गणना (कैल्कुलेशन) द्वारा इसका मान निकाला जाता है। इसका प्रतीक S है। किसी निकाय की कुल ऊर्जा का वह भाग जिसे उपयोग में नहीं लाया जा सकता (दूसरे शब्दों में, कार्य में नहीं बदला जा सकता)
+In the 1850s and 1860s, German physicist Rudolf Clausius objected to the supposition that no change occurs in the working body, and gave this "change" a mathematical interpretation by questioning the nature of the inherent loss of usable heat when work is done, e.g. heat produced by friction.
+엔트로피
+Στη θερμοδυναμική, εντροπία είναι η έννοια μέσω της οποίας μετράται η αταξία, της οποίας η μέγιστη τιμή αντικατοπτρίζει την πλήρη αποδιοργάνωση (ομογενοποίηση των πάντων) και ισοδυναμεί με την παύση της ζωής ή αλλιώς της εξέλιξης.
+
+
+Beyond Basic Multilingual Plane
+Etruscan
+𐈀𐈁𐈂𐈃𐈄𐈅𐈆𐈇𐈈𐈉𐈊𐈋𐈌𐈍𐈎𐈏𐈐𐈑𐈒𐈓𐈔𐈕𐈖𐈗𐈘𐈙𐈚𐈛𐈜𐈝𐈞𐈟𐈠𐈡𐈢𐈣𐈤𐈥𐈦𐈧
+
+Gothic
+𐈰𐈱𐈲𐈳𐈴𐈵𐈶𐈷𐈸𐈹𐈺𐈻𐈼𐈽𐈾𐈿𐉀𐉁𐉂𐉃𐉄𐉅𐉆𐉇𐉈𐉉𐉊𐉋
+
+Klingon
+𒏐𒏑𒏒𒏓𒏔𒏕𒏖𒏗𒏘𒏙𒏚𒏛𒏜𒏝𒏞𒏟𒏠𒏡𒏢𒏣𒏤𒏥𒏦𒏧𒏨𒏩𒏪𒏫𒏬𒏭𒏮𒏯𒏰𒏱𒏲𒏳𒏴𒏵𒏶𒏷𒏸𒏹
+
+Western Musical Symbols
+𝄃𝄄𝄅𝄆𝄇𝄈𝄉𝄊𝄋𝄌𝄍𝄎𝄏𝄐𝄑𝄒𝄓𝄔𝄕𝄖𝄗𝄘𝄙𝄚𝄛𝄜𝄝𝄞𝄟𝄠𝄡𝄢𝄣𝄤𝄥𝄦𝄧𝄨𝄩𝄪𝄫𝄬𝄭𝄮𝄯𝄰𝄱𝄲𝄳𝄴𝄵𝄶𝄷𝄸𝄹𝄺𝄻𝄼𝄽𝄾𝄿𝅀𝅁𝅂𝅃𝅄𝅅𝅆𝅇𝅈𝅉𝅊𝅋𝅌𝅍𝅎𝅏𝅐𝅑𝅒𝅓𝅔𝅕𝅖𝅗𝅘𝅙𝅚𝅛𝅜𝅝𝅗𝅥𝅘𝅥𝅘𝅥𝅮𝅘𝅥𝅯𝅘𝅥𝅰𝅘𝅥𝅱𝅘𝅧𝅨𝅩𝅥𝅲𝅥𝅦𝅪𝅫𝅬𝅮𝅯𝅰𝅱𝅲𝅭𝅳𝅴𝅵𝅶𝅷𝅸𝅹𝅺𝅻𝅼𝅽𝅾𝅿𝆀𝆁𝆂𝆃𝆄𝆊𝆋𝆅𝆆𝆇𝆈𝆉𝆌𝆍𝆎𝆏𝆐𝆑𝆒𝆓𝆔𝆕𝆖𝆗𝆘𝆙𝆚𝆛𝆜𝆝𝆞𝆟𝆠𝆡𝆢𝆣𝆤𝆥𝆦𝆧𝆨𝆩𝆪𝆫𝆬𝆭𝆮𝆯𝆰𝆱𝆲𝆳𝆴𝆵𝆶𝆷𝆸𝆹𝆺𝆹𝅥𝆺𝅥𝆹𝅥𝅮𝆺𝅥𝅮𝆹𝅥𝅯𝆺𝅥𝅯𝇁𝇂𝇃𝇄𝇅𝇆𝇇𝇈𝇉𝇊𝇋𝇌𝇍𝇎𝇏𝇐𝇑𝇒𝇓𝇔𝇕𝇖𝇗
+

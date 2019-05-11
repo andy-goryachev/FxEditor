@@ -1,4 +1,4 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.CComparator;
 import goryachev.common.util.CKit;
@@ -265,7 +265,7 @@ public class FxDump
 		
 		while(n != null)
 		{
-			sb.a(CKit.simpleName(n));
+			sb.a(CKit.getSimpleName(n));
 			
 			String id = n.getId();
 			if(CKit.isNotBlank(id))

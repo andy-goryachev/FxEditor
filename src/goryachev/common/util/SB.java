@@ -1,8 +1,10 @@
-// Copyright © 2010-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2010-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import java.util.Collection;
+import java.util.Map;
 
 
-/** More convenient StringBuilder */
+/** An extended version of StringBuilder */
 public class SB
 	implements Appendable, CharSequence
 {
@@ -692,5 +694,88 @@ public class SB
 	public CharSequence subSequence(int start, int end)
 	{
 		return sb.subSequence(start, end);
+	}
+	
+	
+	public SB repeat(char c, int count)
+	{
+		for(int i=0; i<count; i++)
+		{
+			sb.append(c);
+		}
+		return this;
+	}
+	
+	
+	public SB list(Collection<?> items, char delimiter)
+	{
+		if(items != null)
+		{
+			boolean sep = false;
+			
+			for(Object x: items)
+			{
+				if(sep)
+				{
+					sb.append(delimiter);
+				}
+				else
+				{
+					sep = true;
+				}
+				sb.append(x);
+			}
+		}
+		return this;
+	}
+	
+		
+	public SB list(Object[] items, char delimiter)
+	{
+		if(items != null)
+		{
+			boolean sep = false;
+			
+			for(Object x: items)
+			{
+				if(sep)
+				{
+					sb.append(delimiter);
+				}
+				else
+				{
+					sep = true;
+				}
+				sb.append(x);
+			}
+		}
+		return this;
+	}
+	
+	
+	public SB list(Map<?,?> items, char delimiter)
+	{
+		if(items != null)
+		{
+			boolean sep = false;
+			// would be nice to sort, but keys may not be sortable
+			for(Object k: items.keySet())
+			{
+				if(sep)
+				{
+					sb.append(delimiter);
+				}
+				else
+				{
+					sep = true;
+				}
+				
+				Object v = items.get(k);
+				sb.append(k);
+				sb.append('=');
+				sb.append(v);
+			}
+		}
+		return this;
 	}
 }

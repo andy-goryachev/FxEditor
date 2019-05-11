@@ -1,5 +1,6 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.D;
 import goryachev.fx.internal.FxSchema;
 import goryachev.fx.internal.FxWindowBoundsMonitor;
 import goryachev.fx.internal.LocalBindings;
@@ -29,11 +30,13 @@ public class FxWindow
 	
 	//
 	
-	public final CAction closeWindowAction = new CAction() { public void action() { closeWithConfirmation(); }};
+	public final FxAction closeWindowAction = new FxAction() { public void action() { closeWithConfirmation(); }};
 	private final String name;
 	private final BorderPane pane;
 	private final FxWindowBoundsMonitor normalBoundsMonitor = new FxWindowBoundsMonitor(this);
+	@Deprecated // not sure why this isn't static
 	private final ReadOnlyObjectWrapper<Node> lastFocusOwner = new ReadOnlyObjectWrapper();
+	private final static ReadOnlyObjectWrapper<Node> lastFocusOwnerStatic = new ReadOnlyObjectWrapper();
 	private LocalBindings bindings;
 	
 	
@@ -54,19 +57,34 @@ public class FxWindow
 		if(n != null)
 		{
 			lastFocusOwner.set(n);
+			lastFocusOwnerStatic.set(n);
 		}
 	}
 	
 	
+	@Deprecated
 	public Node getLastFocusOwner()
 	{
 		return lastFocusOwner.get();
 	}
 	
 	
+	public static Node getLastFocusOwnerStatic()
+	{
+		return lastFocusOwnerStatic.get();
+	}
+	
+	
+	@Deprecated
 	public ReadOnlyObjectProperty<Node> lastFocusOwnerProperty()
 	{
 		return lastFocusOwner.getReadOnlyProperty();
+	}
+	
+	
+	public static ReadOnlyObjectProperty<Node> lastFocusOwnerPropertyStatic()
+	{
+		return lastFocusOwnerStatic.getReadOnlyProperty();
 	}
 	
 	

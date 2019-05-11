@@ -1,19 +1,25 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.internal;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
 import goryachev.common.util.WeakList;
-import goryachev.fx.CAction;
 import goryachev.fx.CssLoader;
+import goryachev.fx.FxAction;
 import goryachev.fx.FxWindow;
 import goryachev.fx.OnWindowClosing;
 import goryachev.fx.hacks.FxHacks;
 import java.util.List;
 import java.util.function.Consumer;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 
@@ -110,34 +116,93 @@ public class WindowsFx
 	}
 	
 	
-	public CAction exitAction()
+	public FxAction exitAction()
 	{
-		return new CAction(this::exit);
+		return new FxAction(this::exit);
 	}
 	
 	
 	protected void exitPrivate()
 	{
+		// calls Application.close()
 		Platform.exit();
-		System.exit(0);
 	}
 
 	
 	public void storeWindow(FxWindow w)
 	{
-		String prefix = lookupPrefix(w);
-		w.storeSettings(prefix);
-		FxSchema.storeWindow(w, prefix);
-		FxSchema.storeNode(prefix, w.getScene().getRoot());
+		String windowPrefix = lookupWindowPrefix(w);
+		w.storeSettings(windowPrefix);
+		FxSchema.storeWindow(windowPrefix, w);
+		
+		Parent p = w.getScene().getRoot();
+		FxSchema.storeNode(windowPrefix, p, p);
 	}
 	
 	
 	public void restoreWindow(FxWindow w)
 	{
-		String prefix = lookupPrefix(w);
-		w.loadSettings(prefix);
-		FxSchema.restoreWindow(w, prefix);
-		FxSchema.restoreNode(prefix, w.getScene().getRoot());
+		String windowPrefix = lookupWindowPrefix(w);
+		w.loadSettings(windowPrefix);
+		FxSchema.restoreWindow(windowPrefix, w);
+		
+		Parent p = w.getScene().getRoot();
+		FxSchema.restoreNode(windowPrefix, p, p);
+	}
+	
+	
+	public void storeNode(Node n)
+	{
+		FxWindow w = getFxWindow(n);
+		if(w == null)
+		{
+			throw new Error();
+		}
+		
+		String windowPrefix = lookupWindowPrefix(w);
+		Node root = w.getScene().getRoot();
+		FxSchema.storeNode(windowPrefix, root, n);
+	}
+	
+	
+	public void restoreNode(Node n)
+	{
+		FxWindow w = getFxWindow(n);
+		if(w == null)
+		{
+			// the node is not yet connected to the scene graph
+			// let's attach a listener to the bounds in parent property which gets set
+			// when the hierarchy of this node is completely connected
+			// (adding to a scene property does not work because the parents may not be connected yet)
+			n.boundsInParentProperty().addListener(new ChangeListener<Bounds>()
+			{
+				public void changed(ObservableValue<? extends Bounds> src, Bounds prev, Bounds cur)
+				{
+					src.removeListener(this);
+					restoreNode(n);
+				}
+			});
+			return;
+		}
+		
+		String windowPrefix = lookupWindowPrefix(w);
+		Node root = w.getScene().getRoot();
+		FxSchema.restoreNode(windowPrefix, root, n);
+	}
+	
+	
+	protected FxWindow getFxWindow(Node n)
+	{
+		Scene sc = n.getScene();
+		if(sc != null)
+		{
+			Window w = sc.getWindow();
+			if(w instanceof FxWindow)
+			{
+				return (FxWindow)w;
+			}
+		}
+		return null;
 	}
 	
 
@@ -162,14 +227,7 @@ public class WindowsFx
 		addWindow(w);
 		restoreWindow(w);
 		
-		try
-		{
-			FxHacks.get().applyStyleSheet(w, null, CssLoader.getCurrentStyleSheet());
-		}
-		catch(Throwable e)
-		{
-			Log.ex(e);
-		}
+		applyStyleSheet(w);
 		
 		try
 		{
@@ -308,7 +366,7 @@ public class WindowsFx
 	}
 
 	
-	protected String lookupPrefix(FxWindow w)
+	protected String lookupWindowPrefix(FxWindow w)
 	{
 		Object x = windows.get(w);
 		if(x instanceof String)
@@ -319,12 +377,6 @@ public class WindowsFx
 		{
 			return addWindow(w);
 		}
-	}
-
-
-	public LocalBindings bindings(Node n, boolean create)
-	{
-		return FxSchema.bindings(n, create);
 	}
 	
 	
@@ -339,5 +391,18 @@ public class WindowsFx
 	public void removeWindowMonitor(Consumer<FxWindow> m)
 	{
 		monitors.remove(m);
+	}
+	
+	
+	public static void applyStyleSheet(Window w)
+	{
+		try
+		{
+			FxHacks.get().applyStyleSheet(w, null, CssLoader.getCurrentStyleSheet());
+		}
+		catch(Throwable e)
+		{
+			Log.ex(e);
+		}
 	}
 }
