@@ -69,6 +69,8 @@ public final class FX
 	public static final double TWO_PI = Math.PI + Math.PI;
 	public static final double PI_2 = Math.PI / 2.0;
 	public static final double DEGREES_PER_RADIAN = 180.0 / Math.PI;
+	public static final double GAMMA = 2.2;
+	public static final double ONE_OVER_GAMMA = 1.0 / GAMMA;
 	private static WindowsFx windowsFx = new WindowsFx();
 	private static Text helper;
 
@@ -705,55 +707,64 @@ public final class FX
 	}
 	
 	
-	/** adds a fraction of color to the base, using perceptual intensity law */ 
-	public static Color mix(Color base, Color add, double fraction)
+	/** 
+	 * adds a fraction of color to the base, using standard gamma value 
+	 * https://en.wikipedia.org/wiki/Alpha_compositing
+	 */ 
+	public static Color mix(Color base, Color over, double fraction)
 	{
-		if(fraction < 0)
+		if(fraction <= 0.0)
 		{
 			return base;
 		}
-		else if(fraction >= 1.0)
+
+		if(base.isOpaque())
 		{
-			return add;
+			if(over.isOpaque())
+			{
+				// simplified case of both colors opaque 
+				double r = mix(base.getRed(), over.getRed(), fraction);
+				double g = mix(base.getGreen(), over.getGreen(), fraction);
+				double b = mix(base.getBlue(), over.getBlue(), fraction);
+				return new Color(r, g, b, 1.0);
+			}
 		}
 		
-		if(base.isOpaque() && add.isOpaque())
+		// full alpha blending
+		double opacityBase = base.getOpacity();
+		double opacityOver = clip(over.getOpacity() * fraction);
+
+		double alpha = opacityOver + (opacityBase * (1.0 - opacityOver));
+		if(alpha < 0.00001)
 		{
-			double r = mix(base.getRed(), add.getRed(), fraction);
-			double g = mix(base.getGreen(), add.getGreen(), fraction);
-			double b = mix(base.getBlue(), add.getBlue(), fraction);
-			return new Color(r, g, b, 1.0);
+			return new Color(0, 0, 0, 0);
 		}
-		else
-		{
-			double baseOp = base.getOpacity();
-			double addOp = add.getOpacity();
-			
-			double r = mix(base.getRed(), baseOp, add.getRed(), addOp, fraction);
-			double g = mix(base.getGreen(), baseOp, add.getGreen(), addOp, fraction);
-			double b = mix(base.getBlue(), baseOp, add.getBlue(), addOp, fraction);
-			double a = baseOp * (1.0 - fraction) + addOp * fraction;
-			return new Color(r, g, b, a);
-		}
+		
+		double r = mix(base.getRed(), opacityBase, over.getRed(), opacityOver, alpha);
+		double g = mix(base.getGreen(), opacityBase, over.getGreen(), opacityOver, alpha);
+		double b = mix(base.getBlue(), opacityBase, over.getBlue(), opacityOver, alpha);
+		return new Color(r, g, b, alpha);
 	}
 
 
-	private static double mix(double a, double b, double fraction)
+	private static double mix(double base, double over, double fraction)
 	{
-		// using square law (gamma = 2)
-		return limit(Math.sqrt((a * a) * (1.0 - fraction) + (b * b) * fraction));
+		double v = Math.pow(over, GAMMA) * fraction + Math.pow(base, GAMMA) * (1.0 - fraction);
+		v = Math.pow(v, ONE_OVER_GAMMA);
+		return clip(v);
 	}
 	
 
-	private static double mix(double a, double opacityA, double b, double opacityB, double fraction)
+	private static double mix(double base, double opacityBase, double over, double opacityOver, double alpha)
 	{
-		// using square law (gamma = 2)
-		// I am guessing with opacity values here
-		return limit(Math.sqrt((a * a * opacityA) * (1.0 - fraction) + (b * b * opacityB) * fraction));
+		double v = Math.pow(over, GAMMA) * opacityOver + Math.pow(base, GAMMA) * (1.0 - opacityOver);
+		v = v / alpha;
+		v = Math.pow(v, ONE_OVER_GAMMA);
+		return clip(v);
 	}
 
 	
-	private static double limit(double c)
+	private static double clip(double c)
 	{
 		if(c < 0)
 		{
