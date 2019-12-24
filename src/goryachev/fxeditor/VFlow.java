@@ -1,6 +1,7 @@
 // Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fxeditor;
 import goryachev.fx.FX;
+import goryachev.fx.FxBoolean;
 import goryachev.fx.util.FxPathBuilder;
 import goryachev.fxeditor.internal.CaretLocation;
 import goryachev.fxeditor.internal.EditorTools;
@@ -9,8 +10,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -34,12 +33,12 @@ public class VFlow
 	extends Pane
 {
 	protected final FxEditor editor;
-	public final Timeline caretAnimation;
-	public final Path caretPath;
-	public final Path selectionHighlight;
-	public final Path caretLineHighlight;
-	protected final BooleanProperty caretVisible = new SimpleBooleanProperty(true);
-	protected final BooleanProperty suppressBlink = new SimpleBooleanProperty(false);
+	protected final Timeline caretAnimation;
+	protected final Path caretPath;
+	protected final Path selectionHighlight;
+	protected final Path caretLineHighlight;
+	protected final FxBoolean caretVisible = new FxBoolean(true);
+	protected final FxBoolean suppressBlink = new FxBoolean(false);
 	protected final Rectangle clip;
 	// TODO line decorations/line numbers
 	protected FxEditorLayout layout;
