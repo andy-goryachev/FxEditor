@@ -1,7 +1,7 @@
 // Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fxeditor.internal;
+import goryachev.common.util.CKit;
 import goryachev.common.util.SB;
-import goryachev.fx.FX;
 import goryachev.fx.util.FxPathBuilder;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -140,7 +140,7 @@ public class SelectionHelper
 	@Deprecated // debugging
 	private static int r(double x)
 	{
-		return FX.round(x);
+		return CKit.round(x);
 	}
 	
 	

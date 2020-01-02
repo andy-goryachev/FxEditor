@@ -42,8 +42,6 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -553,27 +551,6 @@ public final class FX
 	}
 	
 	
-	/** rounds a double value to int */
-	public static int round(double x)
-	{
-		return (int)Math.round(x);
-	}
-	
-	
-	/** returns int ceiling of a double value */
-	public static int ceil(double x)
-	{
-		return (int)Math.ceil(x);
-	}
-	
-	
-	/** returns int floor of a double value */
-	public static int floor(double x)
-	{
-		return (int)Math.floor(x);
-	}
-	
-	
 	/** shortcut for Platform.runLater() */
 	public static void later(Runnable r)
 	{
@@ -935,50 +912,6 @@ public final class FX
 		return new Insets(vertical, horizontal, vertical, horizontal);
 	}
 	
-	
-	/** adds an invalidation listener to an observable */
-	public static void listen(Runnable handler, Observable prop)
-	{
-		prop.addListener((src) -> handler.run());
-	}
-	
-	
-	/** adds an invalidation listener to an observable */
-	public static void listen(Runnable handler, boolean fireImmediately, Observable prop)
-	{
-		prop.addListener((src) -> handler.run());
-			
-		if(fireImmediately)
-		{
-			handler.run();
-		}
-	}
-	
-	
-	/** adds an invalidation listener to multiple observables */
-	public static void listen(Runnable handler, Observable ... props)
-	{
-		for(Observable prop: props)
-		{
-			prop.addListener((src) -> handler.run());
-		}
-	}
-	
-	
-	/** adds an invalidation listener to multiple observables */
-	public static void listen(Runnable handler, boolean fireImmediately, Observable ... props)
-	{
-		for(Observable prop: props)
-		{
-			prop.addListener((src) -> handler.run());
-		}
-			
-		if(fireImmediately)
-		{
-			handler.run();
-		}
-	}
-
 
 	public static <T> ObservableList<T> observableArrayList()
 	{
@@ -1242,5 +1175,72 @@ public final class FX
 		}
 		
 		return null;
+	}
+	
+	
+	/** adds a ChangeListener to the specified ObservableValue(s) */
+	public static void onChange(Runnable handler, ObservableValue<?> ... props)
+	{
+		onChange(handler, false, props);
+	}
+	
+	
+	/** adds a ChangeListener to the specified ObservableValue(s) */
+	public static void onChange(Runnable handler, boolean fireImmediately, ObservableValue<?> ... props)
+	{
+		for(ObservableValue<?> p: props)
+		{
+			// weak listener gets collected... but why??
+			p.addListener((src,prev,cur) -> handler.run());
+		}
+		
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+	
+	
+	/** adds an invalidation listener to an observable */
+	public static void onInvalidation(Runnable handler, Observable prop)
+	{
+		prop.addListener((src) -> handler.run());
+	}
+	
+	
+	/** adds an invalidation listener to an observable */
+	public static void onInvalidation(Runnable handler, boolean fireImmediately, Observable prop)
+	{
+		prop.addListener((src) -> handler.run());
+			
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+	
+	
+	/** adds an invalidation listener to multiple observables */
+	public static void onInvalidation(Runnable handler, Observable ... props)
+	{
+		for(Observable prop: props)
+		{
+			prop.addListener((src) -> handler.run());
+		}
+	}
+	
+	
+	/** adds an invalidation listener to multiple observables */
+	public static void onInvalidation(Runnable handler, boolean fireImmediately, Observable ... props)
+	{
+		for(Observable prop: props)
+		{
+			prop.addListener((src) -> handler.run());
+		}
+			
+		if(fireImmediately)
+		{
+			handler.run();
+		}
 	}
 }

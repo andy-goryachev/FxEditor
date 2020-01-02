@@ -1,8 +1,8 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fxeditor;
+import goryachev.common.util.CKit;
 import goryachev.common.util.D;
 import goryachev.common.util.Log;
-import goryachev.fx.Binder;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.Formatters;
@@ -152,8 +152,8 @@ public class FxEditor
 		
 		selector.segments.addListener((Observable src) -> vflow.updateCaretAndSelection());
 		
-		Binder.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
-		Binder.onChange(this::updateLayout, widthProperty(), heightProperty(), showLineNumbersProperty);
+		FX.onChange(vflow::updateBlinkRate, true, blinkRateProperty());
+		FX.onChange(this::updateLayout, widthProperty(), heightProperty(), showLineNumbersProperty);
 		wordWrapProperty.addListener((s,p,c) -> updateLayout());
 		
 		// key map
@@ -342,7 +342,7 @@ public class FxEditor
 		if(handleScrollEvents)
 		{
 			// TODO account for visible line count
-			int start = FX.round(pos); 
+			int start = CKit.round(pos); 
 				//FX.round(getModel().getLineCount() * pos);
 			setTopLineIndex(start);
 		}
