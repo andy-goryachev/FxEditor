@@ -7,6 +7,7 @@ import goryachev.fx.FxDump;
 import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxPopupMenu;
 import goryachev.fx.FxWindow;
+import goryachev.fx.internal.LocalSettings;
 import goryachev.fxeditor.FxEditor;
 import goryachev.fxeditor.FxEditorModel;
 
@@ -37,9 +38,10 @@ public class MainWindow
 		setSize(600, 700);
 		
 		// props
-		bind("WORD_WRAP", editor().wordWrapProperty());
-		bind("SHOW_LINE_NUMBERS", editor().showLineNumbersProperty());
-		bind("TAIL_MODE", tailMode);
+		LocalSettings.get(this).
+			add("WORD_WRAP", editor().wordWrapProperty()).
+			add("SHOW_LINE_NUMBERS", editor().showLineNumbersProperty()).
+			add("TAIL_MODE", tailMode);
 
 		tailMode.addListener((s,p,c) -> updateModel());
 		updateModel();

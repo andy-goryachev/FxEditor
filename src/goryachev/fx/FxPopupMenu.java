@@ -83,4 +83,12 @@ public class FxPopupMenu
 	{
 		getItems().clear();
 	}
+	
+	
+	public FxMenu menu(String text, FxAction a)
+	{
+		FxMenu m = new FxMenu(text, a);
+		add(m);
+		return m;
+	}
 }

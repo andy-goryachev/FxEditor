@@ -1,8 +1,8 @@
 // Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.log.Log;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.Log;
 import java.util.List;
 import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
@@ -27,6 +27,7 @@ import javafx.scene.layout.Region;
 public class CPane
 	extends Pane
 {
+	protected static final Log log = Log.get("CPane");
 	public static final CssStyle STYLE = new CssStyle("CPane_PANE");
 	public static final double FILL = -1.0;
 	public static final double PREF = -2.0;
@@ -534,7 +535,7 @@ public class CPane
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 
@@ -650,7 +651,7 @@ public class CPane
 	
 	
 	/** component-constraint pair */
-	public static class Entry
+	protected static class Entry
 	{
 		public Node node;
 		public CC cc;

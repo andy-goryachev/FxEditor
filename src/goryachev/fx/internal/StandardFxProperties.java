@@ -30,6 +30,7 @@ public class StandardFxProperties
 	public static final CssPseudo PRESSED = new CssPseudo(":pressed");
 	public static final CssPseudo SELECTED = new CssPseudo(":selected");
 	
+	public static final String BOLD = "bold";
 	public static final String TRANSPARENT = "transparent";
 	public static final String TABLE = ".table";
 	

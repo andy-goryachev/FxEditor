@@ -6,6 +6,7 @@ import goryachev.common.util.GlobalSettings;
 import goryachev.fx.hacks.FxHacks;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.internal.FxSchema;
+import goryachev.fx.internal.ParentWindow;
 import goryachev.fx.internal.WindowsFx;
 import goryachev.fx.table.FxTable;
 import java.util.List;
@@ -16,11 +17,13 @@ import java.util.function.Supplier;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -48,7 +51,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -57,7 +59,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.StringConverter;
 
 
 /**
@@ -414,6 +415,10 @@ public final class FX
 	/** Creates a simple color background. */
 	public static Background background(Paint c)
 	{
+		if(c == null)
+		{
+			return null;
+		}
 		return new Background(new BackgroundFill(c, null, null));
 	}
 	
@@ -559,6 +564,20 @@ public final class FX
 	}
 	
 	
+	/** execute in FX application thread directly if called from it, or in runLater() */
+	public static void inFX(Runnable r)
+	{
+		if(Platform.isFxApplicationThread())
+		{
+			r.run();
+		}
+		else
+		{
+			FX.later(r);
+		}
+	}
+	
+	
 	/** swing invokeAndWait() analog.  if called from an FX application thread, simply invokes the producer. */
 	public static <T> T invokeAndWait(Callable<T> producer) throws Exception
 	{
@@ -621,34 +640,6 @@ public final class FX
 	}
 	
 	
-	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, Property<T> p)
-	{
-		FxSchema.bindings(n, true).add(subKey, p, null);
-	}
-	
-	
-	/** bind an object with settings to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, HasSettings x)
-	{
-		FxSchema.bindings(n, true).add(subKey, x);
-	}
-	
-	
-	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, Property<T> p, StringConverter<T> c)
-	{
-		FxSchema.bindings(n, true).add(subKey, p, c);
-	}
-	
-	
-	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, Property<T> p, SSConverter<T> c)
-	{
-		FxSchema.bindings(n, true).add(subKey, c, p);
-	}
-	
-	
 	/** returns true if the coordinates belong to one of the Screens */
 	public static boolean isValidCoordinates(double x, double y)
 	{
@@ -694,6 +685,18 @@ public final class FX
 		if(fraction <= 0.0)
 		{
 			return base;
+		}
+		
+		if(base == null)
+		{
+			if(over == null)
+			{
+				return null;
+			}
+			else
+			{
+				return new Color(over.getRed(), over.getGreen(), over.getBlue(), over.getOpacity() * fraction);
+			}
 		}
 
 		if(base.isOpaque())
@@ -773,23 +776,6 @@ public final class FX
 		return new Image(c.getResourceAsStream(resource));
 	}
 
-
-	/** permanently hides the table header */
-	public static void hideHeader(TableView<?> t)
-	{
-		t.skinProperty().addListener((s, p, v) ->
-		{
-			Pane h = (Pane)t.lookup("TableHeaderRow");
-			if(h.isVisible())
-			{
-				h.setMaxHeight(0);
-				h.setMinHeight(0);
-				h.setPrefHeight(0);
-				h.setVisible(false);
-			}
-		});
-	}
-	
 	
 	/** sets a tool tip on the control. */
 	public static void setTooltip(Control n, Object tooltip)
@@ -1008,12 +994,12 @@ public final class FX
 		{
 			if(generator != null)
 			{
-				FX.later(() ->
+				FxPopupMenu m = generator.get();
+				if(m != null)
 				{
-					FxPopupMenu m = generator.get();
-					if(m != null)
+					if(m.getItems().size() > 0)
 					{
-						if(m.getItems().size() > 0)
+						FX.later(() ->
 						{
 							// javafx does not dismiss the popup when the user
 							// clicks on the owner node
@@ -1023,14 +1009,16 @@ public final class FX
 								{
 									m.hide();
 									owner.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
+									event.consume();
 								}
 							};
 							
 							owner.addEventFilter(MouseEvent.MOUSE_PRESSED, li);
 							m.show(owner, ev.getScreenX(), ev.getScreenY());
-						}
+						});
+						ev.consume();
 					}
-				});
+				}
 			}
 			ev.consume();
 		});
@@ -1058,7 +1046,7 @@ public final class FX
 				}
 				else
 				{
-					a.action();
+					a.invokeAction();
 					ev.consume();
 				}
 			}
@@ -1254,5 +1242,58 @@ public final class FX
         int b = CKit.round(c.getBlue() * 255.0);
         int a = CKit.round(c.getOpacity() * 255.0);
 		return String.format("#%02X%02X%02X%02X", r, g, b, a);
+	}
+	
+	
+	/** converts non-null Color to #RRGGBB */
+	public static String toFormattedColorRGB(Color c)
+	{
+        int r = CKit.round(c.getRed() * 255.0);
+        int g = CKit.round(c.getGreen() * 255.0);
+        int b = CKit.round(c.getBlue() * 255.0);
+		return String.format("#%02X%02X%02X", r, g, b);
+	}
+
+
+	public static boolean isParentWindowVisible(Node n)
+	{
+		if(n == null)
+		{
+			return false;
+		}
+		
+		Scene s = n.getScene();
+		if(s == null)
+		{
+			return false;
+		}
+		
+		Window w = s.windowProperty().get();
+		if(w == null)
+		{
+			return false;
+		}
+		
+		return w.isShowing();
+	}
+	
+	
+	/** returns a read-only property that tracks parent window of a Node */
+	public static  ReadOnlyObjectProperty<Window> parentWindowProperty(Node n)
+	{
+		return new ParentWindow(n).windowProperty();
+	}
+	
+	
+	/** avoid ambiguous signature warning when using addListener */
+	public static <T> void addChangeListener(ObservableList<T> list, ListChangeListener<? super T> li)
+	{
+		list.addListener(li);
+	}
+	
+
+	public static <T> void addChangeListener(ObservableValue<T> prop, ChangeListener<? super T> li)
+	{
+		prop.addListener(li);
 	}
 }

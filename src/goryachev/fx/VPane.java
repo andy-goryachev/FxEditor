@@ -1,7 +1,7 @@
 // Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.log.Log;
 import goryachev.common.util.CKit;
-import goryachev.common.util.Log;
 import goryachev.common.util.Parsers;
 import java.util.List;
 import javafx.geometry.HPos;
@@ -19,6 +19,7 @@ import javafx.scene.layout.Region;
 public class VPane
 	extends Pane
 {
+	protected static final Log log = Log.get("VPane");
 	public static final double FILL = -1.0;
 	public static final double PREF = -2.0;
 	protected int gap;
@@ -139,7 +140,7 @@ public class VPane
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 	
@@ -180,6 +181,12 @@ public class VPane
 	public void remove(Node n)
 	{
 		getChildren().remove(n);
+	}
+	
+	
+	public void clear()
+	{
+		getChildren().clear();
 	}
 	
 	

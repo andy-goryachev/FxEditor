@@ -1,9 +1,9 @@
 // Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.internal;
+import goryachev.common.log.Log;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
 import goryachev.common.util.GlobalSettings;
-import goryachev.common.util.Log;
 import goryachev.common.util.WeakList;
 import goryachev.fx.CssLoader;
 import goryachev.fx.FxAction;
@@ -28,6 +28,7 @@ import javafx.stage.WindowEvent;
  */
 public class WindowsFx
 {
+	protected static final Log log = Log.get("WindowsFx");
 	/** in the focus order */
 	protected final WeakList<FxWindow> windowStack = new WeakList<>();
 	/** prefix->window and window->prefix */
@@ -132,7 +133,14 @@ public class WindowsFx
 	public void storeWindow(FxWindow w)
 	{
 		String windowPrefix = lookupWindowPrefix(w);
-		w.storeSettings(windowPrefix);
+		
+		LocalSettings settings = LocalSettings.find(w);
+		if(settings != null)
+		{
+			String k = windowPrefix + FxSchema.SFX_SETTINGS;
+			settings.saveValues(k);
+		}
+		
 		FxSchema.storeWindow(windowPrefix, w);
 		
 		Parent p = w.getScene().getRoot();
@@ -143,7 +151,13 @@ public class WindowsFx
 	public void restoreWindow(FxWindow w)
 	{
 		String windowPrefix = lookupWindowPrefix(w);
-		w.loadSettings(windowPrefix);
+		
+		LocalSettings settings = LocalSettings.find(w);
+		if(settings != null)
+		{
+			String k = windowPrefix + FxSchema.SFX_SETTINGS;
+			settings.loadValues(k);
+		}
 		FxSchema.restoreWindow(windowPrefix, w);
 		
 		Parent p = w.getScene().getRoot();
@@ -241,7 +255,7 @@ public class WindowsFx
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 		
 		w.show();
@@ -398,11 +412,12 @@ public class WindowsFx
 	{
 		try
 		{
-			FxHacks.get().applyStyleSheet(w, null, CssLoader.getCurrentStyleSheet());
+			String style = CssLoader.getCurrentStyleSheet();
+			FxHacks.get().applyStyleSheet(w, null, style);
 		}
 		catch(Throwable e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 // Copyright © 2018-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 
 
 /**
@@ -19,6 +20,7 @@ package goryachev.common.util;
 public class JavaVersion
 	implements Comparable<JavaVersion>
 {
+	protected static final Log log = Log.get("JavaVersion");
 	private final String version;
 	private final int[] ver;
 	
@@ -159,7 +161,7 @@ public class JavaVersion
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 			ver = new int[0];
 		}
 		

@@ -1,11 +1,13 @@
 // Copyright © 2014-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import java.io.File;
 import java.io.FileFilter;
 
 
 public class RFileFilter
 {
+	protected static final Log log = Log.get("RFileFilter");
 	public static final String HIDDEN = "Hidden Files";
 	public static final String SYSTEM = "System Files";
 	
@@ -123,7 +125,7 @@ public class RFileFilter
 			}
 			catch(Exception e)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 		
@@ -225,7 +227,7 @@ public class RFileFilter
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 		
 		RFileFilter f = new RFileFilter();

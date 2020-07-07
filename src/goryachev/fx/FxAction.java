@@ -1,12 +1,13 @@
 // Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
-import goryachev.common.util.Log;
+import goryachev.common.log.Log;
 import java.util.function.Consumer;
 import javafx.beans.property.BooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
@@ -22,6 +23,7 @@ import javafx.scene.control.ToggleButton;
 public class FxAction
     implements EventHandler<ActionEvent>
 {
+	protected static final Log log = Log.get("FxAction");
 	public static final FxAction DISABLED = new FxAction(null, false);
 	private final FxBoolean selectedProperty = new FxBoolean();
 	private final FxBoolean disabledProperty = new FxBoolean();
@@ -65,7 +67,13 @@ public class FxAction
 	}
 	
 	
-	protected void action()
+	public void setOnAction(Runnable r)
+	{
+		onAction = r;
+	}
+	
+	
+	protected final void invokeAction()
 	{
 		if(onAction != null)
 		{
@@ -73,9 +81,9 @@ public class FxAction
 			{
 				onAction.run();
 			}
-			catch(Exception e)
+			catch(Throwable e)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 	}
@@ -174,11 +182,26 @@ public class FxAction
 	}
 	
 	
+	/** fire onAction handler only if this action is enabled */
 	public void fire()
 	{
 		if(isEnabled())
 		{
 			handle(null);
+		}
+	}
+	
+	
+	/** execute an action regardless of whether its enabled or not */
+	public void execute()
+	{
+		try
+		{
+			invokeAction();
+		}
+		catch(Throwable e)
+		{
+			log.error(e);
 		}
 	}
 	
@@ -191,7 +214,7 @@ public class FxAction
 		}
 		catch(Throwable e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 
@@ -216,13 +239,20 @@ public class FxAction
 				ev.consume();
 			}
 			
-			try
+			execute();
+			
+			// close popup menu, if applicable
+			if(ev != null)
 			{
-				action();
-			}
-			catch(Throwable e)
-			{
-				Log.ex(e);
+				Object src = ev.getSource();
+				if(src instanceof Menu)
+				{
+					ContextMenu p = ((Menu)src).getParentPopup();
+					if(p != null)
+					{
+						p.hide();
+					}
+				}
 			}
 		}
 	}

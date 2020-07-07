@@ -1,8 +1,8 @@
 // Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fxeditor;
+import goryachev.common.log.Log;
 import goryachev.common.util.CKit;
 import goryachev.common.util.D;
-import goryachev.common.util.Log;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.Formatters;
@@ -55,6 +55,8 @@ import javafx.util.Duration;
 public class FxEditor
 	extends Pane
 {
+	protected static final Log log = Log.get("FxEditor");
+	
 	/** caret style */
 	public static final CssStyle CARET = new CssStyle("FxEditor_CARET");
 	/** caret line highlight */
@@ -194,7 +196,7 @@ public class FxEditor
 		FxFormatter f = lineNumberFormatterProperty.get();
 		if(f == null)
 		{
-			f = Formatters.getIntegerFormat();
+			f = Formatters.getIntegerFormatter();
 		}
 		return f;
 	}
@@ -319,7 +321,7 @@ public class FxEditor
 			XScrollBar vs = (XScrollBar)vscroll;
 			if(s.isValid())
 			{
-				vs.setPainer((canvas) ->
+				vs.setPainter((canvas) ->
 				{
 					double w = canvas.getWidth();
 					double h = canvas.getHeight();
@@ -331,7 +333,7 @@ public class FxEditor
 			}
 			else
 			{
-				vs.setPainer(null);
+				vs.setPainter(null);
 			}
 		}
 	}
@@ -536,8 +538,7 @@ public class FxEditor
 
 	protected void handleTextUpdated(int startLine, int startPos, int startCharsInserted, int linesInserted, int endLine, int endPos, int endCharsInserted)
 	{
-		// TODO
-		D.print(startLine, startPos, startCharsInserted, linesInserted, endLine, endPos, endCharsInserted);
+		log.debug("startLine=%d, startPos=%d, startCharsInserted=%d, linesInserted=%d, endLine=%d, endPos=%d, endCharsInserted=%d", startLine, startPos, startCharsInserted, linesInserted, endLine, endPos, endCharsInserted);
 		
 		// update markers
 		markers.update(startLine, startPos, startCharsInserted, linesInserted, endLine, endPos, endCharsInserted);
@@ -801,7 +802,7 @@ public class FxEditor
 				catch(Exception e)
 				{
 					// TODO provide user feedback
-					Log.ex(e);
+					log.error(e);
 				}
 			}
 		}

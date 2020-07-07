@@ -1,9 +1,9 @@
 // Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fxeditor;
+import goryachev.common.log.Log;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
-import goryachev.common.util.Log;
 import goryachev.fx.FxBoolean;
 import goryachev.fx.FxObject;
 import java.io.Writer;
@@ -62,6 +62,7 @@ public abstract class FxEditorModel
 	
 	//
 
+	protected static final Log log = Log.get("FxEditorModel");
 	protected final FxBoolean editableProperty = new FxBoolean(false);
 	protected final CList<FxEditorModelListener> listeners = new CList<>();
 	protected final FxObject<LoadStatus> loadStatus = new FxObject(LoadStatus.UNKNOWN);
@@ -205,7 +206,7 @@ public abstract class FxEditorModel
 		{
 			if(errorHandler == null)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 			else
 			{
