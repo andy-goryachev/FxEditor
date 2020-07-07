@@ -1,8 +1,8 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.log.Log;
 import goryachev.common.util.Base64;
 import goryachev.common.util.CKit;
-import goryachev.common.util.Log;
 import goryachev.common.util.UrlStreamFactory;
 import goryachev.fx.hacks.FxHacks;
 import java.io.ByteArrayInputStream;
@@ -21,6 +21,7 @@ import javafx.application.Platform;
  */
 public class CssLoader
 {
+	protected static final Log log = Log.get("CssLoader");
 	public static final String PREFIX = "javafxcss";
 	private static CssLoader instance;
 	private String url;
@@ -57,7 +58,7 @@ public class CssLoader
 				}
 			});
 			
-			if(FxConfig.continuousCssRefresh())
+			if(FxConfig.cssRefreshEnabled())
 			{
 				Thread t = new Thread("reloading css")
 				{
@@ -77,7 +78,7 @@ public class CssLoader
 		catch(Throwable e)
 		{
 			// css will be disabled
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 	
@@ -157,21 +158,17 @@ public class CssLoader
 					Platform.runLater(() -> update(old, url));
 				}
 				
-				if(FxConfig.dumpCSS())
-				{
-					// stdout is ok here
-					System.out.println(css);
-				}
+				log.trace(css);
 			}
 		}
 		catch(Error e)
 		{
-			Log.ex(e);
+			log.error(e);
 			throw e;
 		}
 		catch(Throwable e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 		
@@ -179,5 +176,14 @@ public class CssLoader
 	protected void update(String old, String cur)
 	{
 		FxHacks.get().applyStyleSheet(old, cur);
+		
+		if(old == null)
+		{
+			log.debug("css loaded");
+		}
+		else
+		{
+			log.debug("css reloaded");
+		}
 	}
 }

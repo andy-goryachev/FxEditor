@@ -1,11 +1,15 @@
-// Copyright © 2015-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2015-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import java.lang.reflect.Method;
 
 
 /** Reflection helper */
 public class Reflector
 {
+	protected static final Log log = Log.get("Reflector");
+	
+	
 	/** returns an accessible method, wrapped in an exception-eating wrapper */
 	public static CMethod method(Class c, String name, Class<?> ... args)
 	{
@@ -58,12 +62,12 @@ public class Reflector
 			}
 			catch(Exception e)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 		
 		return null;

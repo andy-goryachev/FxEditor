@@ -1,5 +1,6 @@
-// Copyright © 2012-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2012-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import goryachev.common.util.platform.ApplicationSupport;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -13,10 +14,11 @@ public abstract class CJob
 	/** called in a background thread when the job has been completed or has thrown an exception */
 	protected void onThisJobCompleted() { }
 	
-	protected void handleJobError(Throwable e) { Log.ex(e); }
+	protected void handleJobError(Throwable e) { log.error(e); }
 	
 	//
 	
+	protected static final Log log = Log.get("CJob");
 	private String name;
 	private volatile Object result;
 	private CList<CJob> children;
@@ -136,7 +138,7 @@ public abstract class CJob
 		}
 		catch(Throwable e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 		
 		currentJob.set(null);
@@ -202,7 +204,7 @@ public abstract class CJob
 				}
 				catch(Exception e)
 				{
-					Log.ex(e);
+					log.error(e);
 				}
 			}
 		}
@@ -271,7 +273,7 @@ public abstract class CJob
 		}
 		catch(Exception e)
 		{ 
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 	

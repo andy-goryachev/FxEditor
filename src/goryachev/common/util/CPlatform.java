@@ -1,5 +1,6 @@
-// Copyright © 2008-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2008-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import goryachev.common.util.platform.CPlatformLinux;
 import goryachev.common.util.platform.CPlatformMac;
 import goryachev.common.util.platform.CPlatformUnix;
@@ -12,7 +13,8 @@ public abstract class CPlatform
 	protected abstract File getSettingsFolderPrivate();
 	
 	//
-	
+
+	protected static final Log log = Log.get("CPlatform");
 	protected static final String SETTINGS_FOLDER = "goryachev.com";
 	private static CPlatform instance;
 	
@@ -213,7 +215,7 @@ public abstract class CPlatform
 		}
 		catch(Exception e)
 		{ 
-			Log.ex(e);
+			log.error(e);
 		}
 		
 		// for all practical purposes

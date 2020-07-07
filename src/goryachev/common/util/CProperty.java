@@ -1,5 +1,6 @@
-// Copyright © 2015-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2015-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import java.lang.ref.WeakReference;
 
 
@@ -14,6 +15,7 @@ public class CProperty<T>
 	
 	//
 	
+	protected static final Log log = Log.get("CProperty");
 	private T value;
 	private CList<Object> listeners;
 	
@@ -79,9 +81,9 @@ public class CProperty<T>
 					{
 						((Listener)x).onCPropertyChange(old, cur);
 					}
-					catch(Exception e)
+					catch(Throwable e)
 					{
-						Log.ex(e);
+						log.error(e);
 					}
 				}
 			}

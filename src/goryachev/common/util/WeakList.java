@@ -1,4 +1,4 @@
-// Copyright © 2012-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2012-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.lang.ref.WeakReference;
 
@@ -117,5 +117,35 @@ public class WeakList<T>
 	public WeakReference<T> getRef(int ix)
 	{
 		return list.get(ix);
+	}
+	
+	
+	public String toString()
+	{
+		int sz = list.size();
+		SB sb = new SB(sz * 8);
+		sb.append("[");
+		
+		for(int i=0; i<sz; i++)
+		{
+			if(i > 0)
+			{
+				sb.append(",");
+			}
+			
+			WeakReference<T> ref = list.get(i);
+			T item = ref.get();
+			if(item == null)
+			{
+				sb.append("<null>");
+			}
+			else
+			{
+				sb.append(item);
+			}
+		}
+		
+		sb.append("]");
+		return sb.toString();
 	}
 }

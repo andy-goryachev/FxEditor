@@ -1,5 +1,6 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -10,6 +11,7 @@ import java.io.FileNotFoundException;
 public class FileSettingsProvider
     extends SettingsProviderBase
 {
+	protected static final Log log = Log.get("FileSettingsProvider");
 	private File file;
 	
 	
@@ -34,7 +36,7 @@ public class FileSettingsProvider
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 	
@@ -60,7 +62,7 @@ public class FileSettingsProvider
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 	
@@ -80,7 +82,7 @@ public class FileSettingsProvider
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 }

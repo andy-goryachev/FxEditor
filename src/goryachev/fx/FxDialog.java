@@ -1,5 +1,6 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import javafx.scene.Node;
 import javafx.stage.Modality;
 import javafx.stage.Window;
 
@@ -17,7 +18,7 @@ public class FxDialog
 	extends FxWindow
 {
 	public final FxAction closeDialogAction = new FxAction(this::close);
-	protected FxButtonPane buttonPane;
+	public static final CssStyle PANE = new CssStyle("FxDialog_PANE");
 	
 	
 	public FxDialog(Object owner, String name)
@@ -25,6 +26,7 @@ public class FxDialog
 		super(name);
 		
 		initModality(Modality.APPLICATION_MODAL);
+		FX.style(pane, PANE);
 
 		Window win = FX.getParentWindow(owner);
 		initOwner(win);
@@ -39,12 +41,15 @@ public class FxDialog
 	
 	protected FxButtonPane buttonPane()
 	{
-		if(buttonPane == null)
+		Node n = getBottom();
+		if(n instanceof FxButtonPane)
 		{
-			buttonPane = new FxButtonPane();
-			setBottom(buttonPane);
+			return (FxButtonPane)n;
 		}
-		return buttonPane;
+		
+		FxButtonPane p = new FxButtonPane();
+		setBottom(p);
+		return p;
 	}
 	
 	

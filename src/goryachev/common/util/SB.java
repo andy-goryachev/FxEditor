@@ -1,4 +1,4 @@
-// Copyright © 2010-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2010-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.util.Collection;
 import java.util.Formatter;
@@ -129,6 +129,16 @@ public class SB
 		for(int i=0; i<count; i++)
 		{
 			sb.append(" ");
+		}
+		return this;
+	}
+	
+	
+	public SB append(char c, int count)
+	{
+		for(int i=0; i<count; i++)
+		{
+			sb.append(c);
 		}
 		return this;
 	}

@@ -1,4 +1,4 @@
-// Copyright © 2011-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.io;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -69,7 +69,7 @@ public class DWriter
 	}
 	
 
-	public void writeShort(short x) throws IOException
+	public void writeShort(int x) throws IOException
 	{
 		out.write(x >>> 8);
 		out.write(x);
@@ -86,7 +86,7 @@ public class DWriter
 	
 	
 	/** writes a single byte as a signed 8 bit int (range -128..127) */
-	public void writeXInt8(int x) throws IOException
+	public void writeInt8(int x) throws IOException
 	{
 		out.write(x);
 	}

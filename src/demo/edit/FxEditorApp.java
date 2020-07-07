@@ -1,8 +1,8 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
+import goryachev.common.log.Log;
 import goryachev.common.util.FileSettingsProvider;
 import goryachev.common.util.GlobalSettings;
-import goryachev.common.util.Log;
 import goryachev.fx.CssLoader;
 import java.io.File;
 import javafx.application.Application;
@@ -26,8 +26,9 @@ public class FxEditorApp
 		// TODO change to something visible in Documents? platform-specific?
 		File baseDir = new File(System.getProperty("user.home"), ".goryachev.com/FxEditorDemo");
 			
-		File logFolder = new File(baseDir, "logs"); 
-		Log.init(logFolder);
+		// TODO
+		//File logFolder = new File(baseDir, "logs"); 
+		Log.initForDebug();
 		
 		File settingsFile = new File(baseDir, "settings.conf");
 		FileSettingsProvider p = new FileSettingsProvider(settingsFile);
