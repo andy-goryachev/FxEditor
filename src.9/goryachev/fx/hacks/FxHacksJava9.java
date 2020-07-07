@@ -3,7 +3,6 @@ package goryachev.fx.hacks;
 import goryachev.common.util.CList;
 import java.util.List;
 import javafx.geometry.Point2D;
-import javafx.scene.Scene;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.HitInfo;
 import javafx.scene.text.TextFlow;
@@ -53,33 +52,6 @@ public class FxHacksJava9
 	{
 		HitInfo h = getHitInfo(t, x, y);
 		return h.getInsertionIndex();
-	}
-
-
-	public void applyStyleSheet(String old, String cur)
-	{
-		for(Window w: getWindows())
-		{
-			applyStyleSheet(w, old, cur);
-		}
-	}
-	
-	
-	public void applyStyleSheet(Window w, String old, String cur)
-	{
-		if(cur != null)
-		{
-			Scene scene = w.getScene();
-			if(scene != null)
-			{
-				if(old != null)
-				{
-					scene.getStylesheets().remove(old);
-				}
-				
-				scene.getStylesheets().add(cur);
-			}			
-		}
 	}
 
 
