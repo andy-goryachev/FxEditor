@@ -4,7 +4,6 @@ import goryachev.common.util.CList;
 import goryachev.common.util.CMethod;
 import goryachev.common.util.Reflector;
 import java.util.List;
-import com.sun.javafx.css.StyleManager;
 import com.sun.javafx.scene.text.HitInfo;
 import com.sun.javafx.scene.text.TextLayout;
 import javafx.scene.shape.PathElement;
@@ -59,22 +58,6 @@ public class FxHacksJava8
 		return h.getInsertionIndex();
 	}
 
-
-	public void applyStyleSheet(String old, String cur)
-	{
-		if(old != null)
-		{
-			StyleManager.getInstance().removeUserAgentStylesheet(old);
-		}
-		StyleManager.getInstance().addUserAgentStylesheet(cur);
-	}
-
-	
-	public void applyStyleSheet(Window w, String old, String cur)
-	{
-		// not needed when using StyleManager
-	}
-	
 
 	public List<Window> getWindows()
 	{
