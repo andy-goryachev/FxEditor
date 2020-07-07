@@ -1,14 +1,11 @@
 // Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
-package research.fx;
+package goryachev.fx.hacks;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMethod;
 import goryachev.common.util.Reflector;
-import goryachev.fx.edit.CHitInfo;
 import java.util.List;
-import com.sun.javafx.css.StyleManager;
 import com.sun.javafx.scene.text.HitInfo;
 import com.sun.javafx.scene.text.TextLayout;
-import com.sun.javafx.stage.StageHelper;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Window;
@@ -59,16 +56,6 @@ public class FxHacksJava8
 	{
 		HitInfo h = getTextLayout(t).getHitInfo((float)x, (float)y);
 		return h.getInsertionIndex();
-	}
-
-
-	public void applyStyleSheet(String old, String cur)
-	{
-		if(old != null)
-		{
-			StyleManager.getInstance().removeUserAgentStylesheet(old);
-		}
-		StyleManager.getInstance().addUserAgentStylesheet(cur);
 	}
 
 
