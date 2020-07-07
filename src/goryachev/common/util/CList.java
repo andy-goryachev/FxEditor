@@ -1,7 +1,8 @@
-// Copyright © 2007-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2007-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 
 public class CList<T>
@@ -24,6 +25,18 @@ public class CList<T>
 		if(c != null)
 		{
 			addAll(c);
+		}
+	}
+	
+	
+	public CList(Iterator<? extends T> it)
+	{
+		if(it != null)
+		{
+			while(it.hasNext())
+			{
+				add(it.next());
+			}
 		}
 	}
 	

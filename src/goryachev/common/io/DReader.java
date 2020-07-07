@@ -1,4 +1,4 @@
-// Copyright © 2011-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.io;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -12,6 +12,7 @@ import java.io.InputStream;
 
 /** Conventient binary data reader */
 public class DReader
+	extends InputStream
 	implements Closeable
 {
 	protected InputStream in;
@@ -38,6 +39,14 @@ public class DReader
 	public void readFully(byte[] b) throws IOException
 	{
 		CIOTools.readFully(in, b);
+	}
+	
+	
+	public byte[] readFully(int byteCount) throws IOException
+	{
+		byte[] b = new byte[byteCount];
+		CIOTools.readFully(in, b);
+		return b;
 	}
 
 
@@ -75,6 +84,19 @@ public class DReader
 	}
 	
 	
+	/** reads one byte as an unsigned int (range 0..255) */
+	public int readUInt8() throws IOException
+	{
+		int ch = in.read();
+		if(ch < 0)
+		{
+			throw new EOFException();
+		}
+		return ch;
+	}
+	
+	
+	/** reads one byte as an signed int (range -128 to 127) */
 	public int readInt8() throws IOException
 	{
 		int ch = in.read();
@@ -82,7 +104,7 @@ public class DReader
 		{
 			throw new EOFException();
 		}
-		return (ch & 0xff);
+		return (byte)ch;
 	}
 	
 	
@@ -226,5 +248,46 @@ public class DReader
 	public long skip(long nbytes) throws IOException
 	{
 		return in.skip(nbytes);
+	}
+	
+
+	public int read() throws IOException
+	{
+		return in.read();
+	}
+
+
+	public int read(byte[] buf) throws IOException
+	{
+		return in.read(buf);
+	}
+
+
+	public int read(byte[] buf, int off, int len) throws IOException
+	{
+		return in.read(buf, off, len);
+	}
+
+
+	public int available() throws IOException
+	{
+		return in.available();
+	}
+
+
+	public synchronized void mark(int readlimit)
+	{
+	}
+
+
+	public synchronized void reset() throws IOException
+	{
+		throw new IOException("reset not supported");
+	}
+
+
+	public boolean markSupported()
+	{
+		return false;
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import java.util.Collection;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -35,7 +35,7 @@ public class FxComboBox<T>
 	}
 	
 	
-	public void setValues(T[] items)
+	public void setValues(T ... items)
 	{
 		if(items == null)
 		{

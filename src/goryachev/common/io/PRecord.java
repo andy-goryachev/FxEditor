@@ -1,10 +1,10 @@
-// Copyright © 2012-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2012-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.io;
+import goryachev.common.log.Log;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
 import goryachev.common.util.CSorter;
 import goryachev.common.util.Dump;
-import goryachev.common.util.Log;
 import goryachev.common.util.Parsers;
 import goryachev.common.util.SB;
 import java.io.Serializable;
@@ -19,6 +19,7 @@ public class PRecord
 	
 	//
 	
+	protected static final Log log = Log.get("PRecord");
 	private CMap<String,Object> data;
 	private CMap<String,Object> original;
 
@@ -74,7 +75,7 @@ public class PRecord
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 	

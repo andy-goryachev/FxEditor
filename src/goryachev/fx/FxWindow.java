@@ -1,24 +1,18 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
-import goryachev.common.util.D;
-import goryachev.fx.internal.FxSchema;
-import goryachev.fx.internal.FxWindowBoundsMonitor;
-import goryachev.fx.internal.LocalBindings;
-import javafx.beans.property.Property;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import goryachev.fx.internal.BaseFxWindow;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 
 /**
- * FxWindow.
+ * Fx Window.
+ * 
+ * It is highly recommended not to show a Window again after it has been closed.
  */
 public class FxWindow
-	extends Stage
+	extends BaseFxWindow
 {
 	/** 
 	 * Override to ask the user to confirm closing of window.
@@ -30,14 +24,9 @@ public class FxWindow
 	
 	//
 	
-	public final FxAction closeWindowAction = new FxAction() { public void action() { closeWithConfirmation(); }};
+	public final FxAction closeWindowAction = new FxAction(this::closeWithConfirmation);
 	private final String name;
-	private final BorderPane pane;
-	private final FxWindowBoundsMonitor normalBoundsMonitor = new FxWindowBoundsMonitor(this);
-	@Deprecated // not sure why this isn't static
-	private final ReadOnlyObjectWrapper<Node> lastFocusOwner = new ReadOnlyObjectWrapper();
-	private final static ReadOnlyObjectWrapper<Node> lastFocusOwnerStatic = new ReadOnlyObjectWrapper();
-	private LocalBindings bindings;
+	protected final BorderPane pane;
 	
 	
 	public FxWindow(String name)
@@ -47,74 +36,12 @@ public class FxWindow
 		
 		Scene sc = new Scene(pane);
 		setScene(sc);
-		
-		sc.focusOwnerProperty().addListener((s,p,val) -> updateFocusOwner(val));
-	}
-	
-	
-	protected void updateFocusOwner(Node n)
-	{
-		if(n != null)
-		{
-			lastFocusOwner.set(n);
-			lastFocusOwnerStatic.set(n);
-		}
-	}
-	
-	
-	@Deprecated
-	public Node getLastFocusOwner()
-	{
-		return lastFocusOwner.get();
-	}
-	
-	
-	public static Node getLastFocusOwnerStatic()
-	{
-		return lastFocusOwnerStatic.get();
-	}
-	
-	
-	@Deprecated
-	public ReadOnlyObjectProperty<Node> lastFocusOwnerProperty()
-	{
-		return lastFocusOwner.getReadOnlyProperty();
-	}
-	
-	
-	public static ReadOnlyObjectProperty<Node> lastFocusOwnerPropertyStatic()
-	{
-		return lastFocusOwnerStatic.getReadOnlyProperty();
 	}
 	
 	
 	public String getName()
 	{
 		return name;
-	}
-	
-	
-	public double getNormalX()
-	{
-		return normalBoundsMonitor.getX();
-	}
-	
-	
-	public double getNormalY()
-	{
-		return normalBoundsMonitor.getY();
-	}
-	
-	
-	public double getNormalWidth()
-	{
-		return normalBoundsMonitor.getWidth();
-	}
-	
-	
-	public double getNormalHeight()
-	{
-		return normalBoundsMonitor.getHeight();
 	}
 	
 	
@@ -130,9 +57,21 @@ public class FxWindow
 	}
 	
 	
+	public Node getTop()
+	{
+		return pane.getTop();
+	}
+	
+	
 	public void setBottom(Node n)
 	{
 		pane.setBottom(n);
+	}
+	
+	
+	public Node getBottom()
+	{
+		return pane.getBottom();
 	}
 	
 	
@@ -142,9 +81,21 @@ public class FxWindow
 	}
 	
 	
+	public Node getLeft()
+	{
+		return pane.getLeft();
+	}
+	
+	
 	public void setRight(Node n)
 	{
 		pane.setRight(n);
+	}
+	
+	
+	public Node getRight()
+	{
+		return pane.getRight();
 	}
 	
 	
@@ -160,27 +111,6 @@ public class FxWindow
 	}
 	
 	
-	public void setSize(int width, int height)
-	{
-		setWidth(width);
-		setHeight(height);
-	}
-	
-	
-	public void setMinSize(int width, int height)
-	{
-		setMinWidth(width);
-		setMinHeight(height);
-	}
-	
-	
-	public void setMaxSize(int width, int height)
-	{
-		setMaxWidth(width);
-		setMaxHeight(height);
-	}
-	
-	
 	public void closeWithConfirmation()
 	{
 		OnWindowClosing ch = new OnWindowClosing(false);
@@ -188,66 +118,6 @@ public class FxWindow
 		if(!ch.isCancelled())
 		{
 			close();
-		}
-	}
-	
-	
-	/** bind a property to be saved in window-specific settings using the specified subkey */
-	public <T> void bind(String subKey, Property<T> p)
-	{
-		bindings().add(subKey, p, null);
-	}
-	
-	
-	/** bind an object with settings to be saved in window-specific settings using the specified subkey */
-	public <T> void bind(String subKey, HasSettings x)
-	{
-		bindings().add(subKey, x);
-	}
-	
-	
-	/** bind a property to be saved in window-specific settings using the specified subkey */
-	public <T> void bind(String subKey, Property<T> p, StringConverter<T> c)
-	{
-		bindings().add(subKey, p, c);
-	}
-	
-	
-	/** bind a property to be saved in window-specific settings using the specified subkey */
-	public <T> void bind(String subKey, Property<T> p, SSConverter<T> c)
-	{
-		bindings().add(subKey, c, p);
-	}
-	
-	
-	protected LocalBindings bindings()
-	{
-		if(bindings == null)
-		{
-			bindings = new LocalBindings();
-		}
-		return bindings;
-	}
-	
-
-	/** invoked by the framework after the window and its content is created. */
-	public void loadSettings(String prefix)
-	{
-		if(bindings != null)
-		{
-			String k = prefix + FxSchema.SFX_BINDINGS;
-			bindings.loadValues(k);
-		}
-	}
-
-
-	/** invoked by the framework as necessary to store the window-specific settings */
-	public void storeSettings(String prefix)
-	{
-		if(bindings != null)
-		{
-			String k = prefix + FxSchema.SFX_BINDINGS;
-			bindings.saveValues(k);
 		}
 	}
 }

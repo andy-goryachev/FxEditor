@@ -1,5 +1,6 @@
-// Copyright © 2011-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -14,6 +15,9 @@ import java.util.HashSet;
  */
 public class Parsers
 {
+	protected static final Log log = Log.get("Parsers");
+	
+	
 	public static Double parseDouble(Object x)
 	{
 		if(x instanceof Number)
@@ -320,7 +324,7 @@ public class Parsers
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 		
 		return null;
@@ -357,7 +361,7 @@ public class Parsers
 			}
 			catch(Exception e)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 		return null;
@@ -388,13 +392,13 @@ public class Parsers
 					}
 					catch(Exception e)
 					{
-						Log.ex(e);
+						log.error(e);
 					}
 				}
 			}
 			catch(Exception e)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 		return null;

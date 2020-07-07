@@ -1,5 +1,6 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import java.lang.reflect.Field;
 
 
@@ -8,6 +9,7 @@ import java.lang.reflect.Field;
  */
 public final class CField<T>
 {
+	protected static final Log log = Log.get("CField");
 	private final Field field;
 	
 	
@@ -27,7 +29,7 @@ public final class CField<T>
 		}
 		catch(Throwable e)
 		{
-			Log.ex(e);
+			log.error(e);
 			return null;
 		}
 	}
@@ -43,7 +45,7 @@ public final class CField<T>
 			}
 			catch(Throwable e)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 		return null;
@@ -60,7 +62,7 @@ public final class CField<T>
 			}
 			catch(Throwable e)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 	}

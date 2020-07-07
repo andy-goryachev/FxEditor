@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.beans.property.Property;
 import javafx.scene.control.ContextMenu;
@@ -82,5 +82,13 @@ public class FxPopupMenu
 	public void clear()
 	{
 		getItems().clear();
+	}
+	
+	
+	public FxMenu menu(String text, FxAction a)
+	{
+		FxMenu m = new FxMenu(text, a);
+		add(m);
+		return m;
 	}
 }

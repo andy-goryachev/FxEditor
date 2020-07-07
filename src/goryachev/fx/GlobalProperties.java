@@ -1,7 +1,7 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.log.Log;
 import goryachev.common.util.GlobalSettings;
-import goryachev.common.util.Log;
 import goryachev.common.util.WeakList;
 import javafx.util.StringConverter;
 
@@ -11,6 +11,7 @@ import javafx.util.StringConverter;
  */
 public class GlobalProperties
 {
+	protected static final Log log = Log.get("GlobalProperties");
 	private static final WeakList<GlobalProperty<?>> properties = new WeakList();
 	
 	
@@ -46,7 +47,7 @@ public class GlobalProperties
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 	
@@ -65,7 +66,7 @@ public class GlobalProperties
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 }

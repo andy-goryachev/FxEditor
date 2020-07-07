@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -44,9 +44,15 @@ public class FxButton
 	}
 	
 	
-	public FxButton(String text, Runnable handler)
+	public FxButton(String text, Runnable action)
 	{
-		this(text, new FxAction(handler));
+		this(text, new FxAction(action));
+	}
+	
+	
+	public FxButton(Node icon, Runnable action)
+	{
+		this(icon, new FxAction(action));
 	}
 	
 	

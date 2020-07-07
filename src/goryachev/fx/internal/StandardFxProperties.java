@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.internal;
 import goryachev.fx.CssPseudo;
 import javafx.scene.control.OverrunStyle;
@@ -30,6 +30,7 @@ public class StandardFxProperties
 	public static final CssPseudo PRESSED = new CssPseudo(":pressed");
 	public static final CssPseudo SELECTED = new CssPseudo(":selected");
 	
+	public static final String BOLD = "bold";
 	public static final String TRANSPARENT = "transparent";
 	public static final String TABLE = ".table";
 	

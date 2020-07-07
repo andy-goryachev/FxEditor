@@ -1,10 +1,12 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.CKit;
 import goryachev.common.util.CPlatform;
 import goryachev.common.util.GlobalSettings;
 import goryachev.fx.hacks.FxHacks;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.internal.FxSchema;
+import goryachev.fx.internal.ParentWindow;
 import goryachev.fx.internal.WindowsFx;
 import goryachev.fx.table.FxTable;
 import java.util.List;
@@ -15,11 +17,13 @@ import java.util.function.Supplier;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -42,14 +46,11 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -58,7 +59,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.StringConverter;
 
 
 /**
@@ -69,6 +69,8 @@ public final class FX
 	public static final double TWO_PI = Math.PI + Math.PI;
 	public static final double PI_2 = Math.PI / 2.0;
 	public static final double DEGREES_PER_RADIAN = 180.0 / Math.PI;
+	public static final double GAMMA = 2.2;
+	public static final double ONE_OVER_GAMMA = 1.0 / GAMMA;
 	private static WindowsFx windowsFx = new WindowsFx();
 	private static Text helper;
 
@@ -413,6 +415,10 @@ public final class FX
 	/** Creates a simple color background. */
 	public static Background background(Paint c)
 	{
+		if(c == null)
+		{
+			return null;
+		}
 		return new Background(new BackgroundFill(c, null, null));
 	}
 	
@@ -551,31 +557,24 @@ public final class FX
 	}
 	
 	
-	/** rounds a double value to int */
-	public static int round(double x)
-	{
-		return (int)Math.round(x);
-	}
-	
-	
-	/** returns int ceiling of a double value */
-	public static int ceil(double x)
-	{
-		return (int)Math.ceil(x);
-	}
-	
-	
-	/** returns int floor of a double value */
-	public static int floor(double x)
-	{
-		return (int)Math.floor(x);
-	}
-	
-	
 	/** shortcut for Platform.runLater() */
 	public static void later(Runnable r)
 	{
 		Platform.runLater(r);
+	}
+	
+	
+	/** execute in FX application thread directly if called from it, or in runLater() */
+	public static void inFX(Runnable r)
+	{
+		if(Platform.isFxApplicationThread())
+		{
+			r.run();
+		}
+		else
+		{
+			FX.later(r);
+		}
 	}
 	
 	
@@ -641,34 +640,6 @@ public final class FX
 	}
 	
 	
-	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, Property<T> p)
-	{
-		FxSchema.bindings(n, true).add(subKey, p, null);
-	}
-	
-	
-	/** bind an object with settings to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, HasSettings x)
-	{
-		FxSchema.bindings(n, true).add(subKey, x);
-	}
-	
-	
-	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, Property<T> p, StringConverter<T> c)
-	{
-		FxSchema.bindings(n, true).add(subKey, p, c);
-	}
-	
-	
-	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, Property<T> p, SSConverter<T> c)
-	{
-		FxSchema.bindings(n, true).add(subKey, c, p);
-	}
-	
-	
 	/** returns true if the coordinates belong to one of the Screens */
 	public static boolean isValidCoordinates(double x, double y)
 	{
@@ -705,55 +676,76 @@ public final class FX
 	}
 	
 	
-	/** adds a fraction of color to the base, using perceptual intensity law */ 
-	public static Color mix(Color base, Color add, double fraction)
+	/** 
+	 * adds a fraction of color to the base, using standard gamma value 
+	 * https://en.wikipedia.org/wiki/Alpha_compositing
+	 */ 
+	public static Color mix(Color base, Color over, double fraction)
 	{
-		if(fraction < 0)
+		if(fraction <= 0.0)
 		{
 			return base;
 		}
-		else if(fraction >= 1.0)
+		
+		if(base == null)
 		{
-			return add;
+			if(over == null)
+			{
+				return null;
+			}
+			else
+			{
+				return new Color(over.getRed(), over.getGreen(), over.getBlue(), over.getOpacity() * fraction);
+			}
+		}
+
+		if(base.isOpaque())
+		{
+			if(over.isOpaque())
+			{
+				// simplified case of both colors opaque 
+				double r = mix(base.getRed(), over.getRed(), fraction);
+				double g = mix(base.getGreen(), over.getGreen(), fraction);
+				double b = mix(base.getBlue(), over.getBlue(), fraction);
+				return new Color(r, g, b, 1.0);
+			}
 		}
 		
-		if(base.isOpaque() && add.isOpaque())
+		// full alpha blending
+		double opacityBase = base.getOpacity();
+		double opacityOver = clip(over.getOpacity() * fraction);
+
+		double alpha = opacityOver + (opacityBase * (1.0 - opacityOver));
+		if(alpha < 0.00001)
 		{
-			double r = mix(base.getRed(), add.getRed(), fraction);
-			double g = mix(base.getGreen(), add.getGreen(), fraction);
-			double b = mix(base.getBlue(), add.getBlue(), fraction);
-			return new Color(r, g, b, 1.0);
+			return new Color(0, 0, 0, 0);
 		}
-		else
-		{
-			double baseOp = base.getOpacity();
-			double addOp = add.getOpacity();
-			
-			double r = mix(base.getRed(), baseOp, add.getRed(), addOp, fraction);
-			double g = mix(base.getGreen(), baseOp, add.getGreen(), addOp, fraction);
-			double b = mix(base.getBlue(), baseOp, add.getBlue(), addOp, fraction);
-			double a = baseOp * (1.0 - fraction) + addOp * fraction;
-			return new Color(r, g, b, a);
-		}
+		
+		double r = mix(base.getRed(), opacityBase, over.getRed(), opacityOver, alpha);
+		double g = mix(base.getGreen(), opacityBase, over.getGreen(), opacityOver, alpha);
+		double b = mix(base.getBlue(), opacityBase, over.getBlue(), opacityOver, alpha);
+		return new Color(r, g, b, alpha);
 	}
 
 
-	private static double mix(double a, double b, double fraction)
+	private static double mix(double base, double over, double fraction)
 	{
-		// using square law (gamma = 2)
-		return limit(Math.sqrt((a * a) * (1.0 - fraction) + (b * b) * fraction));
+		double v = Math.pow(over, GAMMA) * fraction + Math.pow(base, GAMMA) * (1.0 - fraction);
+		v = Math.pow(v, ONE_OVER_GAMMA);
+		return clip(v);
 	}
 	
 
-	private static double mix(double a, double opacityA, double b, double opacityB, double fraction)
+	private static double mix(double base, double opacityBase, double over, double opacityOver, double alpha)
 	{
-		// using square law (gamma = 2)
-		// I am guessing with opacity values here
-		return limit(Math.sqrt((a * a * opacityA) * (1.0 - fraction) + (b * b * opacityB) * fraction));
+		double v = Math.pow(over, GAMMA) * opacityOver + Math.pow(base, GAMMA) * (1.0 - opacityOver);
+		v = v / alpha;
+		v = Math.pow(v, ONE_OVER_GAMMA);
+		return clip(v);
 	}
 
 	
-	private static double limit(double c)
+	private static double clip(double c)
 	{
 		if(c < 0)
 		{
@@ -784,26 +776,9 @@ public final class FX
 		return new Image(c.getResourceAsStream(resource));
 	}
 
-
-	/** permanently hides the table header */
-	public static void hideHeader(TableView<?> t)
-	{
-		t.skinProperty().addListener((s, p, v) ->
-		{
-			Pane h = (Pane)t.lookup("TableHeaderRow");
-			if(h.isVisible())
-			{
-				h.setMaxHeight(0);
-				h.setMinHeight(0);
-				h.setPrefHeight(0);
-				h.setVisible(false);
-			}
-		});
-	}
-	
 	
 	/** sets a tool tip on the control. */
-	public static void toolTip(Control n, Object tooltip)
+	public static void setTooltip(Control n, Object tooltip)
 	{
 		if(tooltip == null)
 		{
@@ -924,50 +899,6 @@ public final class FX
 		return new Insets(vertical, horizontal, vertical, horizontal);
 	}
 	
-	
-	/** adds an invalidation listener to an observable */
-	public static void listen(Runnable handler, Observable prop)
-	{
-		prop.addListener((src) -> handler.run());
-	}
-	
-	
-	/** adds an invalidation listener to an observable */
-	public static void listen(Runnable handler, boolean fireImmediately, Observable prop)
-	{
-		prop.addListener((src) -> handler.run());
-			
-		if(fireImmediately)
-		{
-			handler.run();
-		}
-	}
-	
-	
-	/** adds an invalidation listener to multiple observables */
-	public static void listen(Runnable handler, Observable ... props)
-	{
-		for(Observable prop: props)
-		{
-			prop.addListener((src) -> handler.run());
-		}
-	}
-	
-	
-	/** adds an invalidation listener to multiple observables */
-	public static void listen(Runnable handler, boolean fireImmediately, Observable ... props)
-	{
-		for(Observable prop: props)
-		{
-			prop.addListener((src) -> handler.run());
-		}
-			
-		if(fireImmediately)
-		{
-			handler.run();
-		}
-	}
-
 
 	public static <T> ObservableList<T> observableArrayList()
 	{
@@ -1063,12 +994,12 @@ public final class FX
 		{
 			if(generator != null)
 			{
-				FX.later(() ->
+				FxPopupMenu m = generator.get();
+				if(m != null)
 				{
-					FxPopupMenu m = generator.get();
-					if(m != null)
+					if(m.getItems().size() > 0)
 					{
-						if(m.getItems().size() > 0)
+						FX.later(() ->
 						{
 							// javafx does not dismiss the popup when the user
 							// clicks on the owner node
@@ -1078,14 +1009,16 @@ public final class FX
 								{
 									m.hide();
 									owner.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
+									event.consume();
 								}
 							};
 							
 							owner.addEventFilter(MouseEvent.MOUSE_PRESSED, li);
 							m.show(owner, ev.getScreenX(), ev.getScreenY());
-						}
+						});
+						ev.consume();
 					}
-				});
+				}
 			}
 			ev.consume();
 		});
@@ -1113,7 +1046,7 @@ public final class FX
 				}
 				else
 				{
-					a.action();
+					a.invokeAction();
 					ev.consume();
 				}
 			}
@@ -1231,5 +1164,136 @@ public final class FX
 		}
 		
 		return null;
+	}
+	
+	
+	/** adds a ChangeListener to the specified ObservableValue(s) */
+	public static void onChange(Runnable handler, ObservableValue<?> ... props)
+	{
+		onChange(handler, false, props);
+	}
+	
+	
+	/** adds a ChangeListener to the specified ObservableValue(s) */
+	public static void onChange(Runnable handler, boolean fireImmediately, ObservableValue<?> ... props)
+	{
+		for(ObservableValue<?> p: props)
+		{
+			// weak listener gets collected... but why??
+			p.addListener((src,prev,cur) -> handler.run());
+		}
+		
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+	
+	
+	/** adds an invalidation listener to an observable */
+	public static void onInvalidation(Runnable handler, Observable prop)
+	{
+		prop.addListener((src) -> handler.run());
+	}
+	
+	
+	/** adds an invalidation listener to an observable */
+	public static void onInvalidation(Runnable handler, boolean fireImmediately, Observable prop)
+	{
+		prop.addListener((src) -> handler.run());
+			
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+	
+	
+	/** adds an invalidation listener to multiple observables */
+	public static void onInvalidation(Runnable handler, Observable ... props)
+	{
+		for(Observable prop: props)
+		{
+			prop.addListener((src) -> handler.run());
+		}
+	}
+	
+	
+	/** adds an invalidation listener to multiple observables */
+	public static void onInvalidation(Runnable handler, boolean fireImmediately, Observable ... props)
+	{
+		for(Observable prop: props)
+		{
+			prop.addListener((src) -> handler.run());
+		}
+			
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+
+
+	/** converts non-null Color to #RRGGBBAA */
+	public static String toFormattedColor(Color c)
+	{
+        int r = CKit.round(c.getRed() * 255.0);
+        int g = CKit.round(c.getGreen() * 255.0);
+        int b = CKit.round(c.getBlue() * 255.0);
+        int a = CKit.round(c.getOpacity() * 255.0);
+		return String.format("#%02X%02X%02X%02X", r, g, b, a);
+	}
+	
+	
+	/** converts non-null Color to #RRGGBB */
+	public static String toFormattedColorRGB(Color c)
+	{
+        int r = CKit.round(c.getRed() * 255.0);
+        int g = CKit.round(c.getGreen() * 255.0);
+        int b = CKit.round(c.getBlue() * 255.0);
+		return String.format("#%02X%02X%02X", r, g, b);
+	}
+
+
+	public static boolean isParentWindowVisible(Node n)
+	{
+		if(n == null)
+		{
+			return false;
+		}
+		
+		Scene s = n.getScene();
+		if(s == null)
+		{
+			return false;
+		}
+		
+		Window w = s.windowProperty().get();
+		if(w == null)
+		{
+			return false;
+		}
+		
+		return w.isShowing();
+	}
+	
+	
+	/** returns a read-only property that tracks parent window of a Node */
+	public static  ReadOnlyObjectProperty<Window> parentWindowProperty(Node n)
+	{
+		return new ParentWindow(n).windowProperty();
+	}
+	
+	
+	/** avoid ambiguous signature warning when using addListener */
+	public static <T> void addChangeListener(ObservableList<T> list, ListChangeListener<? super T> li)
+	{
+		list.addListener(li);
+	}
+	
+
+	public static <T> void addChangeListener(ObservableValue<T> prop, ChangeListener<? super T> li)
+	{
+		prop.addListener(li);
 	}
 }

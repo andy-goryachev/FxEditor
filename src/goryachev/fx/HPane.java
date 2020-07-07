@@ -1,6 +1,7 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
-import goryachev.common.util.Log;
+import goryachev.common.log.Log;
+import goryachev.common.util.CKit;
 import goryachev.common.util.Parsers;
 import java.util.List;
 import javafx.geometry.HPos;
@@ -19,6 +20,7 @@ import javafx.scene.layout.Region;
 public class HPane
 	extends Pane
 {
+	protected static final Log log = Log.get("HPane");
 	public static final double FILL = -1.0;
 	public static final double PREF = -2.0;
 	protected int gap;
@@ -155,7 +157,7 @@ public class HPane
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 	
@@ -199,6 +201,12 @@ public class HPane
 	}
 	
 	
+	public void clear()
+	{
+		getChildren().clear();
+	}
+	
+	
 	//
 	
 	
@@ -219,10 +227,10 @@ public class HPane
 		{
 			this.nodes = nodes;
 			this.sz = nodes.size();
-			top = FX.round(m.getTop());
-			bottom = FX.round(m.getBottom());
-			left = FX.round(m.getLeft());
-			right = FX.round(m.getRight());
+			top = CKit.round(m.getTop());
+			bottom = CKit.round(m.getBottom());
+			left = CKit.round(m.getLeft());
+			right = CKit.round(m.getRight());
 			gaps = (sz < 2) ? 0 : (gap * (sz - 1));
 		}
 		
@@ -263,17 +271,17 @@ public class HPane
 				int d;
 				if(isFixed(cc))
 				{
-					d = FX.ceil(cc);
+					d = CKit.ceil(cc);
 				}
 				else
 				{
 					if(preferred)
 					{
-						d = FX.ceil(Math.max(n.prefWidth(-1), n.minWidth(-1)));
+						d = CKit.ceil(Math.max(n.prefWidth(-1), n.minWidth(-1)));
 					}
 					else
 					{
-						d = FX.ceil(n.minWidth(-1));
+						d = CKit.ceil(n.minWidth(-1));
 					}
 				}
 				
@@ -298,11 +306,11 @@ public class HPane
 				int d;
 				if(preferred)
 				{
-					d = FX.ceil(n.prefHeight(width));
+					d = CKit.ceil(n.prefHeight(width));
 				}
 				else
 				{
-					d = FX.ceil(n.minHeight(width));				
+					d = CKit.ceil(n.minHeight(width));				
 				}
 				if(d > max)
 				{
@@ -381,7 +389,7 @@ public class HPane
 						w = 0;
 					}
 					
-					int d = FX.round(w);
+					int d = CKit.round(w);
 					size[i] = d;
 					remaining -= d;
 				}
@@ -408,7 +416,7 @@ public class HPane
 							w = 0;
 						}
 						
-						int d = FX.ceil(w);
+						int d = CKit.ceil(w);
 						size[i] = d;
 						remaining -= d;
 					}
@@ -421,7 +429,7 @@ public class HPane
 		{
 			computePositions();
 			
-			int h = FX.floor(getHeight() - top - bottom);
+			int h = CKit.floor(getHeight() - top - bottom);
 			for(int i=0; i<sz; i++)
 			{
 				Node n = nodes.get(i);
@@ -439,7 +447,7 @@ public class HPane
 			
 			// populate size[] with preferred sizes
 			int pw = computeSizes(true);
-			int dw = FX.floor(getWidth()) - pw;
+			int dw = CKit.floor(getWidth()) - pw;
 			if(dw != 0)
 			{
 				adjust(dw);

@@ -1,4 +1,4 @@
-// Copyright © 2014-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2014-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util.text;
 import goryachev.common.util.SB;
 
@@ -6,7 +6,7 @@ import goryachev.common.util.SB;
 public class FindOperationResult
 {
 	private final String original;
-	private final String pattern;;
+	private final String pattern;
 	private final int[] indexes;
 	
 	

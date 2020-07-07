@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,6 +31,11 @@ public class FxDateFormatter
 		}
 		else if(x instanceof Long)
 		{
+			Long v = (Long)x;
+			if(v.longValue() <= 0)
+			{
+				return null;
+			}
 			return format.format(x);
 		}
 		else

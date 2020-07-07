@@ -1,4 +1,4 @@
-// Copyright © 2011-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.io;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -67,23 +67,37 @@ public class DWriter
 		out.write((x >>> 8) & 0xff);
 		out.write(x & 0xff);
 	}
+	
 
-
-	public void writeShort(short x) throws IOException
+	public void writeShort(int x) throws IOException
 	{
-		out.write((x >>> 8) & 0xff);
-		out.write(x & 0xff);
+		out.write(x >>> 8);
+		out.write(x);
 	}
 
 
 	public void writeInt(int x) throws IOException
 	{
-		out.write((x >>> 24) & 0xff);
-		out.write((x >>> 16) & 0xff);
-		out.write((x >>> 8) & 0xff);
-		out.write(x & 0xff);
+		out.write(x >>> 24);
+		out.write(x >>> 16);
+		out.write(x >>>  8);
+		out.write(x);
 	}
 	
+	
+	/** writes a single byte as a signed 8 bit int (range -128..127) */
+	public void writeInt8(int x) throws IOException
+	{
+		out.write(x);
+	}
+	
+	
+	/** writes a single byte as an unsigned 8 bit int (range 0..255) */
+	public void writeUInt8(int x) throws IOException
+	{
+		out.write(x);
+	}
+
 	
 	public void writeIntArray(int[] b) throws IOException
 	{

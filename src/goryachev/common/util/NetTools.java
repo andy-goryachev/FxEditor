@@ -1,5 +1,6 @@
-// Copyright © 2006-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2006-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -11,6 +12,9 @@ import java.util.zip.GZIPInputStream;
 
 public class NetTools
 {
+	protected static final Log log = Log.get("NetTools");
+	
+	
 	/** read string content from an http link */
 	public static String readString(String url) throws Exception
 	{
@@ -132,7 +136,7 @@ public class NetTools
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 		
 		return CKit.CHARSET_UTF8;

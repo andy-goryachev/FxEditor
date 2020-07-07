@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
 import goryachev.fx.CPane;
 import goryachev.fx.FxBoolean;
@@ -31,6 +31,12 @@ public class FxTreeTable<T>
 		tree = new TreeTableView<T>();
 		tree.skinProperty().addListener((s,p,c) -> fixHorizontalScrollbar());
 		setCenter(tree);
+	}
+	
+	
+	public void setEditable(boolean on)
+	{
+		tree.setEditable(on);
 	}
 	
 	
@@ -113,9 +119,21 @@ public class FxTreeTable<T>
 	}
 	
 	
+	public void addColumn(FxTreeTableColumn<T> c)
+	{
+		tree.getColumns().add(c);
+	}
+	
+	
 	public void addColumn()
 	{
 		tree.getColumns().add(new TreeTableColumn<T,T>());
+	}
+	
+	
+	public TreeTableColumn<T,?> getColumn(int ix)
+	{
+		return tree.getColumns().get(ix);
 	}
 	
 	
@@ -216,5 +234,23 @@ public class FxTreeTable<T>
 				header.setVisible(false);
 			}
 		});
+	}
+
+
+	public int getExpandedItemCount()
+	{
+		return tree.getExpandedItemCount();
+	}
+
+
+	public TreeItem<T> getTreeItem(int row)
+	{
+		return tree.getTreeItem(row);
+	}
+	
+	
+	public void edit(int row, TreeTableColumn<T,?> c)
+	{
+		tree.edit(row, c);
 	}
 }

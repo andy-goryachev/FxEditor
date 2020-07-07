@@ -62,7 +62,12 @@ See [MainWindow.java](https://github.com/andy-goryachev/FxEditor/blob/master/src
 
 ## Warning
 
-This project is not ready for production.  Mutable (editable) text models are not yet implemented.
+This project is not ready for production.  Mutable (editable) text models are not yet fully implemented.
+
+The editor relies on JavaFX PrismTextLayout to properly render proportional unicode text, which results in
+performance issues when trying to render very long lines (millions of symbols), making it unsuitable for
+projects that have to deal with such files, like programming editors or log viewers.  A fixed-width replacement
+[FxTextEditor](https://github.com/andy-goryachev/FxTextEditor) is currently being worked on.
 
 
 ## Similar Projects

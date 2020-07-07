@@ -1,4 +1,4 @@
-// Copyright © 2013-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2013-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.test;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
@@ -105,6 +105,12 @@ public class TF
 	public static void fail(String message)
 	{
 		throw new TestException(message);
+	}
+	
+	
+	public static void fail(Throwable err)
+	{
+		throw new TestException(err);
 	}
 
 	
