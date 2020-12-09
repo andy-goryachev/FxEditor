@@ -429,7 +429,7 @@ public class D
 	{
 		StackTraceElement t = new Throwable().getStackTrace()[depth];
 		String className = getClassName(t);
-		String s = className + "." + t.getMethodName() + " " + msg;
+		String s = className + "." + t.getMethodName() + ":" + t.getLineNumber() + " " + msg;
 		System.err.println(s);
 	}
 	
@@ -459,5 +459,26 @@ public class D
 			}
 			print(sb);
 		}
+	}
+	
+	
+	/** dumps an object in a JSON-like format */
+	public static void dump(Object x)
+	{
+		dump(null, " ", false, x);
+	}
+	
+	
+	/** dumps an object in a JSON-like format */
+	public static void dump(String name, String indent, boolean prettyPrint, Object x)
+	{
+		SB sb = new SB();
+		if(name != null)
+		{
+			sb.append(name).append(": ");
+		}
+		
+		new JsonDump(sb, indent, prettyPrint, x).print();
+		print(sb);
 	}
 }

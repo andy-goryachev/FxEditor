@@ -1,18 +1,22 @@
 // Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.log.Log;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CPlatform;
 import goryachev.common.util.GlobalSettings;
+import goryachev.common.util.SystemTask;
 import goryachev.fx.hacks.FxHacks;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.internal.FxSchema;
 import goryachev.fx.internal.ParentWindow;
 import goryachev.fx.internal.WindowsFx;
 import goryachev.fx.table.FxTable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javafx.application.Platform;
 import javafx.beans.Observable;
@@ -24,7 +28,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+import javafx.collections.transformation.TransformationList;
+import javafx.css.Styleable;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -33,6 +41,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
@@ -45,6 +54,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -62,10 +73,11 @@ import javafx.stage.Window;
 
 
 /**
- * Making FX-ing easier.
+ * Making JavaFX "easier".
  */
 public final class FX
 {
+	protected static final Log log = Log.get("FX");
 	public static final double TWO_PI = Math.PI + Math.PI;
 	public static final double PI_2 = Math.PI / 2.0;
 	public static final double DEGREES_PER_RADIAN = 180.0 / Math.PI;
@@ -120,6 +132,20 @@ public final class FX
 	{
 		windowsFx.restoreWindow(w);
 		GlobalSettings.save();
+	}
+	
+	
+	/** 
+	 * loads application windows stored in the global settings.  
+	 * A window of specified defaultWindowType is created when the layout does not contain any windows saved,
+	 * or when no window of the defaultWindowType was created.
+	 * Generator:
+	 * - for null argument (default window id) must return a non-null instance 
+	 * - may return null window for a non-null window id
+	 */ 
+	public static void openWindows(Function<String,FxWindow> generator, Class<? extends FxWindow> defaultWindowType)
+	{
+		windowsFx.openWindows(generator, defaultWindowType);
 	}
 	
 	
@@ -295,6 +321,13 @@ public final class FX
 	}
 	
 	
+	/** apply styles to a Styleable */
+	public static void style(Styleable n, CssStyle style)
+	{
+		n.getStyleClass().add(style.getName());
+	}
+	
+	
 	/** apply styles to a Node */
 	public static void style(Node n, Object ... attrs)
 	{
@@ -426,6 +459,12 @@ public final class FX
 	public static Color gray(int col)
 	{
 		return Color.rgb(col, col, col);
+	}
+	
+	
+	public static Color gray(int col, double alpha)
+	{
+		return Color.rgb(col, col, col, alpha);
 	}
 	
 	
@@ -564,6 +603,16 @@ public final class FX
 	}
 	
 	
+	/** invokes Platform.runLater() after the specified delay */
+	public static void later(int delay, Runnable r)
+	{
+		SystemTask.schedule(delay, () ->
+		{
+			Platform.runLater(r);
+		});
+	}
+	
+	
 	/** execute in FX application thread directly if called from it, or in runLater() */
 	public static void inFX(Runnable r)
 	{
@@ -575,6 +624,13 @@ public final class FX
 		{
 			FX.later(r);
 		}
+	}
+	
+	
+	/** alias for Platform.isFxApplicationThread() */
+	public static boolean isFX()
+	{
+		return Platform.isFxApplicationThread();
 	}
 	
 	
@@ -892,17 +948,16 @@ public final class FX
 		windowsFx.removeWindowMonitor(monitor);
 	}
 	
-	
-	/** creates an instance of Insets(horizontal,vertical).  why there is not such a constructor you might ask? */
-	public static Insets insets(double vertical, double horizontal)
-	{
-		return new Insets(vertical, horizontal, vertical, horizontal);
-	}
-	
 
 	public static <T> ObservableList<T> observableArrayList()
 	{
 		return FXCollections.observableArrayList();
+	}
+	
+	
+	public static <K,V> ObservableMap<K,V> observableHashMap()
+	{
+		return FXCollections.observableHashMap();
 	}
 
 
@@ -959,23 +1014,38 @@ public final class FX
 	/** returns a parent of the specified type, or null.  if comp is an instance of the specified class, returns comp */
 	public static <T> T getAncestorOfClass(Class<T> c, Node comp)
 	{
-		while(comp != null)
+		if(Window.class.isAssignableFrom(c))
 		{
-			if(c.isInstance(comp))
+			Scene sc = comp.getScene();
+			if(sc != null)
 			{
-				return (T)comp;
+				Window w = sc.getWindow();
+				if(w.getClass().isAssignableFrom(c))
+				{
+					return (T)w;
+				}
 			}
-			
-//			if(comp instanceof JPopupMenu)
-//			{
-//				if(comp.getParent() == null)
-//				{
-//					comp = ((JPopupMenu)comp).getInvoker();
-//					continue;
-//				}
-//			}
-			
-			comp = comp.getParent();
+		}
+		else
+		{
+			while(comp != null)
+			{
+				if(c.isInstance(comp))
+				{
+					return (T)comp;
+				}
+				
+	//			if(comp instanceof JPopupMenu)
+	//			{
+	//				if(comp.getParent() == null)
+	//				{
+	//					comp = ((JPopupMenu)comp).getInvoker();
+	//					continue;
+	//				}
+	//			}
+				
+				comp = comp.getParent();
+			}
 		}
 		return null;
 	}
@@ -987,14 +1057,25 @@ public final class FX
 	}
 	
 	
-	/** attach a popup menu to the node */
-	public static void setPopupMenu(Node owner, Supplier<FxPopupMenu> generator)
+	/** 
+	 * attach a popup menu to a node.
+	 * WARNING: sometimes, as the case is with TableView/FxTable header, 
+	 * the requested node gets created by the skin at some later time.
+	 * In this case, additional dance must be performed, see for example
+	 * FxTable.setHeaderPopupMenu()   
+	 */
+	public static void setPopupMenu(Node owner, Supplier<ContextMenu> generator)
 	{
+		if(owner == null)
+		{
+			throw new NullPointerException("cannot attach popup menu to null");
+		}
+		
 		owner.setOnContextMenuRequested((ev) ->
 		{
 			if(generator != null)
 			{
-				FxPopupMenu m = generator.get();
+				ContextMenu m = generator.get();
 				if(m != null)
 				{
 					if(m.getItems().size() > 0)
@@ -1190,6 +1271,25 @@ public final class FX
 	}
 	
 	
+	/** adds a ListChangeListener to the specified ObservableValue(s) */
+	public static void onChange(Runnable handler,ObservableList<?> list)
+	{
+		onChange(handler, false, list);
+	}
+	
+	
+	/** adds a ListChangeListener to the specified ObservableValue(s) */
+	public static void onChange(Runnable handler, boolean fireImmediately, ObservableList list)
+	{
+		list.addListener((Change ch) -> handler.run());
+		
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+	
+	
 	/** adds an invalidation listener to an observable */
 	public static void onInvalidation(Runnable handler, Observable prop)
 	{
@@ -1291,9 +1391,296 @@ public final class FX
 		list.addListener(li);
 	}
 	
+	
+	/** avoid ambiguous signature warning when using addListener */
+	public static <T> void addChangeListener(ObservableList<T> list, Runnable callback)
+	{
+		list.addListener((ListChangeListener.Change<? extends T> ch) -> callback.run());
+	}
+	
+	
+	/** avoid ambiguous signature warning when using addListener */
+	public static <T> void addChangeListener(ObservableList<T> list, boolean fireImmediately, Runnable callback)
+	{
+		list.addListener((ListChangeListener.Change<? extends T> ch) -> callback.run());
+		
+		if(fireImmediately)
+		{
+			callback.run();
+		}
+	}
+	
 
 	public static <T> void addChangeListener(ObservableValue<T> prop, ChangeListener<? super T> li)
 	{
 		prop.addListener(li);
+	}
+	
+	
+	/** simplified version of addChangeListener that only accepts the current value */
+	public static <T> void addChangeListener(ObservableValue<T> prop, Consumer<? super T> li)
+	{
+		prop.addListener((s,p,current) -> li.accept(current));
+	}
+	
+	
+	/** simplified version of addChangeListener that only invokes the callback on change */
+	public static <T> void addChangeListener(ObservableValue<T> prop, Runnable callback)
+	{
+		prop.addListener((s,p,current) -> callback.run());
+	}
+	
+	
+	/** simplified version of addChangeListener that only invokes the callback on change */
+	public static <T> void addChangeListener(ObservableValue<T> prop, boolean fireImmediately, Runnable callback)
+	{
+		prop.addListener((s,p,current) -> callback.run());
+		
+		if(fireImmediately)
+		{
+			callback.run();
+		}
+	}
+	
+	
+	/** simplified version of addChangeListener that only accepts the current value */
+	public static <T> void addChangeListener(ObservableValue<T> prop, boolean fireImmediately, Consumer<? super T> li)
+	{
+		prop.addListener((s,p,current) -> li.accept(current));
+		
+		if(fireImmediately)
+		{
+			li.accept(prop.getValue());
+		}
+	}
+
+
+	/** converts java fx Color to a 32 bit RGBA integer */
+	public static Integer toRGBA(Color c)
+	{
+        int r = (int)Math.round(c.getRed() * 255.0);
+        int g = (int)Math.round(c.getGreen() * 255.0);
+        int b = (int)Math.round(c.getBlue() * 255.0);
+        int a = (int)Math.round(c.getOpacity() * 255.0);
+		return r | (g << 8) | (b << 16) | (a << 24);
+	}
+	
+	
+	/** copies text to clipboard.  does nothing if text is null */
+	public static void copy(String text)
+	{
+		if(text != null)
+		{
+			ClipboardContent cc = new ClipboardContent();
+            cc.putString(text);
+            Clipboard.getSystemClipboard().setContent(cc);
+		}
+	}
+	
+	
+	public static Insets insets(double top, double right, double bottom, double left)
+	{
+		return new Insets(top, right, bottom, left);
+	}
+	
+	
+	public static Insets insets(double vert, double hor)
+	{
+		return new Insets(vert, hor, vert, hor);
+	}
+	
+	
+	public static Insets insets(double gap)
+	{
+		return new Insets(gap);
+	}
+	
+	
+	/** returns an instance of TransformationList wrapped around the source ObservableList */
+	public static <S,T> ObservableList<T> transform(ObservableList<S> source, Function<S,T> converter)
+	{
+		return new TransformationList<T,S>(source)
+		{
+			public int getSourceIndex(int index)
+			{
+				return index;
+			}
+			
+			
+			public int getViewIndex(int index)
+			{
+				return index;
+			}
+
+
+			public T get(int index)
+			{
+				S src = getSource().get(index);
+				return converter.apply(src);
+			}
+
+
+			public int size()
+			{
+				return getSource().size();
+			}
+			
+			
+			protected void sourceChanged(Change<? extends S> c)
+			{
+				fireChange(new Change<T>(this)
+				{
+					public List<T> getRemoved()
+					{
+						ArrayList<T> rv = new ArrayList<>(c.getRemovedSize());
+						for(S item: c.getRemoved())
+						{
+							rv.add(converter.apply(item));
+						}
+						return rv;
+					}
+					
+
+					public boolean wasAdded()
+					{
+						return c.wasAdded();
+					}
+
+
+					public boolean wasRemoved()
+					{
+						return c.wasRemoved();
+					}
+
+
+					public boolean wasReplaced()
+					{
+						return c.wasReplaced();
+					}
+
+
+					public boolean wasUpdated()
+					{
+						return c.wasUpdated();
+					}
+
+
+					public boolean wasPermutated()
+					{
+						return c.wasPermutated();
+					}
+
+
+					public int getPermutation(int ix)
+					{
+						return c.getPermutation(ix);
+					}
+
+
+					protected int[] getPermutation()
+					{
+						return new int[0];
+					}
+
+
+					public int getFrom()
+					{
+						return c.getFrom();
+					}
+
+
+					public int getTo()
+					{
+						return c.getTo();
+					}
+
+
+					public boolean next()
+					{
+						return c.next();
+					}
+
+
+					public void reset()
+					{
+						c.reset();
+					}
+				});
+			}
+		};
+	}
+	
+	
+	/** returns the first window of the specified type, or null */ 
+	public static <T extends FxWindow> T findFirstWindowOfType(Class<T> type, boolean exact)
+	{
+		for(Window w: getWindows())
+		{
+			if(exact)
+			{
+				if(w.getClass() == type)
+				{
+					return (T)w;
+				}
+			}
+			else
+			{
+				if(type.isAssignableFrom(w.getClass()))
+				{
+					return (T)w;
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	/** 
+	 * guarantees to open a single instance of the specified type:
+	 * - creates a new instance (using the specified generator) if no instance is currently opened
+	 * - restores and brings to focus an existing instance
+	 */
+	public static <T extends FxWindow> T openSingleWindow(Class<T> type, Supplier<T> gen)
+	{
+		FX.checkThread();
+		
+		T w = findFirstWindowOfType(type, true);
+		if(w == null)
+		{
+			w = gen.get();
+			w.open();
+		}
+		else
+		{
+			if(w.isIconified())
+			{
+				w.setIconified(false);
+			}
+		}
+		
+		w.requestFocus();
+		return w;
+	}
+	
+	
+	/** 
+	 * guarantees to open a single instance of the specified type:
+	 * - creates a new instance (using a no-arg constructor) if no instance is currently opened
+	 * - restores and brings to focus an existing instance
+	 */
+	public static <T extends FxWindow> T openSingleWindow(Class<T> type)
+	{
+		return openSingleWindow(type, () -> 
+		{
+			try
+			{
+				return type.newInstance();
+			}
+			catch(Throwable e)
+			{
+				log.error(e);
+				throw new Error(type + " must declare a no-arg constructor", e);
+			}
+		});
 	}
 }

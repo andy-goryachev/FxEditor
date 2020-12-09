@@ -131,10 +131,9 @@ public class FxAction
 
 	public final void setSelected(boolean on)
 	{
-		boolean fire = (selectedProperty.get() != on);
-		selectedProperty.set(on);
-		if(fire)
+		if(selectedProperty.get() != on)
 		{
+			selectedProperty.set(on);
 			fire();
 		}
 	}

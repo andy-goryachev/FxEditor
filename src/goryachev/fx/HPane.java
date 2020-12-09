@@ -8,7 +8,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
@@ -47,6 +46,17 @@ public class HPane
 	}
 	
 	
+	public HPane(int gap, Node ... nodes)
+	{
+		this.gap = gap;
+		
+		for(Node n: nodes)
+		{
+			add(n);
+		}
+	}
+	
+	
 	public void setGap(int gap)
 	{
 		this.gap = gap;
@@ -55,8 +65,15 @@ public class HPane
 	
 	public void space()
 	{
-		// TODO add a rectangle instead
-		add(new Label("  "));
+		space(10);
+	}
+	
+	
+	public void space(int width)
+	{
+		Pane p = new Pane();
+		p.setPrefWidth(width);
+		add(p);
 	}
 	
 	
@@ -65,6 +82,15 @@ public class HPane
 	{
 		massage(n);
 		getChildren().add(n);
+	}
+	
+	
+	public void addAll(Node ... nodes)
+	{
+		for(Node n: nodes)
+		{
+			add(n);
+		}
 	}
 	
 	
@@ -177,21 +203,21 @@ public class HPane
 	/** a shortcut to set padding on the panel */
 	public void setPadding(double gap)
 	{
-		setPadding(new CInsets(gap));
+		setPadding(FX.insets(gap));
 	}
 	
 	
 	/** a shortcut to set padding on the panel */
 	public void setPadding(double ver, double hor)
 	{
-		setPadding(new CInsets(ver, hor));
+		setPadding(FX.insets(ver, hor));
 	}
 	
 	
 	/** a shortcut to set padding on the panel */
 	public void setPadding(double top, double right, double bottom, double left)
 	{
-		setPadding(new CInsets(top, right, bottom, left));
+		setPadding(FX.insets(top, right, bottom, left));
 	}
 
 

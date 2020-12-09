@@ -196,7 +196,7 @@ public class FxEditor
 		FxFormatter f = lineNumberFormatterProperty.get();
 		if(f == null)
 		{
-			f = Formatters.getIntegerFormatter();
+			f = Formatters.integerFormatter();
 		}
 		return f;
 	}

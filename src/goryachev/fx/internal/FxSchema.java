@@ -4,16 +4,19 @@ import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.SB;
 import goryachev.common.util.SStream;
 import goryachev.fx.FX;
+import goryachev.fx.FxDialog;
 import goryachev.fx.FxWindow;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Shape;
+import javafx.stage.Window;
 
 
 /**
@@ -22,6 +25,8 @@ import javafx.scene.shape.Shape;
 public class FxSchema
 {
 	public static final String FX_PREFIX = "FX.";
+	
+	public static final String WINDOWS = FX_PREFIX + ".WINDOWS";
 	
 	public static final String SFX_COLUMNS = ".COLS";
 	public static final String SFX_DIVIDERS = ".DIVS";
@@ -89,16 +94,28 @@ public class FxSchema
 			
 			if((w > 0) && (h > 0))
 			{
-				// unnecessary anymore
-				if(FX.isValidCoordinates(x, y))
+				if
+				(
+					FX.isValidCoordinates(x, y) &&
+					(!(win instanceof FxDialog))
+				)
 				{
 					// iconified windows have (x,y) of -32000 for some reason
 					// their coordinates are essentially lost (unless there is a way to get them in FX)
 					win.setX(x);
 					win.setY(y);
 				}
-				win.setWidth(w);
-				win.setHeight(h);
+				
+				if(win.isResizable())
+				{
+					win.setWidth(w);
+					win.setHeight(h);
+				}
+				else
+				{
+					w = win.getWidth();
+					h = win.getHeight();
+				}
 				
 				switch(state)
 				{
@@ -111,6 +128,20 @@ public class FxSchema
 				case WINDOW_MAXIMIZED:
 					win.setMaximized(true);
 					break;
+				}
+				
+				if(win instanceof FxDialog)
+				{
+					FxDialog d = (FxDialog)win;
+					Window parent = d.getOwner();
+					if(parent != null)
+					{
+						double cx = parent.getX() + (parent.getWidth() / 2);
+						double cy = parent.getY() + (parent.getHeight() / 2);
+						// TODO check 
+						d.setX(cx - w/2);
+						d.setY(cy - h/2);
+					}
 				}
 			}
 		}
@@ -245,6 +276,31 @@ public class FxSchema
 	}
 	
 	
+	private static void storeTabPane(String prefix, TabPane p)
+	{
+		// selection
+		int ix = p.getSelectionModel().getSelectedIndex();
+		GlobalSettings.setInt(prefix + SFX_SELECTION, ix);
+	}
+	
+	
+	private static void restoreTabPane(String prefix, TabPane p)
+	{
+		// selection
+		int ix = GlobalSettings.getInt(prefix + SFX_SELECTION, -1);
+		if(ix >= 0)
+		{
+			FX.later(() ->
+			{
+				if(ix < p.getTabs().size())
+				{
+					p.getSelectionModel().select(ix);
+				}
+			});
+		}
+	}
+	
+	
 	/** returns full path for the Node, starting with the window id, or null if saving is not permitted */
 	private static String getFullName(String windowPrefix, Node root, Node n)
 	{
@@ -323,6 +379,10 @@ public class FxSchema
 		{
 			storeTableView(name, (TableView)n);
 		}
+		else if(n instanceof TabPane)
+		{
+			storeTabPane(name, (TabPane)n);
+		}
 		
 		if(n instanceof Parent)
 		{
@@ -353,6 +413,10 @@ public class FxSchema
 		else if(n instanceof TableView)
 		{
 			restoreTableView(name, (TableView)n);
+		}
+		else if(n instanceof TabPane)
+		{
+			restoreTabPane(name, (TabPane)n);
 		}
 		
 		if(n instanceof Parent)

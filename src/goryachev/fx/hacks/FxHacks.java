@@ -51,7 +51,7 @@ public abstract class FxHacks
 	/** returns the text position at the specified local coordinates */
 	public abstract int getTextPos(TextFlow t, double x, double y);
 	
-	/** returns the list of Windows */
+	/** returns the list of currently shown Windows */
 	public abstract List<Window> getWindows();
 	
 	//

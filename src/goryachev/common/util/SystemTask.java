@@ -26,6 +26,18 @@ public abstract class SystemTask
 	}
 	
 	
+	public static SystemTask create(Runnable r)
+	{
+		return new SystemTask()
+		{
+			protected void systemTaskBody() throws Exception
+			{
+				r.run();
+			}
+		};
+	}
+	
+	
 	public static void schedule(long delay, long period, Runnable r)
 	{
 		new SystemTask()
@@ -50,12 +62,14 @@ public abstract class SystemTask
 	}
 	
 	
+	/** schedules this task for repeated fixed-delay execution, beginning after the specified delay */
 	public void schedule(long delay, long period)
 	{
 		timer().schedule(this, delay, period);
 	}
 	
 	
+	/** schedules this task for execution after the specified delay */
 	public void schedule(long delay)
 	{
 		timer().schedule(this, delay);

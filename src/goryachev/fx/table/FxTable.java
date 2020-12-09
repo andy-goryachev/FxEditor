@@ -3,7 +3,6 @@ package goryachev.fx.table;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
 import goryachev.fx.FxBoolean;
-import goryachev.fx.FxPopupMenu;
 import java.util.Collection;
 import java.util.function.Supplier;
 import javafx.beans.binding.Bindings;
@@ -15,10 +14,12 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.layout.BorderPane;
@@ -34,6 +35,7 @@ public class FxTable<T>
 	public final TableView<T> table;
 	public final FxBoolean autoResizeMode = new FxBoolean();
 	private BooleanBinding singleSelectionProperty;
+	private BooleanBinding nonEmptySelectionProperty;
 	
 	
 	public FxTable()
@@ -52,18 +54,18 @@ public class FxTable<T>
 	}
 	
 	
+	private void init()
+	{
+		table.skinProperty().addListener((s,p,c) -> fixHorizontalScrollbar());
+	}
+	
+	
 	/** allow for sorting of items separately from the source list */
 	public void wrapSortedList(ObservableList<T> src)
 	{
 		SortedList<T> s = new SortedList<>(src);
 		s.comparatorProperty().bind(table.comparatorProperty());
 		setItems(s);
-	}
-	
-	
-	private void init()
-	{
-		table.skinProperty().addListener((s,p,c) -> fixHorizontalScrollbar());
 	}
 	
 	
@@ -117,36 +119,42 @@ public class FxTable<T>
 	}
 	
 	
-	public FxTableColumn<T> addColumn(FxTableColumn<T> tc)
+	public ObservableList<TableColumn<T,?>> getColumns()
 	{
-		table.getColumns().add(tc);
-		return tc;
+		return table.getColumns();
 	}
 	
 	
-	public FxTableColumn<T> addColumn()
+	public <C> FxTableColumn<T,C> addColumn(FxTableColumn<T,C> c)
 	{
-		FxTableColumn<T> tc = new FxTableColumn<T>();
-		table.getColumns().add(tc);
-		return tc;
+		table.getColumns().add(c);
+		return c;
 	}
 	
 	
-	public FxTableColumn<T> addColumn(String name)
+	public <C> FxTableColumn<T,C> addColumn()
 	{
-		FxTableColumn<T> tc = new FxTableColumn<T>(name, name);
-		table.getColumns().add(tc);
-		return tc;
+		FxTableColumn<T,C> c = new FxTableColumn<>();
+		table.getColumns().add(c);
+		return c;
 	}
 	
 	
-	public void setColumns(Collection<FxTableColumn<T>> cs)
+	public <C> FxTableColumn<T,C> addColumn(String name)
+	{
+		FxTableColumn<T,C> c = new FxTableColumn<>(name);
+		table.getColumns().add(c);
+		return c;
+	}
+	
+	
+	public void setColumns(Collection<FxTableColumn<T,?>> cs)
 	{
 		table.getColumns().setAll(cs);
 	}
 	
 	
-	public void setColumns(FxTableColumn<T> ... cs)
+	public void setColumns(FxTableColumn<T,?> ... cs)
 	{
 		table.getColumns().setAll(cs);
 	}
@@ -158,10 +166,10 @@ public class FxTable<T>
 	}
 	
 
-	public FxTableColumn<T> lastColumn()
+	public FxTableColumn<T,?> lastColumn()
 	{
 		ObservableList<TableColumn<T,?>> cs = table.getColumns();
-		return (FxTableColumn<T>)cs.get(cs.size() - 1);
+		return (FxTableColumn<T,?>)cs.get(cs.size() - 1);
 	}
 	
 	
@@ -174,6 +182,22 @@ public class FxTable<T>
 	public ObservableList<T> getItems()
 	{
 		return table.getItems();
+	}
+	
+	
+	public T getItem(int row)
+	{
+		if(row < 0)
+		{
+			return null;
+		}
+		
+		ObservableList<T> items = table.getItems();
+		if(row >= items.size())
+		{
+			return null;
+		}
+		return items.get(row);
 	}
 	
 	
@@ -349,18 +373,10 @@ public class FxTable<T>
 	}
 	
 	
-	/** this may not work if skin is not yet initialized */
-	public Pane getHeader()
-	{
-		return (Pane)table.lookup("TableHeaderRow");
-	}
-	
-	
-	public void setPopupMenu(Supplier<FxPopupMenu> generator)
+	public void setPopupMenu(Supplier<ContextMenu> generator)
 	{
 		FX.setPopupMenu(this, generator);
 	}
-	
 	
 
 	/** permanently hides the table header */
@@ -383,17 +399,32 @@ public class FxTable<T>
 	}
 	
 	
-	public void setHeaderPopupMenu(Supplier<FxPopupMenu> generator)
+	/** this may not work if skin is not yet initialized */
+	public Pane getHeader()
 	{
-		// this is idiocy
-		table.skinProperty().addListener((s, p, v) ->
+		return (Pane)table.lookup("TableHeaderRow");
+	}
+	
+	
+	public void setHeaderPopupMenu(Supplier<ContextMenu> generator)
+	{
+		Pane h = getHeader();
+		if(h != null)
 		{
-			Pane h = (Pane)table.lookup("TableHeaderRow");
-			if(h != null)
+			FX.setPopupMenu(h, generator);
+		}
+		else
+		{
+			// this is idiocy
+			table.skinProperty().addListener((s, p, v) ->
 			{
-				FX.setPopupMenu(h, generator);
-			}
-		});
+				Pane hd = getHeader();
+				if(hd != null)
+				{
+					FX.setPopupMenu(hd, generator);
+				}
+			});
+		}
 	}
 	
 	
@@ -408,5 +439,37 @@ public class FxTable<T>
 			);
 		}
 		return singleSelectionProperty;
+	}
+	
+	
+	public BooleanBinding nonEmptySelectionProperty()
+	{
+		if(nonEmptySelectionProperty == null)
+		{
+			nonEmptySelectionProperty = Bindings.createBooleanBinding
+			(
+				() -> (table.getSelectionModel().getSelectedIndices().size() > 0),
+				table.getSelectionModel().getSelectedIndices()
+			);
+		}
+		return nonEmptySelectionProperty;
+	}
+	
+	
+	public void setEditable(boolean on)
+	{
+		table.setEditable(on);
+	}
+	
+	
+	public boolean isEditable()
+	{
+		return table.isEditable();
+	}
+
+
+	public ObservableList<TablePosition> getSelectedCells()
+	{
+		return getSelectionModel().getSelectedCells();
 	}
 }

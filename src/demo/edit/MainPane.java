@@ -1,6 +1,5 @@
 // Copyright © 2017-2020 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
-import goryachev.fx.CInsets;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
@@ -25,7 +24,7 @@ public class MainPane
 		FX.style(this, PANE);
 		
 		editor = new FxEditor();
-		editor.setContentPadding(new CInsets(2, 4));
+		editor.setContentPadding(FX.insets(2, 4));
 		editor.setBlinkRate(Duration.millis(600));
 		editor.setMultipleSelectionEnabled(true);
 		

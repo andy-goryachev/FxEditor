@@ -62,6 +62,7 @@ public class CommonStyles
 //			checkbox(theme),						
 			comboBox(theme),
 			menuBar(theme),
+			popupMenu(theme),
 			scrollBar(theme),
 			scrollPane(theme),
 			table(theme),
@@ -408,6 +409,18 @@ public class CommonStyles
 	}
 	
 	
+	protected Object popupMenu(Theme theme)
+	{
+		return new Object[]
+		{
+			selector(FxPopupMenu.MENU).defines
+			(
+				fontWeight("normal")
+			)
+		};
+	}
+	
+	
 	protected Object radioButton(Theme theme)
 	{
 		// FIX
@@ -717,11 +730,9 @@ public class CommonStyles
 		{
 			selector(FxButtonPane.PANE).defines
 			(
-				borderWidth(0)
-			),
-			selector(FxDialog.PANE, FxButtonPane.PANE).defines
-			(
-				padding(10)
+				borderWidth(0),
+				padding(10),
+				backgroundColor(FX.alpha(Color.GRAY, 0.1))
 			)
 		};
 	}
