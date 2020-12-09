@@ -82,20 +82,27 @@ public class SimpleStyledTextModel
 	}
 	
 	
-	/** construct text from a sequence of TStyle,String.  A single "\n" separates line. */
-	public void add(Object ... styleTextPairs)
+	/** construct text from a sequence of (TStyle,String) or (String).  A single "\n" separates line. */
+	public void add(Object ... items)
 	{
-		for(int i=0; i<styleTextPairs.length; )
+		for(int i=0; i<items.length; )
 		{
-			Object x = styleTextPairs[i++];
-			if("\n".equals(x))
+			Object x = items[i++];
+			if(x instanceof String)
 			{
-				nl();
+				if("\n".equals(x))
+				{
+					nl();
+				}
+				else
+				{
+					add(null, x.toString());
+				}
 			}
 			else if(x instanceof TStyle)
 			{
 				TStyle s = (TStyle)x;
-				String text = (String)styleTextPairs[i++];
+				String text = (String)items[i++];
 				add(s, text);
 			}
 			else
