@@ -1,4 +1,4 @@
-// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2021 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.log.Log;
 import goryachev.common.util.CKit;
@@ -21,6 +21,8 @@ import java.util.function.Supplier;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -325,6 +327,16 @@ public final class FX
 	public static void style(Styleable n, CssStyle style)
 	{
 		n.getStyleClass().add(style.getName());
+	}
+	
+	
+	/** removes styles from a Styleable */
+	public static void removeStyles(Styleable n, CssStyle ... styles)
+	{
+		for(CssStyle st: styles)
+		{
+			n.getStyleClass().remove(st.getName());
+		}
 	}
 	
 	
@@ -753,6 +765,10 @@ public final class FX
 			{
 				return new Color(over.getRed(), over.getGreen(), over.getBlue(), over.getOpacity() * fraction);
 			}
+		}
+		else if(over == null)
+		{
+			return base;
 		}
 
 		if(base.isOpaque())
@@ -1272,7 +1288,7 @@ public final class FX
 	
 	
 	/** adds a ListChangeListener to the specified ObservableValue(s) */
-	public static void onChange(Runnable handler,ObservableList<?> list)
+	public static void onChange(Runnable handler, ObservableList<?> list)
 	{
 		onChange(handler, false, list);
 	}
@@ -1451,6 +1467,21 @@ public final class FX
 		if(fireImmediately)
 		{
 			li.accept(prop.getValue());
+		}
+	}
+	
+	
+	/** simplified version of addChangeListener that only invokes the callback on change */
+	public static void addChangeListener(Runnable callback, boolean fireImmediately, ObservableValue<?> ... props)
+	{
+		for(ObservableValue<?> p: props)
+		{
+			p.addListener((s,pr,current) -> callback.run());
+		}
+		
+		if(fireImmediately)
+		{
+			callback.run();
 		}
 	}
 
@@ -1681,6 +1712,88 @@ public final class FX
 				log.error(e);
 				throw new Error(type + " must declare a no-arg constructor", e);
 			}
+		});
+	}
+	
+	
+	/** returns a boolean property which indicates whether a node is visible in a scene */
+	public static ReadOnlyBooleanProperty getNodeVisibleInSceneProperty(Node node)
+	{
+		ReadOnlyBooleanWrapper showing = new ReadOnlyBooleanWrapper();
+
+		ChangeListener<Window> windowChangeListener = (s,p,win) ->
+		{
+			showing.unbind();
+			
+			if(win != null)
+			{
+				showing.bind(win.showingProperty());
+			}
+			else
+			{
+				showing.set(false);
+			}
+		};
+
+		ChangeListener<Scene> sceneChangeListener = (s,prevScene,currScene) ->
+		{
+			showing.unbind();
+			
+			if(prevScene != null)
+			{
+				prevScene.windowProperty().removeListener(windowChangeListener);
+			}
+			
+			if(currScene == null)
+			{
+				showing.set(false);
+			}
+			else
+			{
+				currScene.windowProperty().addListener(windowChangeListener);
+				
+				if(currScene.getWindow() == null)
+				{
+					showing.set(false);
+				}
+				else
+				{
+					showing.bind(currScene.getWindow().showingProperty());
+				}
+			}
+		};
+
+		node.sceneProperty().addListener(sceneChangeListener);
+		
+		Scene scene = node.getScene();
+		if(scene == null)
+		{
+			showing.set(false);
+		}
+		else
+		{
+			scene.windowProperty().addListener(windowChangeListener);
+			
+			Window w = scene.getWindow();
+			if(w == null)
+			{
+				showing.set(false);
+			}
+			else
+			{
+				showing.bind(w.showingProperty());
+			}
+		}
+
+		return showing.getReadOnlyProperty();
+	}
+	
+	
+	public static void onMousePressed(Node n, Runnable action)
+	{
+		n.addEventHandler(MouseEvent.MOUSE_PRESSED, (ev) ->
+		{
+			action.run();
 		});
 	}
 }

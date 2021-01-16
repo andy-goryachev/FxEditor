@@ -1,6 +1,8 @@
-// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2021 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
 import goryachev.common.util.CKit;
+import goryachev.common.util.D;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
@@ -31,6 +33,7 @@ public class FxTableColumn<ITEM,CELL>
 {
 	protected Function<CELL,String> formatter;
 	protected Function<CELL,Node> renderer;
+	protected BiConsumer<TableCell,CELL> decorator;
 	protected OverrunStyle overrunStyle = OverrunStyle.ELLIPSIS;
 	protected Pos alignment = Pos.CENTER_LEFT;
 	
@@ -76,9 +79,17 @@ public class FxTableColumn<ITEM,CELL>
 	}
 	
 	
+	/** WARNING: might cause infinite layout() loop if table is inside a split pane? */ 
 	public FxTableColumn<ITEM,CELL> setRenderer(Function<CELL,Node> r)
 	{
 		renderer = r;
+		return this;
+	}
+	
+	
+	public FxTableColumn<ITEM,CELL> setDecorator(BiConsumer<TableCell,CELL> d)
+	{
+		decorator = d;
 		return this;
 	}
 
@@ -142,33 +153,44 @@ public class FxTableColumn<ITEM,CELL>
 					@Override
 					protected void updateItem(Object item, boolean empty)
 					{
-						if(item != getItem())
+						super.updateItem(item, empty);
+
+						if(empty || (item == null))
 						{
-							super.updateItem(item, empty);
-		
-							if(item == null)
+							if(decorator != null)
 							{
-								super.setText(null);
-								super.setGraphic(null);
+								decorator.accept(this, null);
 							}
-							else if(item instanceof Node)
+							else
+							{
+								setText(null);
+								setGraphic(null);
+							}
+						}
+						else
+						{
+							if(item instanceof Node)
 							{
 								super.setText(null);
 								super.setGraphic((Node)item);
 							}
-							else if(renderer == null)
+							else if(decorator != null)
+							{
+								decorator.accept(this, (CELL)item);
+							}
+							else if(renderer != null)
+							{
+								Node n = renderer.apply((CELL)item);
+								super.setText(null);
+								super.setGraphic(n);
+							}
+							else
 							{
 								String text = (formatter == null ? item.toString() : formatter.apply((CELL)item));
 								super.setText(text);
 								super.setGraphic(null);
 								super.setAlignment(alignment);
 								super.setTextOverrun(overrunStyle);
-							}
-							else
-							{
-								Node n = renderer.apply((CELL)item);
-								super.setText(null);
-								super.setGraphic(n);
 							}
 						}
 					}

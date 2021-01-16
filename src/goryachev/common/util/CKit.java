@@ -1,4 +1,4 @@
-// Copyright © 2007-2020 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2007-2021 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import goryachev.common.io.CWriter;
 import goryachev.common.log.Log;
@@ -47,7 +47,7 @@ import java.util.zip.ZipFile;
 
 public final class CKit
 {
-	public static final String COPYRIGHT = "Copyright © 1996-2020 Andy Goryachev <andy@goryachev.com>  All Rights Reserved.";
+	public static final String COPYRIGHT = "Copyright © 1996-2021 Andy Goryachev <andy@goryachev.com>  All Rights Reserved.";
 	protected static final Log log = Log.get("CKit");
 	public static final char APPLE = '\u2318';
 	public static final char BOM = '\ufeff';
@@ -67,8 +67,6 @@ public final class CKit
 	public static final long MS_IN_A_WEEK = 604800000;
 	private static AtomicInteger id = new AtomicInteger(); 
 	private static Boolean eclipseDetected;
-	private static final JavaVersion JAVA8 = JavaVersion.parse("1.8.0");
-	private static final JavaVersion JAVA9 = JavaVersion.parse("9");
 	private static final double LOW_MEMORY_CHECK_THRESHOLD = 0.9;
 	private static final double LOW_MEMORY_FAIL_AFTER_GC_THRESHOLD = 0.87;
 	
@@ -2335,12 +2333,6 @@ public final class CKit
 		return (value >= min) && (value <= max);
 	}
 	
-	
-	public static boolean isJava9OrLater()
-	{
-		return JavaVersion.getJavaVersion().isSameOrLaterThan(JAVA9);
-	}
-
 
 	/** IEC kibi = 2^10, or 2014 */
 	public static long kibi(int x)

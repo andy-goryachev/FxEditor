@@ -1,4 +1,4 @@
-// Copyright © 2020 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2020-2021 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
@@ -44,6 +44,12 @@ public class FxTabPane
 	public void selectTab(Tab t)
 	{
 		getSelectionModel().select(t);
+	}
+	
+	
+	public void selectTab(int index)
+	{
+		getSelectionModel().select(index);
 	}
 	
 	

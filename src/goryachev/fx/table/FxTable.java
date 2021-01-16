@@ -1,4 +1,4 @@
-// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2021 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
@@ -294,6 +294,12 @@ public class FxTable<T>
 	public void setPlaceholder(Node n)
 	{
 		table.setPlaceholder(n);
+	}
+	
+	
+	public void selectAll()
+	{
+		table.getSelectionModel().selectAll();
 	}
 	
 	
