@@ -1,4 +1,4 @@
-// Copyright © 2019-2020 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2019-2022 Andy Goryachev <andy@goryachev.com>
 package goryachev.fxeditor;
 import goryachev.fx.FxStyleSheet;
 import goryachev.fx.Theme;

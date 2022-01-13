@@ -1,4 +1,4 @@
-// Copyright © 2017-2020 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2022 Andy Goryachev <andy@goryachev.com>
 package goryachev.fxeditor;
 import goryachev.common.util.Assert;
 import goryachev.common.util.FH;

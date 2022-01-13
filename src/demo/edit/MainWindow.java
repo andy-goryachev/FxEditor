@@ -1,4 +1,4 @@
-// Copyright © 2017-2020 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2022 Andy Goryachev <andy@goryachev.com>
 package demo.edit;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;

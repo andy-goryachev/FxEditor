@@ -1,4 +1,4 @@
-// Copyright © 2016-2020 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2022 Andy Goryachev <andy@goryachev.com>
 package goryachev.fxeditor;
 import goryachev.common.util.HasText;
 import goryachev.common.util.SB;
