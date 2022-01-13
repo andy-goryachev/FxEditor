@@ -23,7 +23,7 @@ public class Styles
 			
 			selector(MainPane.PANE, FxEditor.PANE).defines
 			(
-				fontSize("200%")
+				fontSize("120%")
 			)
 		);
 	}

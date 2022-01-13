@@ -103,6 +103,7 @@ public class FxEditor
 	{
 		setFocusTraversable(true);
 		FX.style(this, PANE);
+		// TODO reflow on font change
 		setBackground(FX.background(Color.WHITE));
 		
 		modelListener = new FxEditorModelListener()
