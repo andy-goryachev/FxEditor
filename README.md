@@ -32,7 +32,7 @@ is currently implemented.
 
 To see how little is implemented, launch 
 [FxEditorDemoApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/FxEditorDemoApp.java)
-.
+
 
 
 ## Example
@@ -79,7 +79,7 @@ Tomas Mikula's [RichTextFX](https://github.com/TomasMikula/RichTextFX).
 
 Text editors based on JavaFX TextLayout exhibit inadequate performance when dealing with models that have 
 millions of characters on a single line, for example when viewing logs.  A monospaced component such as
-[FxTextEditor](https://github.com/andy-goryachev/FxEditor) might be a better choice.
+[FxTextEditor](https://github.com/andy-goryachev/FxTextEditor) might be a better choice.
 
 
 ## License
