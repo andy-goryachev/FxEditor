@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 
 
 /**
- * DemoSyntax.
+ * Demo Syntax.
  */
 public class DemoSyntax
 {
