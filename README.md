@@ -22,6 +22,11 @@ file with a concurrent change log that enables editing of a very large files.
 * supports up to 2^31 lines of text
 * multiple selection and carets
 * supports syntax highlight
+
+
+## Requirements
+
+Requires JavaFX 17+.
  
 
 ## Try It Out ##
