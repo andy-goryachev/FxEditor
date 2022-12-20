@@ -255,7 +255,12 @@ public class WindowsFx
 		return null;
 	}
 	
-	
+
+	/**
+	 * Opens all previously opened windows using the specified generator.
+	 * Open a default window when no windows has been opened from the settings.
+	 * The generator may return FxWindows that are either already opened or not. 
+	 */
 	public int openWindows(Function<String,FxWindow> generator, Class<? extends FxWindow> defaultWindowType)
 	{
 		SStream st = GlobalSettings.getStream(FxSchema.WINDOWS);
@@ -269,7 +274,10 @@ public class WindowsFx
 			FxWindow w = generator.apply(id);
 			if(w != null)
 			{
-				w.open();
+				if(!w.isShowing())
+				{
+					w.open();
+				}
 				
 				if(defaultWindowType != null)
 				{

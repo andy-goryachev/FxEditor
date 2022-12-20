@@ -271,6 +271,12 @@ public class FxTable<T>
 	}
 	
 	
+	public void addItem(int ix, T item)
+	{
+		table.getItems().add(ix, item);
+	}
+	
+	
 	public void addItems(T ... items)
 	{
 		table.getItems().addAll(items);
