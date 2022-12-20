@@ -5,7 +5,6 @@ import goryachev.common.util.FileSettingsProvider;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.SB;
 import goryachev.fx.FxWindow;
-import goryachev.fx.hacks.CHitInfo;
 import goryachev.fxeditor.CTextFlow;
 import java.io.File;
 import javafx.application.Application;
@@ -13,6 +12,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
+import javafx.scene.text.HitInfo;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -100,7 +100,7 @@ public class TestTextFlowApp
 		protected void handleMouseEvent(CTextFlow t, MouseEvent ev)
 		{
 			Point2D p = t.screenToLocal(ev.getScreenX(), ev.getScreenY());
-			CHitInfo h = t.getHit(p.getX(), p.getY());
+			HitInfo h = t.hitTest(p.getX(), p.getY());
 
 			// NOTE: this test code does not handle text resizing
 			highlight.getElements().setAll(t.getRange(0, h.getInsertionIndex()));

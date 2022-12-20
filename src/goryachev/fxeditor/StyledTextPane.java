@@ -3,7 +3,6 @@ package goryachev.fxeditor;
 import goryachev.common.util.CList;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
-import goryachev.fx.hacks.FxHacks;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -15,6 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.PathElement;
+import javafx.scene.text.HitInfo;
 import javafx.util.Duration;
 
 
@@ -26,7 +26,7 @@ public class StyledTextPane
 {
 	public static final CssStyle CARET = new CssStyle("StyledTextPane_CARET");
 	
-	protected final CTextFlow textField;
+	protected final CTextFlow textFlow;
 	protected final Path caret;
 	protected final Timeline caretTimeline;
 	protected final ReadOnlyIntegerWrapper selectionIndex = new ReadOnlyIntegerWrapper(-1);
@@ -34,14 +34,14 @@ public class StyledTextPane
 
 	public StyledTextPane()
 	{
-		textField = new CTextFlow();
+		textFlow = new CTextFlow();
 		
 		caret = new Path();
 		FX.style(caret, CARET);
 		caret.setManaged(false);
 		caret.setStroke(Color.BLACK);
 		
-		getChildren().add(textField);
+		getChildren().add(textFlow);
 		
 		caretTimeline = new Timeline();
 		caretTimeline.setCycleCount(Animation.INDEFINITE);
@@ -69,23 +69,24 @@ public class StyledTextPane
 	}
 
 
-	public PathElement[] getCaretShape(int index, boolean leading)
+	public PathElement[] caretShape(int index, boolean leading)
 	{
-		return FxHacks.get().getCaretShape(textField, index, leading);
+		return textFlow.caretShape(index, leading);
 	}
 
 
-	public PathElement[] getRange(int start, int end)
+	public PathElement[] rangeShape(int start, int end)
 	{
-		return FxHacks.get().getRange(textField, start, end);
+		return textFlow.rangeShape(start, end);
 	}
 
 
 	/** returns text position at the specified screen coordinates */
-	public int getTextPos(double x, double y)
+	public int getInsertionIndex(double x, double y)
 	{
-		Point2D p = textField.screenToLocal(x, y);
-		return FxHacks.get().getTextPos(textField, p.getX(), p.getY());
+		Point2D p = textFlow.screenToLocal(x, y);
+		HitInfo h = textFlow.hitTest(p);
+		return (h == null ? -1 : h.getInsertionIndex());
 	}
 
 	
@@ -100,10 +101,10 @@ public class StyledTextPane
 		{
 			if(caret.getParent() == null)
 			{
-				textField.getChildren().add(caret);
+				textFlow.getChildren().add(caret);
 			}
 			
-			PathElement[] es = getCaretShape(ix, true);
+			PathElement[] es = caretShape(ix, true);
 			caret.getElements().setAll(es);
 			setCaretVisible(true);
 		}
@@ -128,13 +129,13 @@ public class StyledTextPane
 	// FIX replace with styled segments
 	public void setText(CList<Node> textNodes)
 	{
-		textField.getChildren().setAll(textNodes);
+		textFlow.getChildren().setAll(textNodes);
 		setSelection(0);
 	}
 
 
 	public String getText()
 	{
-		return textField.getText();
+		return textFlow.getText();
 	}
 }

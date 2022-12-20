@@ -2,7 +2,6 @@
 package goryachev.fxeditor;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
-import goryachev.fx.hacks.CHitInfo;
 import goryachev.fxeditor.internal.CaretLocation;
 import goryachev.fxeditor.internal.EditorTools;
 import goryachev.fxeditor.internal.Markers;
@@ -13,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.PathElement;
+import javafx.scene.text.HitInfo;
 
 
 /**
@@ -74,7 +74,7 @@ public class FxEditorLayout
 			{
 				if(box instanceof CTextFlow)
 				{
-					CHitInfo hit = ((CTextFlow)box).getHit(x, y);
+					HitInfo hit =  ((CTextFlow)box).hitTest(x, y);
 					if(hit != null)
 					{
 						return markers.newMarker(line.getLineNumber(), hit.getCharIndex(), hit.isLeading());

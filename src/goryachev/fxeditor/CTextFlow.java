@@ -1,12 +1,12 @@
 // Copyright © 2016-2022 Andy Goryachev <andy@goryachev.com>
 package goryachev.fxeditor;
 import goryachev.common.util.SB;
-import goryachev.fx.hacks.CHitInfo;
-import goryachev.fx.hacks.FxHacks;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.PathElement;
+import javafx.scene.text.HitInfo;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -30,7 +30,7 @@ public class CTextFlow
 
 	public PathElement[] getCaretShape(int index, boolean leading)
 	{
-		PathElement[] pe = FxHacks.get().getCaretShape(this, index, leading);
+		PathElement[] pe = caretShape(index, leading);
 		
 		// empty line generates a simple dot shape which is not what we need
 		if(pe.length == 2)
@@ -60,7 +60,7 @@ public class CTextFlow
 	/** returns selection shape for a given range.  negative 'end' value is equivalent to the offset of the last symbol in the text */
 	public PathElement[] getRange(int start, int end)
 	{
-		PathElement[] pe = FxHacks.get().getRange(this, start, end);
+		PathElement[] pe = rangeShape(start, end);
 		if(pe.length == 0)
 		{
 			// happens with empty line
@@ -71,11 +71,11 @@ public class CTextFlow
 		return pe;
 	}
 
-
-	/** returns hit info at the specified local coordinates */
-	public CHitInfo getHit(double x, double y)
+	
+	public final HitInfo hitTest(double x, double y)
 	{
-		return FxHacks.get().getHit(this, x, y);
+		Point2D p = new Point2D(x, y);
+		return hitTest(p);
 	}
 	
 	

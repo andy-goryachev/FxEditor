@@ -17,7 +17,7 @@ public class StyledTextPaneMouseController
 	{
 		this.editor = p;
 		
-		TextFlow ed = p.textField;
+		TextFlow ed = p.textFlow;
 		ed.addEventFilter(KeyEvent.KEY_PRESSED, (ev) -> handleKeyPressed(ev));
 		ed.addEventFilter(KeyEvent.KEY_RELEASED, (ev) -> handleKeyReleased(ev));
 		ed.addEventFilter(KeyEvent.KEY_TYPED, (ev) -> handleKeyTyped(ev));
@@ -53,7 +53,7 @@ public class StyledTextPaneMouseController
 	{
 		// FIX problem: misses mouse clicks on the empty margin
 		// when a non-zero padding is set on styled pane
-		int ix = editor.getTextPos(ev.getScreenX(), ev.getScreenY());
+		int ix = editor.getInsertionIndex(ev.getScreenX(), ev.getScreenY());
 		editor.setSelection(ix);
 	}
 	

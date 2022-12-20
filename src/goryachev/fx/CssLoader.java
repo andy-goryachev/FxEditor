@@ -6,7 +6,6 @@ import goryachev.common.util.CKit;
 import goryachev.common.util.CSet;
 import goryachev.common.util.SB;
 import goryachev.common.util.UrlStreamFactory;
-import goryachev.fx.hacks.FxHacks;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -172,7 +171,7 @@ public class CssLoader
 		
 	protected static void update(String old, String cur)
 	{
-		FxHacks.get().applyStyleSheet(old, cur);
+		FX.applyStyleSheet(old, cur);
 		
 		if(old == null)
 		{
