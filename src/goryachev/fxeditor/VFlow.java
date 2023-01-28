@@ -623,16 +623,16 @@ public class VFlow
 				
 				// TODO skip sizing if the width has not changed (incl. line number component)
 				
-				Region nd = b.getCenter();
-				nd.setManaged(true);
-				getChildren().add(nd);
-				nd.applyCss();
+				Region r = b.getCenter();
+				r.setManaged(true);
+				getChildren().add(r);
+				r.applyCss();
 				la.addLineBox(b);
 				
 				// TODO can use cached value if the vflow width is the same
 				double w = wrap ? wid : -1;
-				nd.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
-				double h = nd.prefHeight(w);
+				r.setMaxWidth(wrap ? wid : Double.MAX_VALUE);
+				double h = r.prefHeight(w);
 				
 				if(!wrap)
 				{
@@ -658,13 +658,10 @@ public class VFlow
 					// the -fx-padding is correct, and -fx-label-padding is 0 on line number labels
 	//				h = Math.max(h, nc.prefHeight(-1));
 					
-					b.setHeight(h);
 					b.setY(y);
 				}
-				else
-				{
-					b.setHeight(h);
-				}
+
+				b.setHeight(h);
 				
 				y += h;
 				if(y > ymax)

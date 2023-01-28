@@ -146,10 +146,10 @@ public class FxEditor
 		hscroll.setManaged(true);
 		hscroll.setMin(0.0);
 		hscroll.setMax(1.0);
-		hscroll.valueProperty().addListener((src,old,val) -> setAbsolutePositionHorizontal(val.doubleValue()));
 		hscroll.addEventFilter(ScrollEvent.ANY, (ev) -> ev.consume());
 		hscroll.visibleProperty().bind(wordWrapProperty.not());
-		hscroll.valueProperty().addListener((s,p,c) -> handleHorizontalScroll(c.doubleValue()));
+		hscroll.valueProperty().addListener((src,old,val) -> setAbsolutePositionHorizontal(val.doubleValue()));
+		hscroll.valueProperty().addListener((s,p,c) -> handleHorizontalScroll(c.doubleValue())); // FIX second handler!
 		
 		getChildren().addAll(vflow, vscroll, hscroll);
 		
