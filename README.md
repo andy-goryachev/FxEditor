@@ -77,7 +77,7 @@ projects that have to deal with such files, like programming editors or log view
 
 ## Similar Projects
 
-- Tomas Mikula's [RichTextFX](https://github.com/TomasMikula/RichTextFX).
+- Tomas Mikula's [RichTextFX](https://github.com/TomasMikula/RichTextFX)
 - Gluon's [The Rich Text Area Project](https://github.com/gluonhq/rich-text-area)
 
 
