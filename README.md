@@ -81,11 +81,10 @@ projects that have to deal with such files, like programming editors or log view
 - Gluon's [The Rich Text Area Project](https://github.com/gluonhq/rich-text-area)
 
 
-## See Also
+## OpenJFX
 
-Text editors based on JavaFX TextLayout exhibit inadequate performance when dealing with models that have 
-millions of characters on a single line, for example when viewing logs.  A monospaced component such as
-[FxTextEditor](https://github.com/andy-goryachev/FxTextEditor) might be a better choice.
+- [JDK-8301121](https://bugs.openjdk.org/browse/JDK-8301121)
+- [RichTextAreaDemoApp](https://github.com/andy-goryachev-oracle/Test/blob/rich.text.editor/src/goryachev/apps/RichTextAreaDemoApp.java)
 
 
 ## License
