@@ -83,8 +83,10 @@ projects that have to deal with such files, like programming editors or log view
 
 ## OpenJFX
 
+This work continues under OpenJFX project:
+
 - [JDK-8301121](https://bugs.openjdk.org/browse/JDK-8301121)
-- [RichTextAreaDemoApp](https://github.com/andy-goryachev-oracle/Test/blob/rich.text.editor/src/goryachev/apps/RichTextAreaDemoApp.java)
+- [RichTextArea](https://github.com/andy-goryachev-oracle/jfx/blob/ag.rich.text.area/modules/javafx.controls/src/main/java/javafx/scene/control/rich/RichTextArea.java)
 
 
 ## License
