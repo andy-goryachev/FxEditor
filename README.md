@@ -36,7 +36,7 @@ The project is at a very early stage: less than 29% of all
 is currently implemented. 
 
 To see how little is implemented, launch 
-[FxEditorDemoApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/FxEditorApp.java)
+[FxEditorApp.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/FxEditorApp.java)
 
 
 
