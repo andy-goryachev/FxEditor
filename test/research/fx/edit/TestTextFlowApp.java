@@ -1,4 +1,4 @@
-// Copyright © 2016-2023 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
 import goryachev.common.log.Log;
 import goryachev.common.util.FileSettingsProvider;
