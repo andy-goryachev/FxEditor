@@ -39,7 +39,7 @@ file with a concurrent change log that enables editing of a very large files.
 
 ## Requirements
 
-Requires JavaFX 17+.
+Requires JavaFX 21+.
  
 
 ## Try It Out ##
