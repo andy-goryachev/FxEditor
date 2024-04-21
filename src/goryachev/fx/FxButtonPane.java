@@ -1,4 +1,4 @@
-// Copyright © 2016-2023 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 
 
@@ -24,9 +24,9 @@ public class FxButtonPane
 	}
 	
 	
-	public FxButton addButton(String text, FxAction a, CssStyle style)
+	public FxButton addButton(String text, CssStyle style, FxAction a)
 	{
-		FxButton b = new FxButton(text, a, style);
+		FxButton b = new FxButton(text, style, a);
 		return addButton(b);
 	}
 	
@@ -38,16 +38,16 @@ public class FxButtonPane
 	}
 	
 	
-	public FxButton addButton(String text, Runnable r, CssStyle style)
+	public FxButton addButton(String text, CssStyle style, Runnable r)
 	{
-		FxButton b = new FxButton(text, new FxAction(r), style);  
+		FxButton b = new FxButton(text, style, new FxAction(r));  
 		return addButton(b);
 	}
 	
 	
 	public FxButton addButton(String text, CssStyle style)
 	{
-		FxButton b = new FxButton(text, FxAction.DISABLED, style);  
+		FxButton b = new FxButton(text, style, FxAction.DISABLED);  
 		return addButton(b);
 	}
 	

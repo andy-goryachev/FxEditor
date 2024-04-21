@@ -4,10 +4,11 @@ import goryachev.fx.FX;
 import goryachev.fx.FxAction;
 import goryachev.fx.FxBoolean;
 import goryachev.fx.FxDump;
+import goryachev.fx.FxFramework;
 import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxPopupMenu;
 import goryachev.fx.FxWindow;
-import goryachev.fx.internal.LocalSettings;
+import goryachev.fx.settings.LocalSettings;
 import goryachev.fxeditor.FxEditor;
 import goryachev.fxeditor.FxEditorModel;
 
@@ -102,7 +103,7 @@ public class MainWindow
 		m.separator();
 		m.item("Preferences", prefsAction);
 		m.separator();
-		m.item("Exit", FX.exitAction());
+		m.item("Exit", FxFramework::exit);
 		// edit
 		m.menu("Edit");
 		m.item("Undo");
@@ -144,6 +145,7 @@ public class MainWindow
 	
 	protected void preferences()
 	{
+		// TODO
 	}
 	
 	
