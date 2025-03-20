@@ -2,8 +2,7 @@
 
 ## Announcement
 
-[!WARNING]
-This project has been archived.
+> [!WARNING] This project has been archived.
 
 Please consider switching to
 [RichTextArea](https://github.com/andy-goryachev-oracle/Test/blob/main/doc/RichTextArea/RichTextArea.md)
