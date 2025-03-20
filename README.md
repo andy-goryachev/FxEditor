@@ -2,7 +2,8 @@
 
 ## Announcement
 
-[!WARNING] This project has been archived.
+[!WARNING]
+This project has been archived.
 
 Please consider switching to
 [RichTextArea](https://github.com/andy-goryachev-oracle/Test/blob/main/doc/RichTextArea/RichTextArea.md)
@@ -76,15 +77,6 @@ public class MainWindow extends FxWindow
 
 See [MainWindow.java](https://github.com/andy-goryachev/FxEditor/blob/master/src/demo/edit/MainWindow.java)
 
-
-## Warning
-
-This project is not ready for production.  Mutable (editable) text models are not yet implemented.
-
-The editor relies on JavaFX PrismTextLayout to properly render proportional unicode text, which results in
-performance issues when trying to render very long lines (millions of symbols), making it unsuitable for
-projects that have to deal with such files, like programming editors or log viewers.  A fixed-width replacement
-[FxTextEditor](https://github.com/andy-goryachev/FxTextEditor) is currently being worked on.
 
 
 ## Similar Projects
