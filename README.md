@@ -1,22 +1,21 @@
 # FxEditor
 
-![screenshot](https://github.com/andy-goryachev/FxEditor/blob/master/doc/screenshot.png)
-
-
 ## Announcement
 
-This work on this project has been stopped by the author, in favor of 
+[!WARNING] This project has been archived.
+
+Please consider switching to
 [RichTextArea](https://github.com/andy-goryachev-oracle/Test/blob/main/doc/RichTextArea/RichTextArea.md)
-, an incubating project under OpenJFX project:
+incubator module in JavaFX 24
 
 - [RichTextArea.md](https://github.com/andy-goryachev-oracle/Test/blob/main/doc/RichTextArea/RichTextArea.md)
 - [JDK-8301121](https://bugs.openjdk.org/browse/JDK-8301121)
-- [RichTextArea.java](https://github.com/andy-goryachev-oracle/jfx/blob/ag.rich.text.area/modules/javafx.controls/src/main/java/javafx/scene/control/rich/RichTextArea.java)
-
-
+- [RichTextArea.java](https://github.com/openjdk/jfx/blob/master/modules/jfx.incubator.richtext/src/main/java/jfx/incubator/scene/control/richtext/RichTextArea.java)
 
 
 ## Why ##
+
+![screenshot](https://github.com/andy-goryachev/FxEditor/blob/master/doc/screenshot.png)
 
 Nearly all Java text editors, Swing and FX alike, suffer from one deficiency: inability to work with large 
 data models, such as logs or query results.
